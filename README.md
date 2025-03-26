@@ -5,15 +5,13 @@
     │   │   │   └── com/
     │   │   │       └── demo/                     # 加入 demo 層
     │   │   │           ├── controller/          # 控制層
-    │   │   │           │   ├── frontend/        # 前台控制器
-    │   │   │           │   │   ├── FlightSearchController.java
-    │   │   │           │   │   ├── BookingController.java
-    │   │   │           │   │   └── UserController.java
-    │   │   │           │   └── admin/           # 後台控制器
-    │   │   │           │       ├── AdminFlightController.java
-    │   │   │           │       ├── AdminBookingController.java
-    │   │   │           │       └── AdminUserController.java
+    │   │   │           │   ├── FlightSearchController.java
+    │   │   │           │   ├── BookingController.java
+    │   │   │           │   └── UserController.java     
     │   │   │           ├── service/             # 業務邏輯層（Service）
+    │   │   │           │    ├──UserService.java
+    │   │   │           │    └── spec/            # service的Interface檔案(規範查詢用)
+    │   │   │           │        └──IUser.java
     │   │   │           ├── repository/          # 資料訪問層（Repository/DAO）
     │   │   │           ├── model/               # 資料模型層（Model/Entity）
     │   │   │           ├── config/              # 配置類
@@ -48,4 +46,5 @@
     │   │   │           └── repository/
     │   └── README.md                            # 專案簡介
     ├── pom.xml                                  # Maven 配置檔案
+    ├── Vue/                                     # VUE檔案存放處(詳細檔案結構看裡面的README.md)
     └── .gitignore                               # Git 忽略規則
