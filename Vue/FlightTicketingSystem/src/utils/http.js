@@ -12,9 +12,7 @@ const instance = axios.create({
 //request 攔截器
 instance.interceptors.request.use(
   (config) => {
-    if (config.method === "post") {
-      config.data = querystring.stringify(config.data);
-    }
+    
     return config;
   },
   (error) => {
