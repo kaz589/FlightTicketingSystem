@@ -1,27 +1,16 @@
 package com.demo.service;
 
-
-
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+import org.springframework.data.domain.Page;
+
 
 import com.demo.model.Airports;
-import com.demo.repository.AirportsRepository;
-import com.demo.service.spec.IAirports;
 
-@Service
-public class AirportsService  implements IAirports{
-
-	@Autowired
-	private AirportsRepository airportsRepo;
+public interface AirportsService {
 	
-	@Override
-	public List<Airports> findAllAirports() {
-		    List<Airports> allairports   =airportsRepo.findAll();
-		
-		return allairports;
-	}
-
+	
+	List<Airports> findAllAirports();
+	//分頁查詢
+	 Page<Airports> getPagedMessages(int page, int size);
 }
