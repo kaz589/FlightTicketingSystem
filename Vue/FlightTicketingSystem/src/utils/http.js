@@ -57,6 +57,9 @@ const errorHandle = (status, info) => {
         break;
       default:
         console.log(info);
+        break;
+        
     }
+    alert(info);
   }
 export default instance;

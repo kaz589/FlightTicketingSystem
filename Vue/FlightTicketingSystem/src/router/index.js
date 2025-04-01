@@ -4,19 +4,26 @@ const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
-      path: '/admin',
-      component: () => import('@/layouts/'),
+      path: '/',
+      component: () => import('@/layouts/mainlayouts.vue'),
       children:[
         {
-          path:"members",
-          component:()=>import("@/views/MemberPages.vue")
+          path:"airport",
+          component:()=>import("@/page/admin/Airportspage.vue")
           
-        }
+        },
+        {
+          path:"test",
+          component:()=>import("@/page/admin/TEST.vue")
+          
+        },
+        {
+          path:"testtt",
+          component:()=>import("@/page/admin/TESTTT.vue")
+          
+        },
+
       ]
-    },
-    {
-      path: '/login',
-      component: () => import('@/layouts/LoginLayout.vue'),
     }
    
     // {
