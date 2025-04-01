@@ -1,5 +1,6 @@
 package com.demo.model;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -16,14 +17,27 @@ import lombok.Setter;
 @Table(name="Airports")
 public class Airports {
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Integer AirportsId ;
-	private String 	IataCode;
-	private String 	AirportName;
-	private String 	CountryRegion;
-	private String 	City;
-	private Double	Latitude;
-	private Double  Longitude;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+	 @Column(name = "airports_id") // 數據庫列名
+    private Integer airportsId;
+
+    @Column(name = "iata_code") // 數據庫列名
+    private String iataCode;
+
+    @Column(name = "airport_name") // 數據庫列名
+    private String airportName;
+
+    @Column(name = "country_region") // 數據庫列名
+    private String countryRegion;
+
+    @Column(name = "city") // 數據庫列名
+    private String city;
+
+    @Column(name = "latitude") // 數據庫列名
+    private Double latitude;
+
+    @Column(name = "longitude") // 數據庫列名
+    private Double longitude;
 	
 	
 }

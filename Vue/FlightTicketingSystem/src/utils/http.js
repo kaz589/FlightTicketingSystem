@@ -12,9 +12,7 @@ const instance = axios.create({
 //request 攔截器
 instance.interceptors.request.use(
   (config) => {
-    if (config.method === "post") {
-      config.data = querystring.stringify(config.data);
-    }
+    
     return config;
   },
   (error) => {
@@ -59,6 +57,9 @@ const errorHandle = (status, info) => {
         break;
       default:
         console.log(info);
+        break;
+        
     }
+    alert(info);
   }
 export default instance;
