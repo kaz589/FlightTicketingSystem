@@ -25,7 +25,7 @@ public interface AirportsService {
 	     */
 	   List<String> getDistinctCountryRegions();
 	   
-	   Page<Airports> searchAirports(String keyword, String city, String countryRegion, int page, int size);
+	   Page<Airports> searchAirports(String keyword, String city, String countryRegion, int page, int size,String sortBy,String sortOrder);
 	   /**
 	     * 新增機場
 	     * @param airport 機場實體
@@ -38,5 +38,10 @@ public interface AirportsService {
 	     * @param airportId 機場 ID
 	     */
 	    void deleteAirportById(Integer airportId);
+	    /**
+	     * 根據 ID 更新機場
+	     * @param airportId 機場 ID
+	     */
+	    Airports updateAirport(Integer airportId, Airports updatedAirport);
 	 
 }

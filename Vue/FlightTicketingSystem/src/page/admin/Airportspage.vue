@@ -12,22 +12,22 @@
       clearable
       label="城市"
       :items="allCities"
-       v-model="searchFilters.city"
+      v-model="searchFilters.city"
     ></v-autocomplete>
-   <!-- 關鍵字搜尋欄 -->
+    <!-- 關鍵字搜尋欄 -->
     <v-text-field label="Label" v-model="searchFilters.keyword"></v-text-field>
-    
+
     <v-btn prepend-icon="mdi mdi-magnify" @click="search"> 搜尋 </v-btn>
     <v-btn color="primary" @click="openAddDialog">新增機場</v-btn>
     <br />
     <br />
 
-    
+    <p>總數: {{ totalItems }}</p>
     <v-data-table
       :headers="headers"
       :items="items"
       :items-per-page="itemsPerPage"
-      :server-items-length="totalItems"
+      @update:sort-by="updateSortBy"
       hide-default-footer
       class="elevation-1"
     >
@@ -49,19 +49,10 @@
         </div>
       </template>
     </v-data-table>
-   
-   
-   
-    <!-- 分頁組件Pagination -->
-    <v-pagination
-      v-model="currentPage"
-      :length="totalPages"
-      @input="fetchData"
-    ></v-pagination>
 
-    <p>Current Page: {{ currentPage }}</p>
-    <p>Total Pages: {{ totalPages }}</p>
-    
+    <!-- 分頁組件Pagination -->
+    <v-pagination v-model="currentPage" :length="totalPages"></v-pagination>
+
     <!-- 新增修改用對話框 -->
     <v-dialog v-model="dialog" max-width="600">
       <v-card>
@@ -80,7 +71,7 @@
                   v-model="record.airportsId"
                   label="機場 ID"
                   :disabled="isEditing"
-                   v-if="isEditing"
+                  v-if="isEditing"
                   required
                 ></v-text-field>
               </v-col>
@@ -139,9 +130,7 @@
     <v-dialog v-model="deleteDialog" max-width="400">
       <v-card>
         <v-card-title class="headline">確認刪除</v-card-title>
-        <v-card-text>
-          您確定要刪除該記錄嗎？此操作無法撤銷。
-        </v-card-text>
+        <v-card-text> 您確定要刪除該記錄嗎？此操作無法撤銷。 </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
           <v-btn text @click="deleteDialog = false">取消</v-btn>
@@ -153,13 +142,11 @@
 </template>
 
 <script setup>
-import { ref, watch, onMounted,shallowRef  } from "vue";
-import ApiAirport from "@/utils/Api";
+import { ref, watch, onMounted, shallowRef } from "vue";
+import { ApiAirport } from "@/utils/Api";
 
 //初始運行函式
 onMounted(() => {
-  fetchData();
-  //search();
   getDistinctCities();
   getDistinctCountries();
 });
@@ -168,62 +155,69 @@ onMounted(() => {
 
 搜尋區塊
 
-*/ 
+*/
 
 //搜尋用初始數據
 const searchFilters = ref({
   keyword: "",
   city: "",
-  countryRegion: ""
+  countryRegion: "",
+  sortBy: "airportsId", // 默認排序字段
+  sortOrder: "asc", // 默認排序方向 (升序)
 });
+const X = ref([]); //所有不重複城市數據
+
 const allCities = ref([]); //所有不重複城市數據
 const allCountries = ref([]); //所有不重複國家數據
 //取得所有不重複城市數據
 const getDistinctCities = () => {
-  
-  ApiAirport.DistinctCities()
-    .then((res) => {
-     // console.log(res.data);
-      allCities.value = res.data;
-    })
-    
+  ApiAirport.DistinctCities().then((res) => {
+    allCities.value = res.data;
+  });
 };
 //取得所有不重複國家數據
 const getDistinctCountries = () => {
   ApiAirport.DistinctCountryRegions()
     .then((res) => {
-    //  console.log(res.data);
       allCountries.value = res.data;
     })
-    .catch((err) => {
-      console.error(err);
-    });
+    .catch((err) => {});
 };
 //搜尋函式
-function search() {
-  const { keyword, city, countryRegion } = searchFilters.value;
+function search(options) {
+  const { keyword, city, countryRegion, sortBy, sortOrder } =
+    searchFilters.value;
 
   // 確保參數有值，若為空則用默認值代替
   const searchKeyword = keyword || "all"; // 使用 "all" 表示不指定關鍵字
   const searchCity = city || "all"; // 使用 "all" 表示不指定城市
   const searchCountry = countryRegion || "all"; // 使用 "all" 表示不指定國家
 
-  ApiAirport.searchAirports(searchKeyword, searchCity, searchCountry, currentPage.value, itemsPerPage.value)
+  ApiAirport.searchAirports(
+    searchKeyword,
+    searchCity,
+    searchCountry,
+    currentPage.value,
+    itemsPerPage.value,
+    sortBy,
+    sortOrder
+  )
+    
     .then((res) => {
       items.value = res.data.content; // 更新表格數據
       totalItems.value = res.data.totalElements; // 總數據條數
       totalPages.value = res.data.totalPages; // 總頁數
     })
-    .catch((err) => {
-      console.error(err);
-    });
+
+    .catch((err) => {});
+    console.log("🚀 ~ Airportspage.vue:206 ~ search ~ sortBy:", sortBy)
 }
 
 /*
 
 新增修改資料區塊
 
-*/ 
+*/
 
 // 新增修改對話框顯示狀態
 const dialog = shallowRef(false);
@@ -255,136 +249,125 @@ function openAddDialog() {
 
 // 保存方法
 function save() {
-  if ( !record.value.iataCode || !record.value.airportName || !record.value.city || !record.value.countryRegion) {
+  if (
+    !record.value.iataCode ||
+    !record.value.airportName ||
+    !record.value.city ||
+    !record.value.countryRegion
+  ) {
     alert("請填寫所有必填字段！");
     return;
   }
 
   if (isEditing.value) {
-    console.log(record.value);
-    
     // 更新機場數據
-    ApiAirport.updateAirport(record.value)
+    ApiAirport.updateAirport(record.value.airportsId,record.value)
       .then(() => {
-        alert("更新成功！");
+        
         dialog.value = false; // 關閉對話框
-        fetchData(); // 刷新數據
+        search();
       })
       .catch((err) => {
-        console.error(err);
         alert("更新失敗！");
       });
   } else {
-    console.log(record.value);
     // 新增機場數據
     ApiAirport.addAirport(record.value)
       .then(() => {
-       
         dialog.value = false; // 關閉對話框
-        fetchData(); // 刷新數據
+        search();
       })
       .catch((err) => {
-        console.error(err);
         alert("新增失敗！");
       });
   }
 }
 
 function edit(id) {
-  isEditing.value = true
+  isEditing.value = true;
 
-  const found = items.value.find(item => item.airportsId === id);
+  const found = items.value.find((item) => item.airportsId === id);
 
-// 直接使用展開運算符賦值
-record.value = { ...found }
-  dialog.value = true
-  console.log(id);
+  // 直接使用展開運算符賦值
+  record.value = { ...found };
+  dialog.value = true;
 }
 /*
 
 表格資料區塊
 
-*/ 
+*/
 // 表格標題資訊
 const headers = ref([
-  { title: "機場 ID", value: "airportsId", align: "start" },
-  { title: "機場IATA代碼", value: "iataCode" },
-  { title: "機場名稱", value: "airportName" },
-  { title: "城市", value: "city" },
-  { title: "國家", value: "countryRegion" },
+  { title: "機場 ID", value: "airportsId", sortable: true, align: "start" }, //sortable: true 表示可排序
+  { title: "機場IATA代碼", value: "iataCode", sortable: true },
+  { title: "機場名稱", value: "airportName", sortable: true },
+  { title: "城市", value: "city", sortable: true },
+  { title: "國家", value: "countryRegion", sortable: true },
   { title: "操作", key: "actions", align: "end", sortable: false },
 ]);
+
 const items = ref([]); // 表格內容數據
 const totalItems = ref(0); // 總數據條數
-const itemsPerPage = ref(5); // 每頁顯示數據條數
-
-
-
-
-
-
-
-
-
-
-
+const itemsPerPage = ref(20); // 每頁顯示數據條數
 
 /*
 
 刪除資料區塊
 
-*/ 
+*/
 function remove(id) {
-  const found = items.value.find(item => item.airportsId === id);
+  const found = items.value.find((item) => item.airportsId === id);
   record.value = { ...found }; // 更新 record 為選中的記錄
   deleteDialog.value = true; // 打開刪除對話框
 }
 // 控制刪除對話框的顯示狀態
-const deleteDialog = shallowRef(false); 
+const deleteDialog = shallowRef(false);
 function deleteItem() {
   ApiAirport.deleteAirport(record.value.airportsId)
     .then(() => {
-     // alert("刪除成功！");
+      // alert("刪除成功！");
       deleteDialog.value = false; // 關閉刪除對話框
       fetchData(); // 刷新數據
     })
     .catch((err) => {
-      console.error(err);
       alert("刪除失敗！");
     });
 }
-
 
 /*
 
 分頁組件區塊
 
-*/ 
+*/
+function updateSortBy(sortBy) {
+  console.log("🚀 ~ Airportspage.vue:344 ~ updateSortBy ~ sortBy:", sortBy)
+  
+  // 確保 `sortBy` 有值
+  if (!sortBy) {
+    console.error("sortBy is undefined");
+    return;
+  }
+  searchFilters.value.sortBy = sortBy[0].key || "airportsId";
+  searchFilters.value.sortOrder = sortBy[0].order || "asc";
+  
+}
+
 
 const currentPage = ref(1); // 當前頁數
-const totalPages = ref(0); // 總頁數
-
-// // 監聽當前頁數變化，自動加載新數據
-watch(currentPage, (newPage, oldPage) => {
- // console.log(`Page changed from ${oldPage} to ${newPage}`);
- // fetchData(); // 確保這裡有調用數據加載函數
- search();
+const totalPages = ref(1); // 總頁數
+// 監聽當前頁數變化，自動加載新數據
+watch(currentPage, () => {
+  search();
 });
 
-
-//Fetch data function
-const fetchData = () => {
-  ApiAirport.testPage(currentPage.value, itemsPerPage.value)
-    .then((res) => {
-     // console.log(res.data);
-      items.value = res.data.content;
-      totalItems.value = res.data.totalElements;
-      totalPages.value = res.data.totalPages;
-    })
-    .catch((err) => {
-      console.error(err);
-    });
-};
+// 監聽排序條件變化，自動加載新數據
+watch(
+  () => [searchFilters.value.sortBy, searchFilters.value.sortOrder],
+  () => {
+    search();
+  }
+);
 </script>
 
 <style scoped></style>
