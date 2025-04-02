@@ -25,8 +25,6 @@ const vuetify = createVuetify({
     components,
     directives,
   })
-app.use(vuetify)
-
 
 app.use(vuetify) // 使用 Vuetify
 app.mount('#app')
