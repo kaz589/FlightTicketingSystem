@@ -6,7 +6,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import com.demo.model.Airports;
 import com.demo.repository.AirportsRepository;
@@ -53,20 +55,18 @@ public class AirportsImp implements AirportsService {
 	}
 
 	@Override
-	public Page<Airports> searchAirports(String keyword, String city, String countryRegion, int page, int size) {
-		  System.out.println(keyword);
-		    System.out.println(city);
-		    System.out.println(countryRegion);
+	public Page<Airports> searchAirports(String keyword, String city, String countryRegion, int page, int size,String sortBy,String sortOrder) {
+		 
 		keyword=(keyword==null||keyword.trim().isEmpty()||keyword.trim().equalsIgnoreCase("all"))?null:keyword;
 		city=(city==null||city.trim().isEmpty()||city.trim().equalsIgnoreCase("all"))?null:city;
 		countryRegion=(countryRegion==null||countryRegion.trim().isEmpty()||countryRegion.trim().equalsIgnoreCase("all"))?null:countryRegion;
-		
-		
-		    System.out.println(keyword);
-		    System.out.println(city);
-		    System.out.println(countryRegion);
-		PageRequest pageable = PageRequest.of(page, size);
-	    return airportsRepo.searchAirports(keyword, city, countryRegion, pageable);
+	
+		// 處理排序邏輯
+        Sort sort = sortOrder.equalsIgnoreCase("desc") ? Sort.by(sortBy).descending() : Sort.by(sortBy).ascending();
+		    
+		PageRequest  pageable = PageRequest.of(page-1, size,sort);
+		//Pageable pageable = PageRequest.of(0, 10); // 第0頁，每頁10筆資料
+	    return airportsRepo.searchAirports(keyword, city,countryRegion,pageable);
 	}
 
 	  @Override
@@ -78,5 +78,23 @@ public class AirportsImp implements AirportsService {
 	    public void deleteAirportById(Integer airportId) {
 	    	airportsRepo.deleteById(airportId);
 	    }
+
+		@Override
+		public Airports updateAirport(Integer airportId, Airports updatedAirport) {
+			// 查找機場是否存在
+			Airports existingAirport = airportsRepo.findById(airportId)
+			        .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "機場未找到"));
+		   
+
+		    // 更新機場的屬性
+		    existingAirport.setAirportName(updatedAirport.getAirportName());
+		    existingAirport.setCity(updatedAirport.getCity());
+		    existingAirport.setCountryRegion(updatedAirport.getCountryRegion());
+		    existingAirport.setIataCode(updatedAirport.getIataCode());
+		    // 根據需要更新其他字段
+
+		    // 保存更新後的機場
+		    return airportsRepo.save(existingAirport);
+		}
 
 }
