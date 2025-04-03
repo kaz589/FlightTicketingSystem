@@ -90,7 +90,7 @@ public class AirportsController {
 	    @PostMapping
 	    public ResponseEntity<Airports> addAirport(@RequestBody Airports airport ) {
 	    	System.out.println("AAAA");
-	    	System.out.println(airport.getIataCode());
+//	    	System.out.println(airport.getIataCode());
 	        Airports createdAirport = airportsservice.addAirport(airport);
 	        return new ResponseEntity<>(createdAirport, HttpStatus.OK);
 	    }
