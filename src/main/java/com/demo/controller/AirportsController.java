@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -70,16 +71,18 @@ public class AirportsController {
 	public List<String> getDistinctCountryRegions() {
 		return airportsservice.getDistinctCountryRegions();
 	}
-	//搜尋機場
-	 @GetMapping("/search/{keyword}/{city}/{countryRegion}/{page}/{size}")
+	// 搜索接口
+    @GetMapping("/search")
 	    public Page<Airports> searchAirports(
-	            @PathVariable(required = false) String keyword,
-	            @PathVariable(required = false) String city,
-	            @PathVariable(required = false) String countryRegion,
-	            @PathVariable int page,
-	            @PathVariable int size
+	    		  @RequestParam(required = false, defaultValue = "all") String keyword,
+	    	        @RequestParam(required = false, defaultValue = "all") String city,
+	    	        @RequestParam(required = false, defaultValue = "all") String countryRegion,
+	    	        @RequestParam(required = false, defaultValue = "1") int page,
+	    	        @RequestParam(required = false, defaultValue = "20") int size,
+	    	        @RequestParam(required = false, defaultValue = "airportsId") String sortBy,
+	    	        @RequestParam(required = false, defaultValue = "asc") String sortOrder
 	    ) {
-	        return airportsservice.searchAirports(keyword, city, countryRegion, page, size);
+	        return airportsservice.searchAirports(keyword, city, countryRegion, page, size, sortBy, sortOrder);
 	    }
 	 
 	  /**
@@ -89,8 +92,10 @@ public class AirportsController {
 	     */
 	    @PostMapping
 	    public ResponseEntity<Airports> addAirport(@RequestBody Airports airport ) {
+
 	    	System.out.println("AAAA");
-//	    	System.out.println(airport.getIataCode());
+	    	System.out.println(airport.getIataCode());
+
 	        Airports createdAirport = airportsservice.addAirport(airport);
 	        return new ResponseEntity<>(createdAirport, HttpStatus.OK);
 	    }
@@ -104,6 +109,27 @@ public class AirportsController {
 	    public ResponseEntity<Void> deleteAirport(@PathVariable("id") Integer airportId) {
 	    	airportsservice.deleteAirportById(airportId);
 	        return new ResponseEntity<>(HttpStatus.OK);
+	    }
+	    /**
+	     * 根據 ID 更新機場
+	     * 
+	     * @param airportId 機場 ID
+	     * @param updatedAirport 更新後的機場實體
+	     * @return 更新後的機場實體
+	     */
+	    @PutMapping("/{id}")
+	    public ResponseEntity<Airports> updateAirport(
+	            @PathVariable("id") Integer airportId,
+	            @RequestBody Airports updatedAirport) {
+	        // 確保 ID 一致，防止數據不匹配
+	        if (!airportId.equals(updatedAirport.getAirportsId())) {
+	            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "機場 ID 不一致");
+	        }
+
+	        // 調用服務層更新方法
+	        Airports updated = airportsservice.updateAirport(airportId, updatedAirport);
+
+	        return new ResponseEntity<>(updated, HttpStatus.OK);
 	    }
 
 }
