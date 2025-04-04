@@ -42,13 +42,13 @@
     },
     {
       title: "會員管理",
-      prependIcon: "mdi-account-group",
+      prependIcon: "mdi mdi-account-group",
       link: true,
       path: "/members",
     },
     {
       title: "機場管理",
-      prependIcon: "mdi-account-group",
+      prependIcon: "mdi-airport",
       link: true,
       path: "/airport",
     },

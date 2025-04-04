@@ -142,6 +142,7 @@
 </template>
 
 <script setup>
+
 import { ref, watch, onMounted, shallowRef } from "vue";
 import { ApiAirport } from "@/utils/Api";
 

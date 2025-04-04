@@ -28,4 +28,12 @@ export const ApiAirport = {
 };
 
 
+export const ApiMember = {
+    getMember: (id) => instance.get(`/member/GetMember/${id}`),
+    getAllMember:() => instance.get(`/member/GetAllMember`),
+    updateMember:(memberUpdate)=>instance.put(`/member/UpdateMember`,memberUpdate),
+    deleteMemberById:(id)=>instance.delete(`/member/DeleteMember/${id}`)
+};
+
+
 
