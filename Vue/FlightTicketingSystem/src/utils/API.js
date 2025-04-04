@@ -1,7 +1,7 @@
 import instance from "./http";
 
 // 機場相關 API
-const ApiAirport = {
+export const ApiAirport = {
     testPage: (page, size) => instance.get(`/airports/Test/${page}/${size}`),
     DistinctCities: () => instance.get('/airports/distinct-cities'),
     DistinctCountryRegions: () => instance.get('/airports/distinct-country-regions'),
@@ -14,6 +14,12 @@ const ApiAirport = {
     deleteAirport: (id) => instance.delete(`/airports/${id}`)
    
 };
-export default ApiAirport;
+
+export const ApiMember = {
+    getMember: (id) => instance.get(`/member/GetMember/${id}`),
+    getAllMember:() => instance.get(`/member/GetAllMember`),
+    updateMember:(memberUpdate)=>instance.put(`/member/UpdateMember`,memberUpdate),
+    deleteMemberById:(id)=>instance.delete(`/member/DeleteMember/${id}`)
+};
 
 

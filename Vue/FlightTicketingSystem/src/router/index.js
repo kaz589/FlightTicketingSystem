@@ -22,6 +22,10 @@ const router = createRouter({
           component:()=>import("@/page/admin/TESTTT.vue")
           
         },
+        {
+          path:"members",
+          component:()=>import("@/page/admin/Memberpage.vue")
+        }
 
       ]
     }
