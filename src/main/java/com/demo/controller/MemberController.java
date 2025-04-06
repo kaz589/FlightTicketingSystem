@@ -40,11 +40,13 @@ public class MemberController {
 	public Member insertMember(@RequestBody Member member) {
 		return memberService.insertMember(member);
 	}
-//	更新會員資訊
+//	透過id更新會員資訊
 	@PutMapping("/UpdateMember")
 	public Member updateMemberById(@RequestBody Member member) {
 		return memberService.updateMemberById(member);
 	}
+	
+	
 //  透過id刪除會員
 	@DeleteMapping("/DeleteMember/{id}")
 	public String deleteMemberById(@PathVariable Integer id) {
