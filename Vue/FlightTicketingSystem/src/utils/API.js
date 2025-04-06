@@ -41,8 +41,7 @@ export const ApiMember = {
   updateMember: (memberUpdate) =>
     instance.put(`/member/UpdateMember`, memberUpdate),
   insertMember: (memberInsert) =>
-    insert
-      .post(`/member/InsertMember`, memberInsert)
+      instance.post(`/member/InsertMember`, memberInsert)
       .then((response) => {
         console.log("API 請求成功:", response);
         return response.data; // 返回 API 響應資料
