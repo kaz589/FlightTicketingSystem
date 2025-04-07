@@ -1,35 +1,35 @@
-import { createRouter, createWebHistory } from 'vue-router'
+import { createRouter, createWebHistory } from "vue-router";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
-      path: '/',
-      component: () => import('@/layouts/mainlayouts.vue'),
-      children:[
+      path: "/",
+      component: () => import("@/layouts/mainlayouts.vue"),
+      children: [
         {
-          path:"airport",
-          component:()=>import("@/page/admin/Airportspage.vue")
-          
+          path: "airport",
+          component: () => import("@/page/admin/Airportspage.vue"),
         },
         {
-          path:"test",
-          component:()=>import("@/page/admin/TEST.vue")
-          
+          path: "test",
+          component: () => import("@/page/admin/TEST.vue"),
         },
         {
-          path:"testtt",
-          component:()=>import("@/page/admin/TESTTT.vue")
-          
+          path: "testtt",
+          component: () => import("@/page/admin/TESTTT.vue"),
         },
         {
-          path:"members",
-          component:()=>import("@/page/admin/Memberpage.vue")
-        }
+          path: "members",
+          component: () => import("@/page/admin/Memberpage.vue"),
+        },
+      ],
+    },
+    {
+      path:"/login",
+      component:()=>import("@/page/auth/LoginPage.vue")
+    },
 
-      ]
-    }
-   
     // {
     //   path: '/about',
     //   name: 'about',
@@ -39,6 +39,6 @@ const router = createRouter({
     //   component: () => import('../views/AboutView.vue'),
     // },
   ],
-})
+});
 
 export default router;
