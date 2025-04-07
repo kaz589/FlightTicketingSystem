@@ -16,6 +16,9 @@ public interface AirportsRepository extends JpaRepository<Airports, Integer> {
 	List<String> findDistinctByCityNotNull();
 
 
+	@Query("SELECT DISTINCT a.airportName FROM Airports a WHERE a.airportName IS NOT NULL")
+	List<String> findDistinctByAirportNameNotNull();
+	
 	@Query("SELECT DISTINCT a.countryRegion FROM Airports a WHERE a.countryRegion IS NOT NULL")
 	List<String> findDistinctByCountryRegionNotNull();
 	
@@ -27,6 +30,9 @@ public interface AirportsRepository extends JpaRepository<Airports, Integer> {
 	                                  @Param("city") String city,
 	                                  @Param("countryRegion") String countryRegion,
 	                                  Pageable pageable);
+	
+	// 自訂查詢方法，根據 IATA 代碼查找機場
+    Airports findByIataCode(String iataCode);
 	
 
 }
