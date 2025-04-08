@@ -22,7 +22,11 @@ const router = createRouter({
           component:()=>import("@/page/admin/TESTTT.vue")
           
         },
-
+        {
+          path:"products",
+          component:()=>import("@/page/admin/Products.vue")
+          
+        },
       ]
     }
    
