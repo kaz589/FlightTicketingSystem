@@ -40,6 +40,10 @@
           <v-btn prepend-icon="mdi mdi-account-plus" @click="insertOpen">
             註冊
           </v-btn>
+          <div>
+            <button @click="login" v-if="!isAuthenticated">登入</button>
+            <button @click="logout" v-if="isAuthenticated">登出</button>
+          </div>
         </v-form>
 
         <!-- 註冊按鈕 -->
@@ -113,11 +117,18 @@
 </template>
 
 <script setup>
-import { ref, shallowRef } from "vue";
+import { ref, shallowRef, computed } from "vue";
 import { useRouter } from "vue-router";
 import { ApiAdmin } from "@/utils/API";
 import Swal from "sweetalert2";
 import "sweetalert2/dist/sweetalert2.min.css";
+import { useAuthStore } from "@/stores/auth"; // 引入 Pinia store
+
+// Pinia store 實例
+const authStore = useAuthStore();
+
+// 將 isAuthenticated 提取為 computed 屬性，方便模板中使用
+const isAuthenticated = computed(() => authStore.isAuthenticated);
 
 //登入
 const DEFAULT_SEARCH = ref({
@@ -135,9 +146,16 @@ function authentication() {
     .then((res) => {
       //做登入
 
+      //回傳直res.data如果是true則執行登入
       if (res.data) {
         // console.log(res.data);
+        const testUser = {
+          username: rawData.value.username,
+        };
+        authStore.login(testUser); // 更新 Pinia 狀態為已登入，並儲存用戶資料
+        console.log("成功登入", testUser);
 
+        // 登錄後跳轉到指定頁面
         router.push("/");
         Swal.fire({
           title: "登入成功!",
@@ -187,6 +205,23 @@ function save() {
     Swal.fire("更新成功", "", "success"); // 顯示成功的提示框
     dialog.value = false; //關閉彈出框
   });
+}
+
+// 登入測試
+function login() {
+  const testUser = { username: "testuser", email: "testuser@example.com" };
+  authStore.login(testUser); // 更新 Pinia 狀態為已登入，並儲存用戶資料
+  console.log("成功登入", testUser);
+
+  // 登錄後跳轉到指定頁面
+  router.push({ path: "/" }); // 或者你也可以跳轉到 'members'
+}
+
+// 登出測試
+function logout() {
+  authStore.logout(); // 更新 Pinia 狀態為未登入
+
+  console.log("成功登出");
 }
 </script>
 
