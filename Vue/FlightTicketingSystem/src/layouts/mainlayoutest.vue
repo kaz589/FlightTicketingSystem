@@ -90,8 +90,8 @@ const items = ref([
     {
       title: "航線管理",
       prependIcon: "mdi mdi-airplane-takeoff",
-      link: true,
-      path: "/flight"
+      link: false,
+      path: ""
     },
     {
       title: "票務訂單管理",

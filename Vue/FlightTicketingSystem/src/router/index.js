@@ -25,6 +25,10 @@ const router = createRouter({
         {
           path:"members",
           component:()=>import("@/page/admin/Memberpage.vue")
+        },
+        {
+          path:"flight",
+          component:()=>import("@/page/admin/Flight.vue")
         }
 
       ]

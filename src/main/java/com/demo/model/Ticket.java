@@ -34,7 +34,7 @@ public class Ticket {
 
 	   
 	    private LocalDateTime bookingTime;
-
+	   
 	    // 一對多關係：一張票對應多個座位
 	    @OneToMany(mappedBy = "ticket")
 	    private List<Seat> seats;
