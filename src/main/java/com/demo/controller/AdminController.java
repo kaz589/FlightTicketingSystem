@@ -28,6 +28,11 @@ public class AdminController {
 		return adminService.insertAdmin(admin);
 	}
 	
+	@PostMapping("/GetPassword")
+	public boolean getPassword(@RequestBody Admin admin) {
+		return adminService.getPassword(admin);
+	}
+	
 	
 
 }

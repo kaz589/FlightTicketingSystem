@@ -35,6 +35,7 @@ export const ApiAirport = {
   updateAirport: (id, airport) => instance.put(`/airports/${id}`, airport),
 };
 
+//會員相關API
 export const ApiMember = {
   getMember: (id) => instance.get(`/member/GetMember/${id}`),
   getAllMember: () => instance.get(`/member/GetAllMember`),
@@ -52,3 +53,20 @@ export const ApiMember = {
       }),
   deleteMemberById: (id) => instance.delete(`/member/DeleteMember/${id}`),
 };
+
+//管理員相關API
+export const ApiAdmin = {
+  getAdmin: (id)=>instance.get(`/admin/GetAdmin/${id}`),
+  insertAdmin:(adminInsert) =>
+    instance.post(`/admin/InsertAdmin`,adminInsert).then((response)=>{
+      console.log("API 請求成功:", response);
+      return response.data; // 返回 API 響應資料
+    })
+    .catch((error) => {
+      console.error("API 請求錯誤:", error);
+      throw error; // 抛出錯誤以便外層處理
+    }),
+  login:(admin)=>
+    instance.post(`/admin/GetPassword`,admin)
+
+}
