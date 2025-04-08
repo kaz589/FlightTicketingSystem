@@ -1,6 +1,7 @@
 package com.demo.model;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
@@ -25,7 +26,7 @@ import lombok.Setter;
 @Entity
 @Table(name = "category")
 public class Category {
-	
+
 	@Id
 	@Column(name = "category_id")
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -34,12 +35,8 @@ public class Category {
 	@Column(name = "category_name")
 	private String categoryName;
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "category", cascade = CascadeType.ALL)
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "category")
 	@JsonManagedReference
-	private List<Products> Products ;
-
-	
-	
-	
+	private List<Products> products = new LinkedList<Products>();
 
 }

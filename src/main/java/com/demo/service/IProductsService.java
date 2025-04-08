@@ -14,13 +14,13 @@ public interface IProductsService {
 	 * @param size
 	 * @return
 	 */
-	Page<Products> getPagedMessages(int page, int size);
+	//Page<Products> getPagedProducts(int page, int size);
     /**
      * 根據商品ID查詢商品
-     * @param product_id 產品ID
+     * @param id 產品ID
      * @return 查詢到的商品實體
      */
-    Products findProductsById(Integer Id);
+    Products findProductsById(Integer id);
 
     /**
      * 查詢所有商品
@@ -45,9 +45,9 @@ public interface IProductsService {
     /**
      * 根據需要的里程查詢商品（前台）
      * @param product_needmiles 需要的里程數
-     * @return 需要特定里程數的商品實體列表
+     * @return 返回里程數在某範圍的商品
      */
-    List<Products> findProductsByNeedmiles(Integer needmiles); //前台
+    
 
     /**
      * 新增商品
@@ -57,19 +57,26 @@ public interface IProductsService {
      * @param product_image 商品圖片
      * @return 新增後的商品實體
      */
-    Products addProducts(Products product);
+    Products save(Products product);
 
     /**
      * 根據商品ID刪除商品
-     * @param product_id 商品ID
+     * @param id 商品ID
      */
-    void deleteProductsById(Integer Id);
+    void deleteProductsById(Integer id);
 
     /**
      * 根據商品ID更新商品
-     * @param product_id 商品ID
+     * @param id 商品ID
      * @param updateProducts 更新的商品實體
      * @return 更新後的商品實體
      */
-    Products updateProductsById(Integer Id, Products updateProduct);
+    Products updateProductsById(Integer id, Products updateProduct);
+	
+    /**
+     * @param min
+     * @param max
+     * @return
+     */
+    List<Products> findProductsByNeedmiles(Integer min, Integer max);
 }

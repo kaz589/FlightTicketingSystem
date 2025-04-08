@@ -1,11 +1,9 @@
 package com.demo.controller;
 
 import java.util.List;
-import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -16,7 +14,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
-import com.demo.model.Category;
 import com.demo.model.Products;
 import com.demo.service.IProductsService;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -41,6 +38,9 @@ public class ProductsController {
 	public Products findProductById(@PathVariable("id") Integer id) {
 
 		Products product = iProductsService.findProductsById(id);
+		if (product == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "商品不存在");
+        }
 		return product;
 	}
 
@@ -50,10 +50,12 @@ public class ProductsController {
 	 * @return 所有商品的列表
 	 */
 
-	@GetMapping("/alls")
+	@GetMapping("/all")
 	public List<Products> findAllProducts() {
 		List<Products> products = iProductsService.findAllProducts();
-
+		 if (products.isEmpty()) {
+	            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "沒有商品資料");
+	        }
 		return products;
 	}
 
@@ -62,9 +64,9 @@ public class ProductsController {
 	@GetMapping("/name")
 	public List<Products> findProductsByName(@RequestParam("name") String name) {
 		List<Products> products = iProductsService.findProductsByName(name);
-		if (products.isEmpty()) {
-			return products;
-		}
+		 if (products.isEmpty()) {
+	            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "沒有符合名稱的商品");
+	        }
 		return products;
 	}
 
@@ -72,79 +74,53 @@ public class ProductsController {
 	@GetMapping("/lowstock")
 	public List<Products> searchlowstock(@RequestParam("threshold") Integer threshold) {
 		List<Products> products = iProductsService.findLowStockProducts(threshold);
-		;
-		if (products.isEmpty()) {
-			return products;
-		}
+		 if (products.isEmpty()) {
+	            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "庫存不足的商品未找到");
+	        }
 		return products;
 	}
 
 	// 根據需要的里程查詢商品
 
 	@GetMapping("/needmiles")
-	public List<Products> searchByNeedmiles(@RequestParam("needmiles") Integer needmiles) {
-		List<Products> products = iProductsService.findProductsByNeedmiles(needmiles);
+	public List<Products> searchByNeedmiles(@RequestParam("min") Integer min,@RequestParam("max") Integer max) {
+		List<Products> products = iProductsService.findProductsByNeedmiles(min, max);
 		;
-		if (products.isEmpty()) {
-			return products;
-		}
+		 if (products.isEmpty()) {
+	            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "沒有符合的商品");
+	        }
 		return products;
 	}
 
 	/**
 	 * 新增一個商品。
-	 * 
 	 * @param products 新商品的詳細資料
-	 * @return 新增的商品資料
+	 * @return product 新增的商品資料
 	 */
 	@PostMapping
-	public Products addProducts(@RequestBody Map<String, Object> payload) {
-	    Products product = new Products();
-	    product.setName((String) payload.get("name"));
-	    product.setDesc((String) payload.get("desc"));
-	    product.setNeedmiles((Integer) payload.get("needmiles"));
-	    product.setQuantity((Integer) payload.get("quantity"));
-	    product.setImage((String) payload.get("image"));
+	public Products create(@RequestBody Products product) {
 
-	    Integer categoryId = (Integer) payload.get("categoryId");
-	    Category category = new Category();
-	    category.setCategoryId(categoryId); // 假設有 setId()
-	    product.setCategory(category);
-
-	    return iProductsService.addProducts(product);
+		return iProductsService.save(product);
 	}
 
-	/**
-	 * 刪除指定ID的商品。
-	 * 
-	 * @param productId 商品的ID
-	 * @return HTTP響應狀態
-	 */
 	@DeleteMapping("/{id}")
-	public ResponseEntity<Void> deleteProducts(@PathVariable("id") Integer productId) {
-		iProductsService.deleteProductsById(productId);
-		return new ResponseEntity<>(HttpStatus.OK);
+	public void delete(@PathVariable Integer id) {
+		iProductsService.deleteProductsById(id);
 	}
 
 	/**
 	 * 更新指定ID商品的詳細資料。
 	 * 
 	 * @param productId      商品ID
-	 * @param updatedProduct 更新後的商品資料
+	 * @param product 更新後的商品資料
 	 * @return 更新後的商品資料
-	 * @throws ResponseStatusException 如果商品ID不一致，拋出錯誤
 	 */
 	@PutMapping("/{id}")
-	public ResponseEntity<Products> updateProduct(@PathVariable("id") Integer productId,
-			@RequestBody Products updatedProduct) {
-		// 確保 ID 一致，防止數據不匹配
-		if (!productId.equals(updatedProduct.getId())) {
-			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "商品 ID 不一致");
-		}
-		// 調用服務層更新方法
-		Products updated = iProductsService.updateProductsById(productId, updatedProduct);
-
-		return new ResponseEntity<>(updated, HttpStatus.OK);
-
+	public Products update(@PathVariable Integer id, @RequestBody Products product) {
+		  Products existingProduct = iProductsService.findProductsById(id);
+	        if (existingProduct == null) {
+	            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "商品不存在");
+	        }
+		return iProductsService.updateProductsById(id, product);
 	}
 }

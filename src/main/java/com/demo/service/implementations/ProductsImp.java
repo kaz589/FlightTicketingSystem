@@ -17,23 +17,13 @@ import com.demo.service.IProductsService;
 public class ProductsImp implements IProductsService {
 	
 	@Autowired
-	private ProductsRepository pruductsRepo;
+	private ProductsRepository productsRepo;
 
 	
-	@Override
-	public Page<Products> getPagedMessages(int page, int size) {
-		Page<Products> pageResult =  pruductsRepo.findAll(
-				PageRequest.of(page, // 查詢的頁數，從0起算
-						size, // 查詢的每頁筆數
-						Sort.by("product_id"))); // 依 airportsId 欄位降冪排序
-
-		// 直接返回 pageResult
-		return pageResult;
-	}
-
+	
 	@Override
 	public Products findProductsById(Integer productId) {
-		Products product =  pruductsRepo.findProductsById(productId);
+		Products product =  productsRepo.findById(productId).orElse(null);;
 		
 		return product;
 
@@ -41,43 +31,52 @@ public class ProductsImp implements IProductsService {
 
 	@Override
 	public List<Products> findAllProducts() {
-		List<Products> allProducts =  pruductsRepo.findAll();
+		List<Products> allProducts =  productsRepo.findAll();
 		return allProducts;
 	}
 
 	@Override
 	public List<Products> findProductsByName(String name) {
-		List<Products> result =  pruductsRepo.findProductsByName(name);
+		List<Products> result =  productsRepo.findByNameContaining(name);
 		return result;
 	}
 
 	@Override
 	public List<Products> findLowStockProducts(Integer threshold) {
 	
-		return 	 pruductsRepo.findLowStockProducts(threshold);
+		return 	 productsRepo.findLowStockProducts(threshold);
 	}
 
 
-	@Override
-	public List<Products> findProductsByNeedmiles(Integer needmiles) {
-		return  pruductsRepo.findProductsByNeedmiles(needmiles);
-	}		
+		
 
 	@Override
-	public Products addProducts(Products addproduct) {
-		return  pruductsRepo.save(addproduct);
+	public Products save(Products addproduct) {
+		return  productsRepo.save(addproduct);
 	}		
 
 	@Override
 	public void deleteProductsById(Integer Id) {
-		 pruductsRepo.deleteById(Id);
+		 productsRepo.deleteById(Id);
 
 	}
 
 	@Override
 	public Products updateProductsById(Integer Id, Products updateProduct) {
-		return  pruductsRepo.save(updateProduct);
+		return  productsRepo.save(updateProduct);
 	}
+
+	@Override
+	public List<Products> findProductsByNeedmiles(Integer min ,Integer max) {
+	
+		return productsRepo.findProductsByNeedmiles(min, max);
+	}
+
+//	@Override
+//	public Page<Products> getPagedProducts(int page, int size) {
+//		// TODO Auto-generated method stub
+//		return null;
+//	}
 
 	
 }
