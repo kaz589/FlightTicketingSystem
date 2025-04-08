@@ -22,21 +22,8 @@ public class SpringDocConfig {
                     .title("API幫助文件")
                     .version("v0.0.1")
                     .description("SpringBoot 3.x application")
-            )
-            .addSecurityItem(
-                new SecurityRequirement()
-                    .addList(securitySchemeName)
-            )
-            .components(
-                new Components()
-                .addSecuritySchemes(
-                    securitySchemeName,
-                    new SecurityScheme()
-                        .name(securitySchemeName)
-                        .type(SecurityScheme.Type.HTTP)
-                        .scheme("bearer")
-                        .bearerFormat("JWT")
-                )
             );
+           
+           
     }
 }
