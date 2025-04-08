@@ -23,6 +23,7 @@ import com.demo.model.DTO.FlightDTO;
 import com.demo.repository.AirplaneModelRepository;
 import com.demo.repository.AirportsRepository;
 import com.demo.repository.FlightRepository;
+import com.demo.repository.SeatRepository;
 import com.demo.service.FlightService;
 
 @Service
@@ -34,12 +35,16 @@ public class FlightImp implements FlightService{
 	private AirplaneModelRepository airplaneModelRepository;
 	@Autowired
 	private AirportsRepository airportsRepository;
+	@Autowired
+	private SeatRepository seatRepository;
+	
+	
 	
 	@Override
 	public List<FlightDTO> findAllFlight() {
 		List<FlightDTO> newFlightDTO=flightRepository.findAll().stream()
 				.map(FlightDTO::new)
-				.toList();;
+				.toList();
 		
 				
 		return newFlightDTO;
@@ -54,17 +59,15 @@ public class FlightImp implements FlightService{
 	@Override
 	public ResponseEntity<Flight> createFlight(FlightDTO flight) {
 		
-		Flight newFlight = createFlightEntity(flight);
+		Flight newFlight = flightRepository.save(createFlightEntity(flight));
 		
-		Optional<AirplaneModel> model=airplaneModelRepository.findById(1);
-		if (model.isPresent()) {
-		    AirplaneModel models = model.get(); // 提取值
-		    List<Seat> seats = generateSeatsForFlight(models, 1); // 調用方法
-		} else {
-		    throw new IllegalArgumentException("AirplaneModel is not present");
-		}
 		
-		return  ResponseEntity.ok(null);
+		    AirplaneModel models = newFlight.getAirplaneModel(); // 提取值
+		    List<Seat> seats = generateSeatsForFlight(models, newFlight.getId()); // 調用方法
+		    seatRepository.saveAll(seats);
+		
+		
+		return  ResponseEntity.ok(newFlight);
 		//return  ResponseEntity.ok(flightRepository.save(newFlight));
 	}
 
@@ -120,20 +123,21 @@ public class FlightImp implements FlightService{
     }
     
     
-    public List<Seat> generateSeatsForFlight(AirplaneModel model, int flightId) {
+    public List<Seat> generateSeatsForFlight(AirplaneModel model, Integer flightId) {
         List<Seat> seats = new ArrayList<>();
         int totalRows = model.getSeatRowCount(); // 動態獲取座位排數
         char[] seatLetters = generateSeatLetters(totalRows); // 根據 totalRows 動態生成座位字母
-
+        
+        Flight flight = flightRepository.findById(flightId).orElse(null); // 如果找不到，返回 null
         // 動態定義艙等範圍
         Map<String, Range<Integer>> seatClasses = Map.of(
             "FIR", Range.of(model.getFirstClassSeatStart(), model.getFirstClassSeatEnd()),    // 頭等艙範圍
             "BUS", Range.of(model.getBusinessSeatStart(), model.getBusinessSeatEnd()), // 商務艙範圍
             "ECO", Range.of(model.getEconomySeatStart(), model.getEconomySeatEnd())   // 經濟艙範圍
         );
-
+        int lastrow=model.getEconomySeatEnd();//最後一排
         // 遍歷每排和每個座位
-        for (int row = 1; row <= totalRows; row++) {
+        for (int row = 1; row <=lastrow ; row++) {
         	final int currentRow = row; // 定義一個 final 的臨時變數
             for (char seatLetter : seatLetters) {
                 String seatNumber = row + String.valueOf(seatLetter); // 生成座位號
@@ -146,7 +150,7 @@ public class FlightImp implements FlightService{
                     .orElse("ECO"); // 默認為經濟艙
 
                 // 創建座位並加入列表
-                seats.add(new Seat(flightId, seatNumber, seatClass, false));
+                seats.add(new Seat(flight, seatNumber, seatClass, false));
             }
         }
 System.out.println(seats);
