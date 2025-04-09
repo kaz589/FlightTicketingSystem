@@ -14,6 +14,7 @@
           <span v-if="isHovered">{{ item.title }}</span>
         </v-list-item>
       </v-list>
+
       <template #append>
         <v-list-item
           class="ma-2"
