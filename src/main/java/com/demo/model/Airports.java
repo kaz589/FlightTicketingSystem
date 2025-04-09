@@ -18,25 +18,25 @@ import lombok.Setter;
 public class Airports {
 	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-	 @Column(name = "airports_id") // 數據庫列名
+	
     private Integer airportsId;
 
-    @Column(name = "iata_code") // 數據庫列名
+    
     private String iataCode;
 
-    @Column(name = "airport_name") // 數據庫列名
+   
     private String airportName;
 
-    @Column(name = "country_region") // 數據庫列名
+   
     private String countryRegion;
 
-    @Column(name = "city") // 數據庫列名
+    
     private String city;
 
-    @Column(name = "latitude") // 數據庫列名
+    
     private Double latitude;
 
-    @Column(name = "longitude") // 數據庫列名
+   
     private Double longitude;
 	
 	
