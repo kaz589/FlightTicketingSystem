@@ -71,6 +71,11 @@ public class AirportsController {
 	public List<String> getDistinctCountryRegions() {
 		return airportsservice.getDistinctCountryRegions();
 	}
+	@GetMapping("/distinct-AirportName")
+	public List<String> getDistinctAirportName() {
+		return airportsservice.getDistinctAirportName();
+	}
+	
 	// 搜索接口
     @GetMapping("/search")
 	    public Page<Airports> searchAirports(

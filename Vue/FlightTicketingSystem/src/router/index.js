@@ -31,6 +31,20 @@ const router = createRouter({
           component: () => import("@/page/admin/Memberpage.vue"),
           meta: { requiresAuth: true }, // 需要登錄的頁面
         },
+
+        {
+          path:"flight",
+          component:()=>import("@/page/admin/Flight.vue")
+        },
+        {
+          path:"Seats",
+          component:()=>import("@/page/admin/Seats.vue")
+        },
+        {
+          path:"Ticket",
+          component:()=>import("@/page/admin/Ticket.vue")
+        },
+
       ],
     },
     {
