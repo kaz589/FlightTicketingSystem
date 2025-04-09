@@ -57,18 +57,18 @@ public class MemberController {
 		return "查無此會員";
 	}
 //  更新里程數(累積里程)
-	@PutMapping("/IncreaseMiles/{id}")
+	@PutMapping("/IncreaseMiles/{id}/{increaseMiles}")
 	public Member increaseMilesById(@PathVariable Integer id,
-									@RequestParam Integer increaseMiles) {
+									@PathVariable Integer increaseMiles) {
 		
 		return memberService.increaseMilesById(id, increaseMiles);
 		
 	}
 	
 //  更新里程數(花費旅程 扣款)
-	@PutMapping("/DecreaseMiles/{id}")
+	@PutMapping("/DecreaseMiles/{id}/{decreaseMiles}")
 	public Member decreaseMilesById(@PathVariable Integer id,
-									@RequestParam Integer decreaseMiles) {
+									@PathVariable Integer decreaseMiles) {
 		
 		return memberService.decreaseMilesById(id, decreaseMiles);
 		

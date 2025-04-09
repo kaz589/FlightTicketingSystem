@@ -52,6 +52,8 @@ export const ApiMember = {
         throw error; // 抛出錯誤以便外層處理
       }),
   deleteMemberById: (id) => instance.delete(`/member/DeleteMember/${id}`),
+  increaseMiles:(id,plus) => instance.put(`/member/IncreaseMiles/${id}/${plus}`),
+  decreaseMiles: (id,minus) => instance.put(`/member/DecreaseMiles/${id}/${minus}`),
 };
 
 //管理員相關API
