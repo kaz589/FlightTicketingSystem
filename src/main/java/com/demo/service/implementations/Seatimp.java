@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.demo.model.Seat;
+import com.demo.model.DTO.SeatDTO;
 import com.demo.repository.SeatRepository;
 import com.demo.service.SeatService;
 @Service
@@ -15,7 +16,10 @@ public class Seatimp  implements SeatService{
 	private SeatRepository seatRepository;
 	
 	@Override
-	public List<Seat> findAllSeat() {
+	public List<SeatDTO> findAllSeat() {
+		
+		 List <SeatDTO> newSeatDTO=new SeatDTO(seatRepository.findAll());
+		
 		return seatRepository.findAll();
 	}
 

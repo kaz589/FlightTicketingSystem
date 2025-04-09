@@ -130,5 +130,5 @@ export const ApiAdmin = {
     }),
   login:(admin)=>
     instance.post(`/admin/GetPassword`,admin)
-
+}
 
