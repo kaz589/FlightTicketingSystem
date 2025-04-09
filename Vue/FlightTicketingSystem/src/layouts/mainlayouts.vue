@@ -138,5 +138,11 @@ const items = ref([
     link: true,
     path: "/testtt",
   },
+  {
+    title: "商品管理",
+    prependIcon: "mdi mdi-abacus",
+    link: true,
+    path: "/products",
+  }
 ]);
 </script>

@@ -31,11 +31,18 @@ const router = createRouter({
           component: () => import("@/page/admin/Memberpage.vue"),
           meta: { requiresAuth: true }, // 需要登錄的頁面
         },
+        {
+
+
+          path: "products",
+          component: () => import("@/page/admin/Products.vue"),
+          meta: { requiresAuth: true }, // 需要登錄的頁面
+        },
       ],
     },
     {
-      path:"/login",
-      component:()=>import("@/page/auth/LoginPage.vue")
+      path: "/login",
+      component: () => import("@/page/auth/LoginPage.vue")
     },
 
 
