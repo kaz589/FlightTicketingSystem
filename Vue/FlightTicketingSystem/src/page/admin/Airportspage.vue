@@ -142,8 +142,9 @@
 </template>
 
 <script setup>
+
 import { ref, watch, onMounted, shallowRef } from "vue";
-import { ApiAirport } from "@/utils/Api";
+import { ApiAirport } from "@/utils/API";
 
 //初始運行函式
 onMounted(() => {
