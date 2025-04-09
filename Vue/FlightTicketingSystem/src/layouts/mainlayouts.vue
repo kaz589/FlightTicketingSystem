@@ -1,25 +1,36 @@
 <!-- eslint-disable vue/max-attributes-per-line -->
 <template>
   <v-layout>
-    <v-navigation-drawer v-model="drawer" expand-on-hover rail    @mouseenter="isHovered = true"
-    @mouseleave="isHovered = false">
-      
-      <v-list density="compact" item-props :items="items" nav >
+
+    <v-navigation-drawer
+      v-model="drawer"
+      expand-on-hover
+      rail
+      @mouseenter="isHovered = true"
+      @mouseleave="isHovered = false"
+    >
+      <v-list density="compact" item-props :items="items" nav>
         <v-list-item v-for="item in items" @click="$router.push(item.path)">
-            <v-icon :icon="item.prependIcon"></v-icon> 
-            <span v-if=" isHovered">{{ item.title }}</span>
-          </v-list-item>
-        </v-list>
+          <v-icon :icon="item.prependIcon"></v-icon>
+          <span v-if="isHovered">{{ item.title }}</span>
+        </v-list-item>
+      </v-list>
+
       <template #append>
         <v-list-item
           class="ma-2"
           link
           nav
+
           prepend-icon="mdi-logout"
           title="登出"
+
+          @click="logout()"
+
         />
       </template>
     </v-navigation-drawer>
+
 
     <v-app-bar border="b" class="ps-4" flat>
       <v-app-bar-nav-icon
@@ -27,8 +38,10 @@
         @click="drawer = !drawer"
       />
 
-       <v-app-bar-title  class="ms-auto">Flight Management System</v-app-bar-title> 
-       <h5 style="margin-left: auto;">王曉明</h5>
+      <v-app-bar-title class="ms-auto"
+        >Flight Management System</v-app-bar-title
+      >
+      <h5 style="margin-left: auto">用戶名: {{ authStore.user.username }}</h5>
 
       <template #append>
         <v-btn class="text-none me-2" height="48" icon slim>
@@ -42,12 +55,18 @@
                 title="Settings"
               />
 
-              <v-list-item append-icon="mdi-logout" link title="Logout" />
+              <v-list-item
+                append-icon="mdi-logout"
+                link
+                title="登出"
+                @click="logout()"
+              />
             </v-list>
           </v-menu>
         </v-btn>
       </template>
     </v-app-bar>
+
 
     <v-main>
       <div class="pa-4">
@@ -58,13 +77,21 @@
 </template>
 
 <script setup>
-import { ref, watch } from "vue";
 
+import { ref, watch } from "vue";
+import { useAuthStore } from "@/stores/auth"; // 引入 Pinia store
+import { logout } from "@/utils/logout"; // 導入登出函數
+
+const authStore = useAuthStore(); // 使用 store
 const drawer = ref(true);
 const isHovered = ref(false); // 追蹤懸停狀態
 // 使用 watch 監控 drawer 的狀態變化
 watch(drawer, (newVal, oldVal) => {
-  console.log(`側邊欄狀態改變：從 ${oldVal ? "展開" : "縮起"} 到 ${newVal ? "展開" : "縮起"}`);
+  console.log(
+    `側邊欄狀態改變：從 ${oldVal ? "展開" : "縮起"} 到 ${
+      newVal ? "展開" : "縮起"
+    }`
+  );
   // 在這裡可以執行其他邏輯，例如記錄狀態或觸發動畫
 });
 
@@ -117,5 +144,6 @@ const items = ref([
       link: true,
       path: "/testtt",
     },
+
 ]);
 </script>

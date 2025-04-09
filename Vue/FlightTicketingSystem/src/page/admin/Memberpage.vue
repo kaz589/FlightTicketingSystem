@@ -17,11 +17,30 @@
     </v-btn>
   </v-container>
   <div>
-     姓名 : {{ targetId.fullName }} <br>
-  累積里程 : {{ targetId.totalMiles }} <br>
-  剩餘里程 : {{ targetId.remainingMiles }}
+    姓名 : {{ targetId.fullName }} <br />
+    累積里程 : {{ targetId.totalMiles }} <br />
+    剩餘里程 : {{ targetId.remainingMiles }}
   </div>
- 
+  <v-row>
+    <v-col cols="6">
+      <v-text-field
+        v-model="cost"
+        label="消費多少里程"
+        type="number"
+        outlined
+        style="width: 100%"
+      />
+    </v-col>
+    <v-col cols="6">
+      <v-btn prepend-icon="mdi mdi-account-search" @click="plusMiles">
+        累積里程
+      </v-btn>
+      <v-btn prepend-icon="mdi mdi-account-search" @click="minusMiles">
+        扣除里程
+      </v-btn>
+    </v-col>
+  </v-row>
+
   <br />
   <br />
   <hr />
@@ -256,7 +275,7 @@ onMounted(() => {
 const findMember = ref([]);
 const allCities = ref(1);
 //搜尋用id
-const target = ref();
+const target = ref(1); //查詢單筆
 const targetId = ref({
   memberId: "",
 });
@@ -264,9 +283,44 @@ const targetAll = ref([]);
 
 //搜尋單筆
 function searchOne() {
-  ApiMember.getMember(target.value).then((res) => {
-    console.log(res.data);
+  //判斷target是否大於0，大於0才查
+  if (target.value > 0) {
+    ApiMember.getMember(target.value).then((res) => {
+      console.log(res.data);
 
+      targetId.value = res.data;
+    });
+  } else {
+    Swal.fire({
+      icon: "error",
+      title: "發生錯誤",
+      text: "值不能小於0",
+    });
+  }
+}
+const cost = ref(0);
+
+//累積里程
+function plusMiles() {
+  console.log(target.value);
+  console.log(cost.value);
+
+  ApiMember.increaseMiles(target.value, cost.value); //累積里程
+  ApiMember.getMember(target.value).then((res) => {
+    //查詢目標
+    targetId.value = res.data;
+  });
+}
+
+//扣除里程
+
+function minusMiles() {
+  console.log(target.value);
+  console.log(cost.value);
+
+  ApiMember.decreaseMiles(target.value, cost.value); //扣除里程
+  ApiMember.getMember(target.value).then((res) => {
+    //查詢目標
     targetId.value = res.data;
   });
 }

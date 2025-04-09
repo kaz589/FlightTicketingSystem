@@ -42,6 +42,7 @@ export const ApiFlight = {
   // 獲取所有航班
   getAllFlights: () => instance.get("/flight/getAll"),
 
+
   // 更新航班
   updateFlight: (id, flightDetails) => instance.put(`/flight/${id}`, flightDetails),
 
@@ -73,6 +74,9 @@ export const ApiFlight = {
       },
     }),
 };
+
+//會員相關API
+
 export const ApiMember = {
   getMember: (id) => instance.get(`/member/GetMember/${id}`),
   getAllMember: () => instance.get(`/member/GetAllMember`),
@@ -89,7 +93,10 @@ export const ApiMember = {
         throw error; // 抛出錯誤以便外層處理
       }),
   deleteMemberById: (id) => instance.delete(`/member/DeleteMember/${id}`),
+  increaseMiles:(id,plus) => instance.put(`/member/IncreaseMiles/${id}/${plus}`),
+  decreaseMiles: (id,minus) => instance.put(`/member/DecreaseMiles/${id}/${minus}`),
 };
+
 
 
 export  const ApiSeats={
@@ -108,3 +115,20 @@ export const ApiTicket = {
    // 刪除票務
    deleteTicket: (id) => instance.delete(`/Ticket/${id}`),
 };
+
+//管理員相關API
+export const ApiAdmin = {
+  getAdmin: (id)=>instance.get(`/admin/GetAdmin/${id}`),
+  insertAdmin:(adminInsert) =>
+    instance.post(`/admin/InsertAdmin`,adminInsert).then((response)=>{
+      console.log("API 請求成功:", response);
+      return response.data; // 返回 API 響應資料
+    })
+    .catch((error) => {
+      console.error("API 請求錯誤:", error);
+      throw error; // 抛出錯誤以便外層處理
+    }),
+  login:(admin)=>
+    instance.post(`/admin/GetPassword`,admin)
+
+
