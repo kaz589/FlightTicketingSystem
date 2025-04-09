@@ -16,6 +16,7 @@
       搜尋
     </v-btn>
   </v-container>
+
   <div>
     姓名 : {{ targetId.fullName }} <br />
     累積里程 : {{ targetId.totalMiles }} <br />
@@ -25,7 +26,7 @@
     <v-col cols="6">
       <v-text-field
         v-model="cost"
-        label="消費多少里程"
+        label="里程數"
         type="number"
         outlined
         style="width: 100%"
@@ -261,7 +262,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted, shallowRef } from "vue";
+import { ref, onMounted, shallowRef, watch } from "vue";
 import { ApiMember } from "@/utils/API";
 import Swal from "sweetalert2";
 import "sweetalert2/dist/sweetalert2.min.css";
@@ -300,29 +301,45 @@ function searchOne() {
 }
 const cost = ref(0);
 
-//累積里程
-function plusMiles() {
+// 監聽 cost 的變化
+watch(cost, (newValue) => {
+  if (newValue < 0) {
+    cost.value = 0; // 如果 cost 小於 0，重設為 0
+    Swal.fire({
+      icon: "error",
+      title: "發生錯誤",
+      text: "值不能小於0",
+    });
+  }
+});
+
+//累積里程(用async 和 await)
+async function plusMiles() {
   console.log(target.value);
   console.log(cost.value);
 
-  ApiMember.increaseMiles(target.value, cost.value); //累積里程
-  ApiMember.getMember(target.value).then((res) => {
+  await ApiMember.increaseMiles(target.value, cost.value); //累積里程
+  await ApiMember.getMember(target.value).then((res) => {
     //查詢目標
     targetId.value = res.data;
   });
+  search(); //重新搜尋全部
 }
 
-//扣除里程
+//扣除里程(用.then())
 
 function minusMiles() {
   console.log(target.value);
   console.log(cost.value);
 
-  ApiMember.decreaseMiles(target.value, cost.value); //扣除里程
-  ApiMember.getMember(target.value).then((res) => {
-    //查詢目標
-    targetId.value = res.data;
+  ApiMember.decreaseMiles(target.value, cost.value).then(() => {
+    ApiMember.getMember(target.value).then((res) => {
+      //查詢目標
+      targetId.value = res.data;
+    });
   });
+
+  search(); //重新搜尋全部
 }
 
 //查詢全部的表頭
