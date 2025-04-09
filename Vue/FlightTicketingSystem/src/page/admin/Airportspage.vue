@@ -203,7 +203,7 @@ function search(options) {
     sortBy,
     sortOrder
   )
-    
+
     .then((res) => {
       items.value = res.data.content; // 更新表格數據
       totalItems.value = res.data.totalElements; // 總數據條數
@@ -211,7 +211,7 @@ function search(options) {
     })
 
     .catch((err) => {});
-    console.log("🚀 ~ Airportspage.vue:206 ~ search ~ sortBy:", sortBy)
+  console.log("🚀 ~ Airportspage.vue:206 ~ search ~ sortBy:", sortBy);
 }
 
 /*
@@ -262,9 +262,8 @@ function save() {
 
   if (isEditing.value) {
     // 更新機場數據
-    ApiAirport.updateAirport(record.value.airportsId,record.value)
+    ApiAirport.updateAirport(record.value.airportsId, record.value)
       .then(() => {
-        
         dialog.value = false; // 關閉對話框
         search();
       })
@@ -342,8 +341,8 @@ function deleteItem() {
 
 */
 function updateSortBy(sortBy) {
-  console.log("🚀 ~ Airportspage.vue:344 ~ updateSortBy ~ sortBy:", sortBy)
-  
+  console.log("🚀 ~ Airportspage.vue:344 ~ updateSortBy ~ sortBy:", sortBy);
+
   // 確保 `sortBy` 有值
   if (!sortBy) {
     console.error("sortBy is undefined");
@@ -351,9 +350,7 @@ function updateSortBy(sortBy) {
   }
   searchFilters.value.sortBy = sortBy[0].key || "airportsId";
   searchFilters.value.sortOrder = sortBy[0].order || "asc";
-  
 }
-
 
 const currentPage = ref(1); // 當前頁數
 const totalPages = ref(1); // 總頁數

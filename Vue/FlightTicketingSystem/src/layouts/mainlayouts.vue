@@ -1,6 +1,7 @@
 <!-- eslint-disable vue/max-attributes-per-line -->
 <template>
   <v-layout>
+
     <v-navigation-drawer v-model="drawer" expand-on-hover rail    @mouseenter="isHovered = true"
     @mouseleave="isHovered = false">
       
@@ -10,16 +11,20 @@
             <span v-if=" isHovered">{{ item.title }}</span>
           </v-list-item>
         </v-list>
+
       <template #append>
         <v-list-item
           class="ma-2"
           link
           nav
+
           prepend-icon="mdi-logout"
           title="登出"
+
         />
       </template>
     </v-navigation-drawer>
+
 
     <v-app-bar border="b" class="ps-4" flat>
       <v-app-bar-nav-icon
@@ -49,6 +54,7 @@
       </template>
     </v-app-bar>
 
+
     <v-main>
       <div class="pa-4">
         <router-view></router-view>
@@ -58,6 +64,7 @@
 </template>
 
 <script setup>
+
 import { ref, watch } from "vue";
 
 const drawer = ref(true);
