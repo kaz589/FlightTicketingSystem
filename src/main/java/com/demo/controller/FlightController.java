@@ -68,7 +68,7 @@ public class FlightController {
 	
 	//搜尋
 	@GetMapping("/search")
-    public Page<Flight> searchFlights(
+    public Page<FlightDTO> searchFlights(
             @RequestParam(required = false) String originIata,
             @RequestParam(required = false) String destinationIata,
             @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") Date startTime,
@@ -77,19 +77,9 @@ public class FlightController {
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size) {
 
-        Airports originAirport = null;
-        if (originIata != null) {
-            originAirport = new Airports();
-            originAirport.setIataCode(originIata);
-        }
+       
 
-        Airports destinationAirport = null;
-        if (destinationIata != null) {
-            destinationAirport = new Airports();
-            destinationAirport.setIataCode(destinationIata);
-        }
-
-        Pageable  pageable = PageRequest.of(page, size);
-        return flightService.searchFlights(originAirport, destinationAirport, startTime, endTime, airplaneModelName, pageable);
+        Pageable  pageable = PageRequest.of(page-1, size);
+        return flightService.searchFlights(originIata, destinationIata, startTime, endTime, airplaneModelName, pageable);
 	}
 }

@@ -4,8 +4,11 @@ import instance from "./http";
 export const ApiAirport = {
   testPage: (page, size) => instance.get(`/airports/Test/${page}/${size}`),
   DistinctCities: () => instance.get("/airports/distinct-cities"),
+  getAllAirports: () => instance.get("/airports/getAll"),
   DistinctCountryRegions: () =>
     instance.get("/airports/distinct-country-regions"),
+  DistinctAirportName: () =>
+    instance.get("/airports/distinct-AirportName"),
   searchAirports: (
     keyword,
     city,
@@ -34,7 +37,42 @@ export const ApiAirport = {
   // 更新機場
   updateAirport: (id, airport) => instance.put(`/airports/${id}`, airport),
 };
+//航班相關 API
+export const ApiFlight = {
+  // 獲取所有航班
+  getAllFlights: () => instance.get("/flight/getAll"),
 
+  // 更新航班
+  updateFlight: (id, flightDetails) => instance.put(`/flight/${id}`, flightDetails),
+
+  // 刪除航班
+  deleteFlight: (id) => instance.delete(`/flight/${id}`),
+
+  // 新增航班
+  createFlight: (flight) => instance.post("/flight", flight),
+
+  // 搜尋航班
+  searchFlights: (
+    originIata,
+    destinationIata,
+    startTime,
+    endTime,
+    airplaneModelName,
+    page = 0,
+    size = 10
+  ) =>
+    instance.get("/flight/search", {
+      params: {
+        originIata: originIata || null,
+        destinationIata: destinationIata || null,
+        startTime: startTime || null,
+        endTime: endTime || null,
+        airplaneModelName: airplaneModelName || null,
+        page,
+        size,
+      },
+    }),
+};
 export const ApiMember = {
   getMember: (id) => instance.get(`/member/GetMember/${id}`),
   getAllMember: () => instance.get(`/member/GetAllMember`),
@@ -51,4 +89,22 @@ export const ApiMember = {
         throw error; // 抛出錯誤以便外層處理
       }),
   deleteMemberById: (id) => instance.delete(`/member/DeleteMember/${id}`),
+};
+
+
+export  const ApiSeats={
+  getAllSeats: () => instance.get("/seat/getAll"),
+};
+
+// 票務相關 API
+export const ApiTicket = {
+  // 查詢所有票務
+  getAllTickets: () => instance.get("/Ticket/getAll"),
+  // 創建新票務
+  createTicket: (ticketDTO) => instance.post("/Ticket", ticketDTO),
+  // 更新票務
+  updateTicket: (id, ticketDetails) =>
+    instance.put(`/Ticket/${id}`, ticketDetails),
+   // 刪除票務
+   deleteTicket: (id) => instance.delete(`/Ticket/${id}`),
 };

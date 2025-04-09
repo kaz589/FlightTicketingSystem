@@ -11,18 +11,19 @@ import org.springframework.data.repository.query.Param;
 
 import com.demo.model.Airports;
 import com.demo.model.Flight;
+import com.demo.model.DTO.FlightDTO;
 
 public interface FlightRepository extends JpaRepository<Flight, Integer> {
 	
 	@Query("SELECT f FROM Flight f WHERE " +
-	           "(:originAirport IS NULL OR f.originAirport = :originAirport) AND " +
-	           "(:destinationAirport IS NULL OR f.destinationAirport = :destinationAirport) AND " +
+	           "(:originAirport IS NULL OR f.originAirport.airportName = :originAirport) AND " +
+	           "(:destinationAirport IS NULL OR f.destinationAirport.airportName = :destinationAirport) AND " +
 	           "(:startTime IS NULL OR f.departureTime >= :startTime) AND " +
 	           "(:endTime IS NULL OR f.departureTime <= :endTime) AND " +
 	           "(:airplaneModelName IS NULL OR f.airplaneModel.modelName = :airplaneModelName)")
-	    Page<Flight> searchFlights(
-	            @Param("originAirport") Airports originAirport,
-	            @Param("destinationAirport") Airports destinationAirport,
+	    Page<FlightDTO> searchFlights(
+	            @Param("originAirport") String originAirport,
+	            @Param("destinationAirport") String destinationAirport,
 	            @Param("startTime") Date startTime,
 	            @Param("endTime") Date endTime,
 	            @Param("airplaneModelName") String airplaneModelName,

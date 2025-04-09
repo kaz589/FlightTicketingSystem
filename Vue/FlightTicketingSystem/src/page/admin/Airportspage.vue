@@ -1,4 +1,7 @@
 <template>
+   <div>
+    <h1>機場管理</h1>
+  </div>
   <v-container>
     <!-- 國家搜尋欄 -->
     <v-autocomplete
@@ -185,7 +188,7 @@ const getDistinctCountries = () => {
     .catch((err) => {});
 };
 //搜尋函式
-function search(options) {
+function search() {
   const { keyword, city, countryRegion, sortBy, sortOrder } =
     searchFilters.value;
 

@@ -97,7 +97,13 @@ const items = ref([
       title: "票務訂單管理",
       prependIcon: "mdi mdi-ticket",
       link: false,
-      path: ""
+      path: "/Ticket"
+    },
+    {
+      title: "座位管理",
+      prependIcon: "mdi mdi-seat",
+      link: false,
+      path: "/Seats"
     },
     {
       title: "測試",

@@ -10,6 +10,7 @@ import com.demo.model.Airports;
 public interface AirportsService {
 	
 	
+	  List<String> getDistinctAirportName();
 	List<Airports> findAllAirports();
 	//分頁查詢
 	 Page<Airports> getPagedMessages(int page, int size);
