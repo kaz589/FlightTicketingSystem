@@ -30,7 +30,6 @@ public class AirportsController {
 	private AirportsService airportsservice;
 
 	@GetMapping("/getAll")
-	@Operation(summary = "Get all books", description = "Retrieves a list of all books")
 	public List<Airports> sayHello() {
 
 		List<Airports> allairports = airportsservice.findAllAirports();

@@ -195,7 +195,7 @@ const searchFilters = ref({
 
 // 表格的欄位標題
 const headers = ref([
-  { title: "商品 ID", value: "name", sortable: true, align: "start" }, // sortable: true 表示可排序
+  { title: "商品 ID", value: "id", sortable: true, align: "start" }, // sortable: true 表示可排序
  
   { title: "商品名稱", value: "name", sortable: true },
   { title: "商品描述", value: "desc", sortable: true },
@@ -238,8 +238,9 @@ function searchOne() {
 }
 //新增商品函式
 function insert() {
+  
     ApiProducts.addProduct(insertData.value).then((res) => {
-        insertData.value = res.data;
+        // console.log("🚀 ~ Products.vue:243 ~ ApiProducts.addProduct ~ insertData.value:", insertData.value)
         searchByName();
         console.log("新增商品：",  insertData.value);
     });

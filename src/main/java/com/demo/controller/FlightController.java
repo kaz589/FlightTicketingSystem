@@ -38,7 +38,6 @@ public class FlightController {
 	private FlightService flightService;
 
 	@GetMapping("/getAll")
-	@Operation(summary = "Get all books", description = "Retrieves a list of all books")
 	public List<FlightDTO> sayHello() {
 
 		List<FlightDTO> allairports = flightService.findAllFlight();

@@ -33,10 +33,10 @@
       />
     </v-col>
     <v-col cols="6">
-      <v-btn prepend-icon="mdi mdi-account-search" @click="plusMiles">
+      <v-btn prepend-icon="mdi mdi-airplane-plus" @click="plusMiles">
         累積里程
       </v-btn>
-      <v-btn prepend-icon="mdi mdi-account-search" @click="minusMiles">
+      <v-btn prepend-icon="mdi mdi-airplane-minus" @click="minusMiles">
         扣除里程
       </v-btn>
     </v-col>
@@ -336,10 +336,10 @@ function minusMiles() {
     ApiMember.getMember(target.value).then((res) => {
       //查詢目標
       targetId.value = res.data;
-    });
+    }).then(search()) //重新搜尋全部);
   });
 
-  search(); //重新搜尋全部
+  
 }
 
 //查詢全部的表頭

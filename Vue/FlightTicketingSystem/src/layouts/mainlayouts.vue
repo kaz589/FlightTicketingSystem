@@ -142,21 +142,49 @@ const items = ref([
     path: "/travel",
   },
 
-  {
-    title: "測試",
-    prependIcon: "mdi-account-group",
-    link: true,
-    path: "/test",
-  },
-  {
-    title: "測試TT",
-    prependIcon: "mdi mdi-abacus",
-    link: true,
-    path: "/testtt",
-  },
-  {
+
+{
+      title: "登入畫面",
+      prependIcon: "mdi-view-dashboard-outline",
+      link: true,
+      path: "/login",
+    },
+    {
+      title: "會員管理",
+      prependIcon: "mdi mdi-account-group",
+      link: true,
+      path: "/members",
+    },
+    {
+      title: "機場管理",
+      prependIcon: "mdi-airport",
+      link: true,
+      path: "/airport",
+    },
+    {
+      title: "航線管理",
+      prependIcon: "mdi mdi-airplane-takeoff",
+      link: true,
+      path: "/flight"
+    },
+    {
+      title: "票務訂單管理",
+      prependIcon: "mdi mdi-ticket",
+      link: false,
+      path: "/Ticket"
+    },
+    {
+      title: "座位管理",
+      prependIcon: "mdi mdi-seat",
+      link: false,
+      path: "/Seats"
+    },
+
+   
+    {
+
     title: "商品管理",
-    prependIcon: "mdi mdi-abacus",
+    prependIcon: "mdi mdi-gift-outline",
     link: true,
     path: "/products",
   },
