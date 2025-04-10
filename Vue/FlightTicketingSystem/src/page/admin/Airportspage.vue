@@ -18,7 +18,7 @@
       v-model="searchFilters.city"
     ></v-autocomplete>
     <!-- 關鍵字搜尋欄 -->
-    <v-text-field label="Label" v-model="searchFilters.keyword"></v-text-field>
+    <v-text-field label="關鍵字" v-model="searchFilters.keyword" ></v-text-field>
 
     <v-btn prepend-icon="mdi mdi-magnify" @click="search"> 搜尋 </v-btn>
     <v-btn color="primary" @click="openAddDialog">新增機場</v-btn>

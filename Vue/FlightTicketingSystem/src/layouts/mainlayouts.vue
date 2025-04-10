@@ -141,6 +141,7 @@ const items = ref([
       link: false,
       path: "/Seats"
     },
+
     {
       title: "測試",
       prependIcon: "mdi-account-group",
@@ -159,5 +160,6 @@ const items = ref([
     link: true,
     path: "/products",
   }
+
 ]);
 </script>

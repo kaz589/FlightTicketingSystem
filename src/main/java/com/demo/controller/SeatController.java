@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.demo.model.Seat;
+import com.demo.model.DTO.SeatDTO;
 import com.demo.service.SeatService;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -22,9 +23,9 @@ public class SeatController {
 	
 	@GetMapping("/getAll")
 	@Operation(summary = "Get all books", description = "Retrieves a list of all books")
-	public List<Seat> sayHello() {
+	public List<SeatDTO> sayHello() {
 
-		List<Seat> allairports = seatService.findAllSeat();
+		List<SeatDTO> allairports = seatService.findAllSeat();
 		return allairports;
 	}
 

@@ -139,6 +139,7 @@ export const ApiAdmin = {
       
 
     })
+
       .catch((error) => {
         console.error("API 請求錯誤:", error);
         throw error; // 抛出錯誤以便外層處理
@@ -171,6 +172,5 @@ export const ApiProducts = {
   deleteProduct: (id) => instance.delete(`/products/${id}`),
   // 更新商品
   updateProduct: (id, products) => instance.put(`/products/${id}`, products),
-
 
 }

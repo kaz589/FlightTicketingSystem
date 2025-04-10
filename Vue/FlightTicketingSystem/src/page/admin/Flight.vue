@@ -77,7 +77,7 @@
       <v-card>
         <!-- 動態標題 -->
         <v-card-title>
-          {{ isEditing ? "編輯機場" : "新增機場" }}
+          {{ isEditing ? "編輯航線" : "新增航線" }}
         </v-card-title>
         <v-autocomplete
           clearable
