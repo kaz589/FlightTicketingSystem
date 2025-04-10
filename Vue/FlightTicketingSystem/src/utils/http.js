@@ -1,21 +1,19 @@
 import axios from "axios";
-import querystring from "querystring";
 
-
-
-  
 //axios通用設定
 const instance = axios.create({
   baseURL:'http://localhost:8080/api',
   timeout: 5000,
 });
+
 //request 攔截器
 instance.interceptors.request.use(
   (config) => {
-    
+    // 在發送請求之前進行一些處理，例如添加 Token
     return config;
   },
   (error) => {
+     // 處理請求錯誤
     return Promise.reject(error);
   }
 );
@@ -28,6 +26,7 @@ instance.interceptors.response.use(
   (error) => {
     const { response } = error;
     if (response) {
+      // 處理具體的錯誤狀態碼
       errorHandle(response.status, response.info);
     }
     return Promise.reject(error);

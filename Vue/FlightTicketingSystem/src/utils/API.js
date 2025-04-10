@@ -2,22 +2,24 @@ import instance from "./http";
 
 // 機場相關 API
 export const ApiAirport = {
+  //分頁搜尋測試
   testPage: (page, size) => instance.get(`/airports/Test/${page}/${size}`),
+  // 獲取所有不重複的城市名稱
   DistinctCities: () => instance.get("/airports/distinct-cities"),
+  // 獲取所有機場資料
   getAllAirports: () => instance.get("/airports/getAll"),
-  DistinctCountryRegions: () =>
-    instance.get("/airports/distinct-country-regions"),
-  DistinctAirportName: () =>
-    instance.get("/airports/distinct-AirportName"),
-  searchAirports: (
-    keyword,
-    city,
-    countryRegion,
-    page,
-    size,
-    sortBy,
-    sortOrder
-  ) =>
+  // 獲取所有不重複的國家/地區名稱
+  DistinctCountryRegions: () =>instance.get("/airports/distinct-country-regions"),
+  // 獲取所有不重複的機場名稱
+  DistinctAirportName: () =>instance.get("/airports/distinct-AirportName"),
+  // 新增機場
+  addAirport: (airport) => instance.post("/airports", airport),
+  // 刪除機場
+  deleteAirport: (id) => instance.delete(`/airports/${id}`),
+  // 更新機場
+  updateAirport: (id, airport) => instance.put(`/airports/${id}`, airport),
+  //搜尋機場
+  searchAirports: (keyword,city,countryRegion,page,size,sortBy,sortOrder) =>
     instance.get(`/airports/search`, {
       params: {
         keyword: keyword || "all", // 默認值為 "all"
@@ -29,13 +31,6 @@ export const ApiAirport = {
         sortOrder: sortOrder || "asc", // 默認排序方向 (升序)
       },
     }),
-  // 新增機場
-  addAirport: (airport) => instance.post("/airports", airport),
-
-  // 刪除機場
-  deleteAirport: (id) => instance.delete(`/airports/${id}`),
-  // 更新機場
-  updateAirport: (id, airport) => instance.put(`/airports/${id}`, airport),
 };
 //航班相關 API
 export const ApiFlight = {

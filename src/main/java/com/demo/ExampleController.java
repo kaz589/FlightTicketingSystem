@@ -10,7 +10,7 @@ import io.swagger.v3.oas.annotations.Operation;
 @RequestMapping("/api")
 public class ExampleController {
 	 @GetMapping("/hello")
-	 @Operation(summary = "Get all books", description = "Retrieves a list of all books")
+	 
 	    public String sayHello() {
 	        return "Hello, World!";
 	    }

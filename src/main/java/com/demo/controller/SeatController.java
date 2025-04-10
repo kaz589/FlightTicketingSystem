@@ -22,7 +22,7 @@ public class SeatController {
 	
 	
 	@GetMapping("/getAll")
-	@Operation(summary = "Get all books", description = "Retrieves a list of all books")
+	
 	public List<SeatDTO> sayHello() {
 
 		List<SeatDTO> allairports = seatService.findAllSeat();
