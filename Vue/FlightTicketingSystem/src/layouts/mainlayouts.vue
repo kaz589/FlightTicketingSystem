@@ -104,6 +104,7 @@ const logoutChange = () => {
 };
 
 const items = ref([
+
 {
       title: "登入畫面",
       prependIcon: "mdi-view-dashboard-outline",
@@ -152,6 +153,11 @@ const items = ref([
       link: true,
       path: "/testtt",
     },
-
+    {
+    title: "商品管理",
+    prependIcon: "mdi mdi-abacus",
+    link: true,
+    path: "/products",
+  }
 ]);
 </script>

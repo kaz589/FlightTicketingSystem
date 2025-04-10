@@ -1,7 +1,8 @@
 // 新增商品
-addAirport: (airport) => instance.post('/airports', airport),
+addProduct: (product) => instance.post('/products', product),
 
     // 刪除商品
-    deleteAirport: (id) => instance.delete(`/airports/${id}`),
+    deleteProduct: (id) => instance.delete(`/products/${id}`),
         // 更新商品
-        updateAirport: (id, airport) => instance.put(`/airports/${id}`, airport),
+        updateProduct: (id, airport) => instance.put(`/products/${id}`, products),
+            searchProduct(id)=> instance.
