@@ -38,7 +38,7 @@ instance.interceptors.response.use(
 const errorHandle = (status, info) => {
     switch(status) {
       case 400:
-        console.log("語義有誤");
+        console.log("語義有誤，請檢查API參數");
         break;
       case 401:
         console.log("服務器認證失敗");
@@ -60,6 +60,5 @@ const errorHandle = (status, info) => {
         break;
         
     }
-    alert(info);
   }
 export default instance;

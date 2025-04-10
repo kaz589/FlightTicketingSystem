@@ -132,18 +132,18 @@ const items = ref([
       link: false,
       path: "/Seats"
     },
-    {
-      title: "測試",
-      prependIcon: "mdi-account-group",
-      link: true,
-      path: "/test",
-    },
-    {
-      title: "測試TT",
-      prependIcon: "mdi mdi-abacus",
-      link: true,
-      path: "/testtt",
-    },
+    // {
+    //   title: "測試",
+    //   prependIcon: "mdi-account-group",
+    //   link: true,
+    //   path: "/test",
+    // },
+    // {
+    //   title: "測試TT",
+    //   prependIcon: "mdi mdi-abacus",
+    //   link: true,
+    //   path: "/testtt",
+    // },
 
 ]);
 </script>
