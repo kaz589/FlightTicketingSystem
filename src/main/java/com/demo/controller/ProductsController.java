@@ -70,7 +70,7 @@ public class ProductsController {
 		return products;
 	}
 
-	// 查詢低庫存商
+	// 查詢低庫存商品
 	@GetMapping("/lowstock")
 	public List<Products> searchlowstock(@RequestParam("threshold") Integer threshold) {
 		List<Products> products = iProductsService.findLowStockProducts(threshold);
@@ -80,7 +80,7 @@ public class ProductsController {
 		return products;
 	}
 
-	// 根據需要的里程查詢商品
+	// 根據里程範圍查詢商品
 
 	@GetMapping("/needmiles")
 	public List<Products> searchByNeedmiles(@RequestParam("min") Integer min,@RequestParam("max") Integer max) {

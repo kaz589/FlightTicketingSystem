@@ -8,5 +8,5 @@ export function logout() {
     authStore.logout();  // 更新 Pinia 狀態為未登入
     console.log("成功登出");
 
-    router.push({ path: "/login" });  // 跳轉到登入頁面
+    // router.push("/login");  // 確保這行沒有問題，直接將用戶跳轉到登入頁
   }

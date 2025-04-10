@@ -1,7 +1,6 @@
 <!-- eslint-disable vue/max-attributes-per-line -->
 <template>
   <v-layout>
-
     <v-navigation-drawer
       v-model="drawer"
       expand-on-hover
@@ -21,16 +20,12 @@
           class="ma-2"
           link
           nav
-
           prepend-icon="mdi-logout"
           title="登出"
-
-          @click="logout()"
-
+          @click="logoutChange()"
         />
       </template>
     </v-navigation-drawer>
-
 
     <v-app-bar border="b" class="ps-4" flat>
       <v-app-bar-nav-icon
@@ -39,9 +34,15 @@
       />
 
       <v-app-bar-title class="ms-auto"
-        >Flight Management System</v-app-bar-title
-      >
-      <h5 style="margin-left: auto">用戶名: {{ authStore.user.username }}</h5>
+        ><img
+          src="@/assets/Easytrip_logo.png"
+          alt="My Icon"
+          width="150"
+          height="150"
+      /></v-app-bar-title>
+      <h5 style="margin-left: auto">
+        用戶名: {{ authStore.user ? authStore.user.username : "未登入" }}
+      </h5>
 
       <template #append>
         <v-btn class="text-none me-2" height="48" icon slim>
@@ -59,14 +60,13 @@
                 append-icon="mdi-logout"
                 link
                 title="登出"
-                @click="logout()"
+                @click="logoutChange()"
               />
             </v-list>
           </v-menu>
         </v-btn>
       </template>
     </v-app-bar>
-
 
     <v-main>
       <div class="pa-4">
@@ -77,10 +77,12 @@
 </template>
 
 <script setup>
-
 import { ref, watch } from "vue";
 import { useAuthStore } from "@/stores/auth"; // 引入 Pinia store
 import { logout } from "@/utils/logout"; // 導入登出函數
+import { useRouter } from "vue-router"; // 引入 vue-router
+
+const router = useRouter(); // 使用 vue-router
 
 const authStore = useAuthStore(); // 使用 store
 const drawer = ref(true);
@@ -95,7 +97,14 @@ watch(drawer, (newVal, oldVal) => {
   // 在這裡可以執行其他邏輯，例如記錄狀態或觸發動畫
 });
 
+const logoutChange = () => {
+  logout(); // 將 router 實例傳遞給 logout 函數
+  router.push("/login"); // 確保這行沒有問題，直接將用戶跳轉到登入頁(看需不需要回登入)
+  console.log("登出成功");
+};
+
 const items = ref([
+
 {
       title: "登入畫面",
       prependIcon: "mdi-view-dashboard-outline",
@@ -132,18 +141,25 @@ const items = ref([
       link: false,
       path: "/Seats"
     },
-    // {
-    //   title: "測試",
-    //   prependIcon: "mdi-account-group",
-    //   link: true,
-    //   path: "/test",
-    // },
-    // {
-    //   title: "測試TT",
-    //   prependIcon: "mdi mdi-abacus",
-    //   link: true,
-    //   path: "/testtt",
-    // },
+
+    {
+      title: "測試",
+      prependIcon: "mdi-account-group",
+      link: true,
+      path: "/test",
+    },
+    {
+      title: "測試TT",
+      prependIcon: "mdi mdi-abacus",
+      link: true,
+      path: "/testtt",
+    },
+    {
+    title: "商品管理",
+    prependIcon: "mdi mdi-abacus",
+    link: true,
+    path: "/products",
+  }
 
 ]);
 </script>

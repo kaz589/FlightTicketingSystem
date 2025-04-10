@@ -33,6 +33,15 @@ const router = createRouter({
         },
 
         {
+
+
+          path: "products",
+          component: () => import("@/page/admin/Products.vue"),
+          meta: { requiresAuth: true }, // 需要登錄的頁面
+        },
+
+
+        {
           path:"flight",
           component:()=>import("@/page/admin/Flight.vue")
         },
@@ -44,12 +53,11 @@ const router = createRouter({
           path:"Ticket",
           component:()=>import("@/page/admin/Ticket.vue")
         },
-
       ],
     },
     {
-      path:"/login",
-      component:()=>import("@/page/auth/LoginPage.vue")
+      path: "/login",
+      component: () => import("@/page/auth/LoginPage.vue")
     },
 
 

@@ -4,15 +4,19 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
+import com.demo.controller.AdminController;
 import com.demo.model.Admin;
 import com.demo.repository.AdminRepository;
 
 @Service
 public class AdminService {
+
+
 	
 	@Autowired
 	private AdminRepository adminRepository;
+
+
 	
 	
 	public Admin findAdminById(Integer id) {
@@ -24,10 +28,34 @@ public class AdminService {
 	}
 	
 	
-//	新增管理員
+	//判斷username是否存在
+	public boolean usernameExist(String username) {
+		
+		//透過username查admin
+		Admin admin = adminRepository.findByUsername(username);
+		if (admin != null) {
+			return true;
+		}
+		return false;
+	}
+	
+	
+	
+	//	新增管理員
 	public Admin insertAdmin(Admin admin) {
+		// 要確認username是否重複
+		// 先透過username查有沒有密碼
+		boolean result = usernameExist(admin.getUsername());
+		
+		if (result) {
+			//username存在，不能新增
+			return null;
+			
+		}
+		//沒有使用者(才能新增)
 		adminRepository.save(admin);
 		return admin;
+		
 	}
 // 透過username找password
 	public boolean getPassword(Admin admin) {

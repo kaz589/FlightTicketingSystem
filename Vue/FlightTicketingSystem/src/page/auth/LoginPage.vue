@@ -16,7 +16,7 @@
             <v-col cols="12">
               <v-text-field
                 v-model="rawData.username"
-                :counter="10"
+                :counter="20"
                 label="會員帳號"
                 required
               ></v-text-field>
@@ -26,7 +26,7 @@
             <v-col cols="12">
               <v-text-field
                 v-model="rawData.password"
-                :counter="10"
+                :counter="20"
                 label="會員密碼"
                 required
                 type="password"
@@ -40,7 +40,7 @@
           <v-btn prepend-icon="mdi mdi-account-plus" @click="insertOpen">
             註冊
           </v-btn>
-          <div>
+          <div class="button-test">
             <button @click="login" v-if="!isAuthenticated">登入</button>
             <button @click="logout" v-if="isAuthenticated">登出</button>
           </div>
@@ -67,6 +67,8 @@
                       v-model="insertData.username"
                       label="使用者名稱"
                       required
+                      :error-messages="test"
+                      @focus="focusUsername"
                     ></v-text-field>
                   </v-col>
                   <v-col cols="12">
@@ -198,12 +200,24 @@ function insertOpen() {
   dialog.value = true; //打開彈出框
 }
 
+const test = ref("");
+
+function focusUsername() {
+  test.value = "";
+}
+
 function save() {
   //透過api更改
-  ApiAdmin.insertAdmin(insertData.value).then(() => {
-    console.log("更新結束");
-    Swal.fire("更新成功", "", "success"); // 顯示成功的提示框
-    dialog.value = false; //關閉彈出框
+  ApiAdmin.insertAdmin(insertData.value).then((res) => {
+    console.log(res);
+    //如果res是 null, 顯示新增失敗(使用者重複)
+    if (res === null) {
+      // alert("使用者重複");
+      test.value = "使用者重複";
+    } else {
+      Swal.fire("更新成功", "", "success"); // 顯示成功的提示框
+      dialog.value = false; //關閉彈出框
+    }
   });
 }
 
@@ -243,5 +257,9 @@ h1 {
   font-weight: bold;
   color: #000306; /* Vuetify primary color */
   margin-bottom: 20px;
+}
+
+.button-test {
+  display: none;
 }
 </style>
