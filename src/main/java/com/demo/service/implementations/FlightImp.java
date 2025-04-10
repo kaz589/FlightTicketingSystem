@@ -89,8 +89,13 @@ public class FlightImp implements FlightService{
 	}
 
 	@Override
-	public Page<Flight> searchFlights(Airports originAirport, Airports destinationAirport, Date startTime, Date endTime,
+	public Page<FlightDTO> searchFlights(String originAirport, String destinationAirport, Date startTime, Date endTime,
 			String airplaneModelName, Pageable pageable) {
+		
+		
+		originAirport=(originAirport==null||originAirport.trim().isEmpty()||originAirport.trim().equalsIgnoreCase("all"))?null:originAirport;
+		destinationAirport=(destinationAirport==null||destinationAirport.trim().isEmpty()||destinationAirport.trim().equalsIgnoreCase("all"))?null:destinationAirport;
+		
 		return flightRepository.searchFlights(originAirport, destinationAirport, startTime, endTime, airplaneModelName, pageable);
 	}
 	
@@ -103,13 +108,13 @@ public class FlightImp implements FlightService{
      */
     public Flight createFlightEntity(FlightDTO flight) {
         // 查詢起點機場
-        Airports originAirport = airportsRepository.findByIataCode(flight.getOriginAirport());
+        Airports originAirport = airportsRepository.findByAirportName(flight.getOriginAirport());
         if (originAirport == null) {
             throw new RuntimeException("Origin airport not found: " + flight.getOriginAirport());
         }
 
         // 查詢目的地機場
-        Airports destinationAirport = airportsRepository.findByIataCode(flight.getDestinationAirport());
+        Airports destinationAirport = airportsRepository.findByAirportName(flight.getDestinationAirport());
         if (destinationAirport == null) {
             throw new RuntimeException("Destination airport not found: " + flight.getDestinationAirport());
         }

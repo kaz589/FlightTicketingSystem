@@ -7,9 +7,10 @@ import java.time.LocalDateTime;
 
 
 import org.springframework.beans.BeanUtils;
-
+import org.springframework.format.annotation.DateTimeFormat;
 
 import com.demo.model.Ticket;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.demo.model.Member;
 
 
@@ -25,6 +26,8 @@ public class TicketDTO {
 	private Integer ticketId;
 	private Integer memberId;
 	private String memberName;
+	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss") // 用於 JSON 請求的日期格式
+	@DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") // 用於表單數據的日期格式
 	private LocalDateTime bookingTime;
 	private int totalAmount;
 	

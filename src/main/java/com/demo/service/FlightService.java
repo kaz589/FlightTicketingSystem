@@ -20,7 +20,7 @@ public interface FlightService {
     ResponseEntity<Flight> createFlight(FlightDTO flight); // 新增航班
     Flight updateFlight(int id, FlightDTO flightDetails); // 更新航班
     void deleteFlight(int id); // 刪除航班
-    Page<Flight> searchFlights(Airports originAirport, Airports destinationAirport, Date startTime,
+    Page<FlightDTO> searchFlights(String originAirport, String destinationAirport, Date startTime,
     Date endTime, String airplaneModelName, Pageable pageable) ;
 	
 }

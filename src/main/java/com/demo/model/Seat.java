@@ -2,6 +2,8 @@ package com.demo.model;
 
 import java.util.Date;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -33,6 +35,7 @@ public class Seat {
     private String seatClass;
     @ManyToOne
     @JoinColumn(name = "ticket_id", referencedColumnName = "ticketId") // 外鍵 ticket_id
+    @JsonBackReference
     private Ticket ticket;
     private boolean isBooked;
     

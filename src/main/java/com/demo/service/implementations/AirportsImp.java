@@ -38,6 +38,7 @@ public class AirportsImp implements AirportsService {
 		// 直接返回 pageResult
 		return pageResult;
 	}
+	
 	// 獲取所有不重複且不為 null 的城市名稱
 
 	@Override
@@ -52,6 +53,12 @@ public class AirportsImp implements AirportsService {
 	public List<String> getDistinctCountryRegions() {
 
 		return airportsRepo.findDistinctByCountryRegionNotNull();
+	}
+	// 獲取所有不重複且不為 null 的機場名
+	@Override
+	public List<String> getDistinctAirportName() {
+		// TODO Auto-generated method stub
+		return airportsRepo.findDistinctByAirportNameNotNull();
 	}
 
 	@Override
@@ -97,4 +104,5 @@ public class AirportsImp implements AirportsService {
 		    return airportsRepo.save(existingAirport);
 		}
 
+		
 }

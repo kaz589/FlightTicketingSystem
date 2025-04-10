@@ -39,7 +39,7 @@ public class FlightDTO {
 		this.setOriginAirport(entity.getOriginAirport().getAirportName());
 		this.setDestinationAirport(entity.getDestinationAirport().getAirportName());
 		
-		System.out.println(this.toString());
+		
 	}
 	
 	

@@ -33,7 +33,7 @@ public class TickController {
 	private TicketService ticketService;
 	
 	 // 查詢所有訂票
-    @GetMapping
+    @GetMapping("/getAll")
     public ResponseEntity<List<TicketDTO>> getAllTickets() {
         List<TicketDTO> tickets = ticketService.findAllTickets();
         return ResponseEntity.ok(tickets);
@@ -64,7 +64,7 @@ public class TickController {
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteTicket(@PathVariable int id) {
         ticketService.deleteTicket(id);
-        return ResponseEntity.noContent().build();
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     // 搜尋訂票

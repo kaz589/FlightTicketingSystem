@@ -7,5 +7,7 @@ import com.demo.model.Admin;
 public interface AdminRepository extends JpaRepository<Admin, Integer> {
 	
 	Admin findByUsername(String username);
+	
+	
 
 }
