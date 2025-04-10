@@ -6,8 +6,7 @@
       expand-on-hover
       rail
       @mouseenter="isHovered = true"
-      @mouseleave="isHovered = false"
-    >
+      @mouseleave="isHovered = false">
       <v-list density="compact" item-props :items="items" nav>
         <v-list-item v-for="item in items" @click="$router.push(item.path)">
           <v-icon :icon="item.prependIcon"></v-icon>
@@ -22,16 +21,14 @@
           nav
           prepend-icon="mdi-logout"
           title="登出"
-          @click="logoutChange()"
-        />
+          @click="logoutChange()" />
       </template>
     </v-navigation-drawer>
 
     <v-app-bar border="b" class="ps-4" flat>
       <v-app-bar-nav-icon
         v-if="$vuetify.display.smAndDown"
-        @click="drawer = !drawer"
-      />
+        @click="drawer = !drawer" />
 
       <v-app-bar-title class="ms-auto"
         ><img
@@ -53,15 +50,13 @@
               <v-list-item
                 append-icon="mdi-cog-outline"
                 link
-                title="Settings"
-              />
+                title="Settings" />
 
               <v-list-item
                 append-icon="mdi-logout"
                 link
                 title="登出"
-                @click="logoutChange()"
-              />
+                @click="logoutChange()" />
             </v-list>
           </v-menu>
         </v-btn>
@@ -104,62 +99,66 @@ const logoutChange = () => {
 };
 
 const items = ref([
+  {
+    title: "登入畫面",
+    prependIcon: "mdi-view-dashboard-outline",
+    link: true,
+    path: "/login",
+  },
+  {
+    title: "會員管理",
+    prependIcon: "mdi mdi-account-group",
+    link: true,
+    path: "/members",
+  },
+  {
+    title: "機場管理",
+    prependIcon: "mdi-airport",
+    link: true,
+    path: "/airport",
+  },
+  {
+    title: "航線管理",
+    prependIcon: "mdi mdi-airplane-takeoff",
+    link: true,
+    path: "/flight",
+  },
+  {
+    title: "票務訂單管理",
+    prependIcon: "mdi mdi-ticket",
+    link: false,
+    path: "/Ticket",
+  },
+  {
+    title: "座位管理",
+    prependIcon: "mdi mdi-seat",
+    link: false,
+    path: "/Seats",
+  },
+  {
+    title: "旅行管理",
+    prependIcon: "mdi mdi-island",
+    link: false,
+    path: "/travel",
+  },
 
-{
-      title: "登入畫面",
-      prependIcon: "mdi-view-dashboard-outline",
-      link: true,
-      path: "/login",
-    },
-    {
-      title: "會員管理",
-      prependIcon: "mdi mdi-account-group",
-      link: true,
-      path: "/members",
-    },
-    {
-      title: "機場管理",
-      prependIcon: "mdi-airport",
-      link: true,
-      path: "/airport",
-    },
-    {
-      title: "航線管理",
-      prependIcon: "mdi mdi-airplane-takeoff",
-      link: true,
-      path: "/flight"
-    },
-    {
-      title: "票務訂單管理",
-      prependIcon: "mdi mdi-ticket",
-      link: false,
-      path: "/Ticket"
-    },
-    {
-      title: "座位管理",
-      prependIcon: "mdi mdi-seat",
-      link: false,
-      path: "/Seats"
-    },
-
-    {
-      title: "測試",
-      prependIcon: "mdi-account-group",
-      link: true,
-      path: "/test",
-    },
-    {
-      title: "測試TT",
-      prependIcon: "mdi mdi-abacus",
-      link: true,
-      path: "/testtt",
-    },
-    {
+  {
+    title: "測試",
+    prependIcon: "mdi-account-group",
+    link: true,
+    path: "/test",
+  },
+  {
+    title: "測試TT",
+    prependIcon: "mdi mdi-abacus",
+    link: true,
+    path: "/testtt",
+  },
+  {
     title: "商品管理",
     prependIcon: "mdi mdi-abacus",
     link: true,
     path: "/products",
-  }
-
+  },
 ]);
 </script>

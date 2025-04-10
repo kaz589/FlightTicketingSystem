@@ -25,42 +25,39 @@ const router = createRouter({
           meta: { requiresAuth: true }, // 需要登錄的頁面
         },
         {
-
-
           path: "members",
           component: () => import("@/page/admin/Memberpage.vue"),
           meta: { requiresAuth: true }, // 需要登錄的頁面
         },
 
         {
-
-
           path: "products",
           component: () => import("@/page/admin/Products.vue"),
           meta: { requiresAuth: true }, // 需要登錄的頁面
         },
 
-
         {
-          path:"flight",
-          component:()=>import("@/page/admin/Flight.vue")
+          path: "flight",
+          component: () => import("@/page/admin/Flight.vue"),
         },
         {
-          path:"Seats",
-          component:()=>import("@/page/admin/Seats.vue")
+          path: "Seats",
+          component: () => import("@/page/admin/Seats.vue"),
         },
         {
-          path:"Ticket",
-          component:()=>import("@/page/admin/Ticket.vue")
+          path: "Ticket",
+          component: () => import("@/page/admin/Ticket.vue"),
+        },
+        {
+          path: "travel",
+          component: () => import("@/page/admin/travelPage.vue"),
         },
       ],
     },
     {
       path: "/login",
-      component: () => import("@/page/auth/LoginPage.vue")
+      component: () => import("@/page/auth/LoginPage.vue"),
     },
-
-
 
     // {
     //   path: '/about',
@@ -73,7 +70,6 @@ const router = createRouter({
   ],
 });
 
-
 // 路由守衛
 router.beforeEach((to, from, next) => {
   const authStore = useAuthStore();
@@ -82,12 +78,11 @@ router.beforeEach((to, from, next) => {
   // 如果目標頁面需要登錄並且用戶尚未登錄
   if (to.meta.requiresAuth && !authStore.isAuthenticated) {
     console.log("用戶未登錄，跳轉到登錄頁面");
-    next({ path: "/login" });  // 重定向到登錄頁面
+    next({ path: "/login" }); // 重定向到登錄頁面
   } else {
     console.log("允許訪問，繼續進行");
-    next();  // 允許路由繼續
+    next(); // 允許路由繼續
   }
 });
-
 
 export default router;
