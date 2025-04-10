@@ -50,7 +50,7 @@ const router = createRouter({
         },
         {
           path: "travel",
-          component: () => import("@/page/admin/travelPage.vue"),
+          component: () => import("@/components/SearchBar.vue"),
         },
       ],
     },
@@ -58,7 +58,7 @@ const router = createRouter({
       path: "/login",
       component: () => import("@/page/auth/LoginPage.vue"),
     },
-
+   
     // {
     //   path: '/about',
     //   name: 'about',

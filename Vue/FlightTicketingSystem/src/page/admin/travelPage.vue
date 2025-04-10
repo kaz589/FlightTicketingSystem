@@ -59,7 +59,7 @@
 
 <script setup>
 import { ref } from "vue";
-import SearchBar from "./components/SearchBar.vue";
+import SearchBar from "@/components/SearchBar.vue";
 
 const drawer = ref(true);
 
