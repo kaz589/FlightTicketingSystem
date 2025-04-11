@@ -33,6 +33,7 @@ public class FlightDTO {
 	private Integer firstClassPrice;
 	private String modelName;
 	
+	//EntitytoDTO
 	public FlightDTO(Flight entity) {
 		BeanUtils.copyProperties(entity, this);
 		this.setModelName(entity.getAirplaneModel().getModelName());
@@ -42,7 +43,7 @@ public class FlightDTO {
 		
 	}
 	
-	
+	//DTOtoEntity
 	public Flight toEntity(AirplaneModel airplaneModel,Airports originAirport,Airports destinationAirport) {
 		Flight entity = new Flight();
 		BeanUtils.copyProperties(this, entity);

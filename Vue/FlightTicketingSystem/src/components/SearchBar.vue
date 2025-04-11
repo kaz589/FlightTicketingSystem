@@ -205,11 +205,11 @@ const fetchAllCities = async () => {
 };
 
 const searchCities = async () => {
-  if (!searchQuery.value) return;
-
   try {
-    const query = encodeURIComponent(searchQuery.value.trim());
-    const url = `${apiPaths[selectedTab.value]}/${query}`;
+    const base = apiPaths[selectedTab.value];
+    const query = searchQuery.value?.trim();
+    const url = query ? `${base}/${encodeURIComponent(query)}` : base;
+
     const response = await axios.get(url);
 
     if (selectedTab.value === "attractions") {
@@ -416,6 +416,7 @@ const addCity = async () => {
           },
         });
 
+        await fetchAllCities();
         await searchCities();
       } catch (err) {
         console.error("Add city failed", err);
@@ -512,6 +513,17 @@ const addAttraction = () => {
           category,
           cityId,
         });
+
+        await Swal.fire({
+          icon: "success",
+          title: "Attraction added!",
+          confirmButtonText: "OK",
+          customClass: {
+            confirmButton:
+              "bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded",
+          },
+        });
+        await fetchAllCities();
         await searchCities();
       } catch (err) {
         console.error("Add failed", err);
@@ -711,9 +723,15 @@ const confirmDeleteAttraction = (id) => {
     if (result.isConfirmed) {
       try {
         await axios.delete(`http://localhost:8080/attractions/${id}`);
+        await Swal.fire(
+          "Deleted!",
+          "The attraction has been removed.",
+          "success"
+        );
         await searchCities();
       } catch (err) {
         console.error("Delete failed", err);
+        Swal.fire("Error", "Delete failed", "error");
       }
     }
   });

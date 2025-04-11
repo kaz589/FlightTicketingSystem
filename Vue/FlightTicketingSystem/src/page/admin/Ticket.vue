@@ -45,7 +45,7 @@
  // 表格標題資訊
  const headers = ref([
    { title: "訂單ID", value: "ticketId", sortable: true, align: "start" }, //sortable: true 表示可排序
-   { title: "購票人姓名", value: "memberName", sortable: true },
+   { title: "購票人帳號", value: "memberName", sortable: true },
    { title: "訂票時間", value: "bookingTime", sortable: true },
    { title: "操作", key: "actions", align: "end", sortable: false },
  ]);

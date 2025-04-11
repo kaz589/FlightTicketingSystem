@@ -30,7 +30,9 @@
       :headers="headers"
       :items="items"
       :items-per-page="itemsPerPage"
+
       @update:sort-by="updateSortBy"
+
       hide-default-footer
       class="elevation-1"
     >
@@ -346,7 +348,7 @@ function deleteItem() {
 
 */
 function updateSortBy(sortBy) {
-  console.log("🚀 ~ Airportspage.vue:344 ~ updateSortBy ~ sortBy:", sortBy);
+  
 
   // 確保 `sortBy` 有值
   if (!sortBy) {

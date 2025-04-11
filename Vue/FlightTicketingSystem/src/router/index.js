@@ -19,11 +19,7 @@ const router = createRouter({
           component: () => import("@/page/admin/TEST.vue"),
           meta: { requiresAuth: true }, // 需要登錄的頁面
         },
-        {
-          path: "testtt",
-          component: () => import("@/page/admin/TESTTT.vue"),
-          meta: { requiresAuth: true }, // 需要登錄的頁面
-        },
+        
         {
           path: "members",
           component: () => import("@/page/admin/Memberpage.vue"),
@@ -58,7 +54,11 @@ const router = createRouter({
       path: "/login",
       component: () => import("@/page/auth/LoginPage.vue"),
     },
-   
+    {
+      path: "/testtt",
+      component: () => import("@/page/admin/TESTTT.vue"),
+      meta: { requiresAuth: true }, // 需要登錄的頁面
+    },
     // {
     //   path: '/about',
     //   name: 'about',
