@@ -7,7 +7,8 @@
         <img
           src="@/assets/Easytrip_text.png"
           alt="Easytrip Logo"
-          class="h-[36px]" />
+          width="40%"
+          height="40%" />
       </div>
 
       <!-- Middle: Navigation -->
