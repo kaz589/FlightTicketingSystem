@@ -32,10 +32,10 @@
 
       <v-app-bar-title class="ms-auto"
         ><img
-          src="@/assets/Easytrip_logo.png"
+          src="@/assets/Easytrip_text.png"
           alt="My Icon"
-          width="150"
-          height="150"
+          width="13%"
+          height="13%"
       /></v-app-bar-title>
       <h5 style="margin-left: auto">
         用戶名: {{ authStore.user ? authStore.user.username : "未登入" }}
@@ -142,21 +142,17 @@ const items = ref([
     path: "/travel",
   },
 
-
-
-    {
-
+  {
     title: "商品管理",
     prependIcon: "mdi mdi-gift-outline",
     link: true,
     path: "/products",
   },
   {
-
-title: "商品管理",
-prependIcon: "mdi mdi-gift-outline",
-link: true,
-path: "/testtt",
-},
+    title: "商品管理",
+    prependIcon: "mdi mdi-gift-outline",
+    link: true,
+    path: "/testtt",
+  },
 ]);
 </script>

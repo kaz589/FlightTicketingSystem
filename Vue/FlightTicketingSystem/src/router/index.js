@@ -6,6 +6,10 @@ const router = createRouter({
   routes: [
     {
       path: "/",
+      component: () => import("@/layouts/mainlayout.vue"),
+    },
+    {
+      path: "/admin",
       component: () => import("@/layouts/mainlayouts.vue"),
       meta: { requiresAuth: true }, // 需要登錄的頁面
       children: [
@@ -19,7 +23,7 @@ const router = createRouter({
           component: () => import("@/page/admin/TEST.vue"),
           meta: { requiresAuth: true }, // 需要登錄的頁面
         },
-        
+
         {
           path: "members",
           component: () => import("@/page/admin/Memberpage.vue"),
