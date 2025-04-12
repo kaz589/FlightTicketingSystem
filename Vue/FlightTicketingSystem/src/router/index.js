@@ -59,6 +59,11 @@ const router = createRouter({
       component: () => import("@/page/admin/TESTTT.vue"),
       meta: { requiresAuth: true }, // 需要登錄的頁面
     },
+    {
+      path: "/ss",
+      component: () => import("@/layouts/memberLayout.vue"),
+      meta: { requiresAuth: true }, // 需要登錄的頁面
+    },
     // {
     //   path: '/about',
     //   name: 'about',
