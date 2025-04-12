@@ -138,7 +138,6 @@ onMounted(() => {
 </script>
 
 <style scoped>
-/* 可选：让输入光标不可见（仅用于 flatpickr 的只读场景） */
 input[readonly] {
   cursor: pointer;
 }

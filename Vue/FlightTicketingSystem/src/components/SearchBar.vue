@@ -10,9 +10,8 @@
             ? 'border-b-2 border-black pb-1 font-semibold'
             : '',
         ]"
-        @click="setSelectedTab('cities')"
-      >
-        Cities
+        @click="setSelectedTab('cities')">
+        查詢城市
       </div>
       <div
         :class="[
@@ -21,9 +20,8 @@
             ? 'border-b-2 border-black pb-1 font-semibold'
             : '',
         ]"
-        @click="setSelectedTab('attractions')"
-      >
-        Attractions
+        @click="setSelectedTab('attractions')">
+        查詢景點
       </div>
       <div
         :class="[
@@ -32,9 +30,8 @@
             ? 'border-b-2 border-black pb-1 font-semibold'
             : '',
         ]"
-        @click="addCity"
-      >
-        Add Cities
+        @click="addCity">
+        增加城市
       </div>
       <div
         :class="[
@@ -43,26 +40,22 @@
             ? 'border-b-2 border-black pb-1 font-semibold'
             : '',
         ]"
-        @click="openAddModal"
-      >
-        Add Attraction
+        @click="addAttraction">
+        增加景點
       </div>
     </div>
 
     <div class="flex justify-center mt-6">
       <div
-        class="flex w-full max-w-xl shadow-md rounded-full border border-gray-200 overflow-hidden"
-      >
+        class="flex w-full max-w-xl shadow-md rounded-full border border-gray-200 overflow-hidden">
         <input
           v-model="searchQuery"
           type="text"
-          placeholder="Places to go..."
-          class="w-full px-6 py-3 focus:outline-none"
-        />
+          placeholder="直接點擊搜索即可搜索全部"
+          class="w-full px-6 py-3 focus:outline-none" />
         <button
           class="bg-emerald-400 text-white px-6 py-3 font-semibold hover:bg-emerald-500"
-          @click="searchCities"
-        >
+          @click="search">
           Search
         </button>
       </div>
@@ -71,34 +64,30 @@
     <!-- City Cards -->
     <div
       v-if="selectedTab === 'cities' && results.length"
-      class="mt-8 max-w-6xl mx-auto"
-    >
+      class="mt-8 max-w-6xl mx-auto">
       <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
         <div
           v-for="city in results"
           :key="city.id"
-          class="border rounded-2xl shadow-md overflow-hidden flex flex-col items-center justify-start p-3 bg-white w-[280px] min-h-[300px] mx-auto"
-        >
+          class="border rounded-2xl shadow-md overflow-hidden flex flex-col items-center justify-start p-3 bg-white w-[280px] min-h-[300px] mx-auto">
           <img
             :src="`http://localhost:8080${city.image}`"
             alt="City Image"
-            class="w-[260px] h-[160px] object-cover rounded-lg mb-4"
-          />
+            class="w-[260px] h-[160px] object-cover rounded-lg mb-4" />
           <div class="text-base font-semibold text-center mb-4">
-            {{ city.name }}
+            <div>{{ city.name }}</div>
+            <div>{{ city.country }}</div>
           </div>
           <div class="flex space-x-3 mt-auto">
             <button
               class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-1 rounded text-sm"
-              @click="updateCityImage(city)"
-            >
-              Edit Image
+              @click="editCity(city)">
+              修改
             </button>
             <button
               class="bg-red-600 hover:bg-red-700 text-white px-4 py-1 rounded text-sm"
-              @click="confirmDeleteCity(city.id)"
-            >
-              Delete
+              @click="confirmDeleteCity(city.id)">
+              刪除
             </button>
           </div>
         </div>
@@ -108,14 +97,12 @@
     <!-- Attraction Cards -->
     <div
       v-if="selectedTab === 'attractions' && results.length"
-      class="mt-8 max-w-6xl mx-auto"
-    >
+      class="mt-8 max-w-6xl mx-auto">
       <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
         <div
           v-for="attraction in results"
           :key="attraction.id"
-          class="border rounded-2xl shadow-md overflow-hidden flex flex-col items-center justify-start p-3 bg-white w-[280px] min-h-[380px] mx-auto"
-        >
+          class="border rounded-2xl shadow-md overflow-hidden flex flex-col items-center justify-start p-3 bg-white w-[280px] min-h-[380px] mx-auto">
           <div class="text-base font-semibold mb-2 text-center">
             {{ attraction.name }}
           </div>
@@ -123,18 +110,10 @@
             <img
               :src="attraction.photoUrl"
               alt="Attraction photo"
-              class="w-[260px] h-[160px] object-cover rounded-lg"
-            />
+              class="w-[260px] h-[160px] object-cover rounded-lg" />
           </div>
           <div class="text-center mt-2">
             <div class="flex justify-center items-center space-x-1">
-              <span class="text-yellow-500">
-                <i
-                  class="fas fa-star"
-                  v-for="i in Math.floor(attraction.rating)"
-                  :key="i"
-                ></i>
-              </span>
               <span class="text-gray-700 text-sm"
                 >{{ attraction.rating }} ⭐</span
               >
@@ -146,21 +125,18 @@
           <div class="flex justify-center space-x-4 mt-auto mb-2">
             <button
               class="bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700 text-sm"
-              @click="editAttraction(attraction)"
-            >
-              Edit
+              @click="editAttraction(attraction)">
+              編輯
             </button>
             <button
               class="bg-green-600 text-white px-3 py-1 rounded hover:bg-green-700 text-sm"
-              @click="uploadImages(attraction.id, attraction.name)"
-            >
-              Upload
+              @click="uploadImages(attraction.id, attraction.name)">
+              上傳圖片
             </button>
             <button
               class="bg-red-600 text-white px-3 py-1 rounded hover:bg-red-700 text-sm"
-              @click="confirmDeleteAttraction(attraction.id, attraction.name)"
-            >
-              Delete
+              @click="confirmDeleteAttraction(attraction.id, attraction.name)">
+              刪除
             </button>
           </div>
         </div>
@@ -191,10 +167,6 @@ const setSelectedTab = async (tab) => {
   }
 };
 
-const openAddModal = () => {
-  addAttraction();
-};
-
 const fetchAllCities = async () => {
   try {
     const res = await axios.get("http://localhost:8080/cities");
@@ -204,10 +176,13 @@ const fetchAllCities = async () => {
   }
 };
 
-const searchCities = async () => {
+const search = async () => {
   try {
     const base = apiPaths[selectedTab.value];
     const query = searchQuery.value?.trim();
+    if (!query) {
+      return;
+    }
     const url = query ? `${base}/${encodeURIComponent(query)}` : base;
 
     const response = await axios.get(url);
@@ -238,83 +213,107 @@ const searchCities = async () => {
   }
 };
 
-const updateCityImage = async (city) => {
-  await Swal.fire({
-    title: "Upload New City Image",
+const editCity = async (city) => {
+  const result = await Swal.fire({
+    title: "Edit City",
     html: `
       <div class="flex flex-col gap-2">
+        <div class="flex items-center gap-2">
+          <label for="name" class="w-24 text-sm font-medium">城市</label>
+          <input id="name" value="${city.name}" class="flex-1 px-3 py-2 border border-gray-300 rounded text-sm" />
+        </div>
+        <div class="flex items-center gap-2">
+          <label for="country" class="w-24 text-sm font-medium">國家</label>
+          <input id="country" value="${city.country}" class="flex-1 px-3 py-2 border border-gray-300 rounded text-sm" />
+        </div>
+        <div class="flex items-center gap-2">
+          <label for="latitude" class="w-24 text-sm font-medium">經度</label>
+          <input id="latitude" value="${city.latitude}" class="flex-1 px-3 py-2 border border-gray-300 rounded text-sm" />
+        </div>
+        <div class="flex items-center gap-2">
+          <label for="longitude" class="w-24 text-sm font-medium">緯度</label>
+          <input id="longitude" value="${city.longitude}" class="flex-1 px-3 py-2 border border-gray-300 rounded text-sm" />
+        </div>
         <div class="flex items-center gap-0 border border-gray-300 rounded overflow-hidden">
-          <span class="px-4 py-2 bg-gray-100 text-sm text-gray-800 whitespace-nowrap">Choose File</span>
-          <input 
-            type="file" 
-            id="cityImageFile" 
-            accept="image/*" 
-            class="flex-1 text-sm px-3 py-2 file:hidden focus:outline-none"
-          />
+          <span class="px-4 py-2 bg-gray-100 text-sm text-gray-800 whitespace-nowrap">上傳新圖片</span>
+          <input type="file" id="cityImage" accept="image/*" class="flex-1 text-sm px-3 py-2 file:hidden focus:outline-none" />
         </div>
       </div>
     `,
     focusConfirm: false,
     showCancelButton: true,
-    confirmButtonText: "Upload",
+    confirmButtonText: "Update",
     cancelButtonText: "Cancel",
     customClass: {
       confirmButton:
         "bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded",
       cancelButton:
-        "bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded",
+        "bg-gray-300 hover:bg-gray-400 text-gray-800 px-4 py-2 rounded",
     },
     preConfirm: async () => {
-      const file = document.getElementById("cityImageFile").files[0];
-      if (!file) {
-        Swal.showValidationMessage("Please select an image");
-        return;
+      const name = document.getElementById("name").value.trim();
+      const country = document.getElementById("country").value.trim();
+      const latitude = parseFloat(document.getElementById("latitude").value);
+      const longitude = parseFloat(document.getElementById("longitude").value);
+      const imageFile = document.getElementById("cityImage").files[0];
+
+      if (!name || !country || isNaN(latitude) || isNaN(longitude)) {
+        Swal.showValidationMessage("請填寫所有欄位");
+        return false;
       }
 
-      const formData = new FormData();
-      formData.append("image", file);
+      let imageUrl = city.image;
 
       try {
-        await axios.post(
-          `http://localhost:8080/cities/imageUrl/${city.id}`,
-          formData
-        );
+        if (imageFile) {
+          const formData = new FormData();
+          formData.append("image", imageFile);
+
+          const uploadRes = await axios.post(
+            "http://localhost:8080/photos/upload",
+            formData
+          );
+          imageUrl = uploadRes.data.url;
+        }
+
+        await axios.put(`http://localhost:8080/cities/${city.id}`, {
+          name,
+          country,
+          latitude,
+          longitude,
+          image: imageUrl,
+        });
+
         await Swal.fire({
-          title: "Success",
-          text: "Image updated!",
           icon: "success",
+          title: "City updated!",
           confirmButtonText: "OK",
           customClass: {
             confirmButton:
               "bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded",
           },
         });
-        await searchCities();
-      } catch (err) {
-        console.error("Upload failed", err);
-        await Swal.fire({
-          title: "Error",
-          text: "Image upload failed",
-          icon: "error",
-          confirmButtonText: "OK",
-          customClass: {
-            confirmButton:
-              "bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded",
-          },
-        });
+
+        await fetchAllCities();
+        await search();
+      } catch (error) {
+        console.error("Update failed", error);
+        Swal.showValidationMessage("更新失敗，請稍後再試");
       }
     },
   });
+
+  // 使用者取消就什麼都不做
 };
 
 const confirmDeleteCity = (id) => {
   Swal.fire({
-    title: "Are you sure?",
-    text: "This city will be permanently deleted.",
+    title: "您確定嗎?",
+    text: "這筆資料將被永久刪除！",
     icon: "warning",
     showCancelButton: true,
-    confirmButtonText: "Yes, delete it!",
-    cancelButtonText: "Cancel",
+    confirmButtonText: "確認",
+    cancelButtonText: "取消",
     customClass: {
       confirmButton: "bg-red-600 text-white px-4 py-2 rounded",
       cancelButton: "bg-gray-500 text-white px-4 py-2 rounded ml-2",
@@ -323,11 +322,11 @@ const confirmDeleteCity = (id) => {
     if (result.isConfirmed) {
       try {
         await axios.delete(`http://localhost:8080/cities/${id}`);
-        Swal.fire("Deleted!", "The city has been removed.", "success");
-        await searchCities();
+        Swal.fire("刪除成功!", "這筆資料已被永久刪除", "success");
+        await search();
       } catch (err) {
         console.error("Delete failed", err);
-        Swal.fire("Error", "Delete failed", "error");
+        Swal.fire("Error", "刪除失敗", "error");
       }
     }
   });
@@ -339,27 +338,27 @@ const addCity = async () => {
     html: `
       <div class="flex flex-col gap-2">
         <div class="flex items-center gap-2">
-          <label for="name" class="w-24 text-sm font-medium">Name</label>
+          <label for="name" class="w-24 text-sm font-medium">城市</label>
           <input id="name" autocomplete="off" class="flex-1 px-3 py-2 border border-gray-300 rounded text-sm" placeholder="City Name" />
         </div>
 
         <div class="flex items-center gap-2">
-          <label for="country" class="w-24 text-sm font-medium">Country</label>
+          <label for="country" class="w-24 text-sm font-medium">國家</label>
           <input id="country" autocomplete="off" class="flex-1 px-3 py-2 border border-gray-300 rounded text-sm" placeholder="Country" />
         </div>
 
         <div class="flex items-center gap-2">
-          <label for="latitude" class="w-24 text-sm font-medium">Latitude</label>
+          <label for="latitude" class="w-24 text-sm font-medium">經度</label>
           <input id="latitude" autocomplete="off" class="flex-1 px-3 py-2 border border-gray-300 rounded text-sm" placeholder="Latitude" />
         </div>
 
         <div class="flex items-center gap-2">
-          <label for="longitude" class="w-24 text-sm font-medium">Longitude</label>
+          <label for="longitude" class="w-24 text-sm font-medium">緯度</label>
           <input id="longitude" autocomplete="off" class="flex-1 px-3 py-2 border border-gray-300 rounded text-sm" placeholder="Longitude" />
         </div>
 
         <div class="flex items-center gap-0 border border-gray-300 rounded overflow-hidden">
-          <span class="px-4 py-2 bg-gray-100 text-sm text-gray-800 whitespace-nowrap">Choose File</span>
+          <span class="px-4 py-2 bg-gray-100 text-sm text-gray-800 whitespace-nowrap">上傳圖片</span>
           <input type="file" id="cityImage" accept="image/*" class="flex-1 text-sm px-3 py-2 file:hidden focus:outline-none" />
         </div>
       </div>
@@ -417,7 +416,7 @@ const addCity = async () => {
         });
 
         await fetchAllCities();
-        await searchCities();
+        await search();
       } catch (err) {
         console.error("Add city failed", err);
         Swal.showValidationMessage("Failed to add city.");
@@ -437,45 +436,50 @@ const addAttraction = () => {
     html: `
      <div class="flex flex-col gap-2">
         <div class="flex items-center gap-2">
-          <label for="name" class="w-24 text-sm font-medium">Name</label>
+          <label for="name" class="w-24 text-sm font-medium">地點</label>
           <input id="name" autocomplete="off" class="flex-1 px-3 py-2 border border-gray-300 rounded text-sm" placeholder="Name">
         </div>
 
         <div class="flex items-center gap-2">
-          <label for="description" class="w-24 text-sm font-medium">Description</label>
-          <input id="description" autocomplete="off" class="flex-1 px-3 py-2 border border-gray-300 rounded text-sm" placeholder="Description">
+          <label for="cityId" class="w-24 text-sm font-medium">城市</label>
+          <select id="cityId" class="flex-1 px-3 py-2 border border-gray-300 rounded text-sm">
+            ${cityOptions}
+          </select>
         </div>
 
         <div class="flex items-center gap-2">
-          <label for="address" class="w-24 text-sm font-medium">Address</label>
+          <label for="address" class="w-24 text-sm font-medium">地址</label>
           <input id="address" autocomplete="off" class="flex-1 px-3 py-2 border border-gray-300 rounded text-sm" placeholder="Address">
         </div>
 
         <div class="flex items-center gap-2">
-          <label for="latitude" class="w-24 text-sm font-medium">Latitude</label>
+          <label for="latitude" class="w-24 text-sm font-medium">經度</label>
           <input id="latitude" autocomplete="off" class="flex-1 px-3 py-2 border border-gray-300 rounded text-sm" placeholder="Latitude">
         </div>
 
         <div class="flex items-center gap-2">
-          <label for="longitude" class="w-24 text-sm font-medium">Longitude</label>
+          <label for="longitude" class="w-24 text-sm font-medium">緯度</label>
           <input id="longitude" autocomplete="off" class="flex-1 px-3 py-2 border border-gray-300 rounded text-sm" placeholder="Longitude">
         </div>
 
         <div class="flex items-center gap-2">
-          <label for="rating" class="w-24 text-sm font-medium">Rating</label>
+          <label for="description" class="w-24 text-sm font-medium">簡介</label>
+          <input id="description" autocomplete="off" class="flex-1 px-3 py-2 border border-gray-300 rounded text-sm" placeholder="Description">
+        </div>
+
+        <div class="flex items-center gap-2">
+          <label for="rating" class="w-24 text-sm font-medium">評分</label>
           <input id="rating" type="number" min="1" max="5" autocomplete="off" class="flex-1 px-3 py-2 border border-gray-300 rounded text-sm" placeholder="Rating">
         </div>
 
         <div class="flex items-center gap-2">
-          <label for="category" class="w-24 text-sm font-medium">Category</label>
+          <label for="category" class="w-24 text-sm font-medium">類型</label>
           <input id="category" autocomplete="off" class="flex-1 px-3 py-2 border border-gray-300 rounded text-sm" placeholder="Category (comma separated)">
         </div>
 
-        <div class="flex items-center gap-2">
-          <label for="cityId" class="w-24 text-sm font-medium">City</label>
-          <select id="cityId" class="flex-1 px-3 py-2 border border-gray-300 rounded text-sm">
-            ${cityOptions}
-          </select>
+        <div class="flex items-center gap-0 border border-gray-300 rounded overflow-hidden">
+          <span class="px-4 py-2 bg-gray-100 text-sm text-gray-800 whitespace-nowrap">上傳圖片</span>
+          <input type="file" id="attractionImage" multiple accept="image/*" class="flex-1 text-sm px-3 py-2 file:hidden focus:outline-none" />
         </div>
       </div>
     `,
@@ -487,7 +491,7 @@ const addAttraction = () => {
       confirmButton:
         "bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded",
       cancelButton:
-        "bg-gray-300 hover:bg-gray-400 text-gray-800 px-4 py-2 rounded",
+        "bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded",
     },
     preConfirm: async () => {
       const name = document.getElementById("name").value;
@@ -501,6 +505,7 @@ const addAttraction = () => {
         .value.split(",")
         .map((c) => c.trim());
       const cityId = parseInt(document.getElementById("cityId").value);
+      const imageFile = document.getElementById("image").files[0];
 
       try {
         await axios.post("http://localhost:8080/attractions", {
@@ -514,6 +519,21 @@ const addAttraction = () => {
           cityId,
         });
 
+        const attractionId = attractionRes.data.id;
+
+        if (imageFile) {
+          const formData = new FormData();
+          formData.append("image", imageFile);
+
+          await axios.post(`http://localhost:8080/uploads/images`, formData);
+
+          await axios.post("http://localhost:8080/photos", {
+            attractionId,
+            caption: name,
+            url: `/uploads/images/${imageFile.name}`,
+          });
+        }
+
         await Swal.fire({
           icon: "success",
           title: "Attraction added!",
@@ -524,7 +544,7 @@ const addAttraction = () => {
           },
         });
         await fetchAllCities();
-        await searchCities();
+        await search();
       } catch (err) {
         console.error("Add failed", err);
         Swal.showValidationMessage("Failed to add attraction");
@@ -584,6 +604,11 @@ async function editAttraction(attraction) {
             ${cityOptions}
           </select>
         </div>
+
+        <div class="flex items-center gap-0 border border-gray-300 rounded overflow-hidden">
+          <span class="px-4 py-2 bg-gray-100 text-sm text-gray-800 whitespace-nowrap">上傳圖片</span>
+          <input type="file" id="imageFiles" multiple accept="image/*" class="flex-1 text-sm px-3 py-2 file:hidden focus:outline-none" />
+        </div>
       </div>
     `,
     focusConfirm: false,
@@ -604,6 +629,12 @@ async function editAttraction(attraction) {
       const longitude = parseFloat(document.getElementById("longitude").value);
       const rating = parseFloat(document.getElementById("rating").value);
       const cityId = parseInt(document.getElementById("cityId").value);
+      const imageFiles = document.getElementById("imageFiles").files;
+
+      if (imageFiles.length > 5) {
+        Swal.showValidationMessage("最多上傳5張圖片");
+        return;
+      }
 
       try {
         await axios.put(`http://localhost:8080/attractions/${attraction.id}`, {
@@ -617,7 +648,23 @@ async function editAttraction(attraction) {
           cityId,
         });
 
-        await searchCities();
+        for (const file of imageFiles) {
+          const formData = new FormData();
+          formData.append("image", file);
+
+          const uploadRes = await axios.post(
+            "http://localhost:8080/photos/upload",
+            formData
+          );
+
+          const imageUrl = uploadRes.data.url;
+
+          await axios.post("http://localhost:8080/photos", {
+            attractionId: attraction.id,
+            url: imageUrl,
+            caption: name,
+          });
+        }
 
         await Swal.fire({
           title: "Success",
@@ -629,6 +676,8 @@ async function editAttraction(attraction) {
               "bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded",
           },
         });
+
+        await search();
       } catch (err) {
         console.error("Update failed", err);
         Swal.showValidationMessage("Failed to update attraction");
@@ -637,75 +686,75 @@ async function editAttraction(attraction) {
   });
 }
 
-async function uploadImages(attractionId, attractionName) {
-  await Swal.fire({
-    title: "Upload Photo",
-    html: `
-      <div class="flex flex-col gap-2">
-        <div class="flex items-center gap-0 border border-gray-300 rounded overflow-hidden">
-          <span class="px-4 py-2 bg-gray-100 text-sm text-gray-800 whitespace-nowrap">Choose File</span>
-          <input 
-            type="file" 
-            id="imageFile" 
-            accept="image/*" 
-            class="flex-1 text-sm px-3 py-2 file:hidden focus:outline-none"
-          />
-        </div>
-      </div>
-    `,
-    focusConfirm: false,
-    showCancelButton: true,
-    confirmButtonText: "Upload",
-    cancelButtonText: "Cancel",
-    customClass: {
-      confirmButton:
-        "bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded",
-      cancelButton:
-        "bg-gray-300 hover:bg-gray-400 text-gray-800 px-4 py-2 rounded",
-    },
-    preConfirm: async () => {
-      const imageFile = document.getElementById("imageFile").files[0];
+// async function uploadImages(attractionId, attractionName) {
+//   await Swal.fire({
+//     title: "Upload Photo",
+//     html: `
+//       <div class="flex flex-col gap-2">
+//         <div class="flex items-center gap-0 border border-gray-300 rounded overflow-hidden">
+//           <span class="px-4 py-2 bg-gray-100 text-sm text-gray-800 whitespace-nowrap">Choose File</span>
+//           <input
+//             type="file"
+//             id="imageFile"
+//             accept="image/*"
+//             class="flex-1 text-sm px-3 py-2 file:hidden focus:outline-none"
+//           />
+//         </div>
+//       </div>
+//     `,
+//     focusConfirm: false,
+//     showCancelButton: true,
+//     confirmButtonText: "Upload",
+//     cancelButtonText: "Cancel",
+//     customClass: {
+//       confirmButton:
+//         "bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded",
+//       cancelButton:
+//         "bg-gray-300 hover:bg-gray-400 text-gray-800 px-4 py-2 rounded",
+//     },
+//     preConfirm: async () => {
+//       const imageFile = document.getElementById("imageFile").files[0];
 
-      if (!imageFile) {
-        Swal.showValidationMessage("Please select an image");
-        return;
-      }
+//       if (!imageFile) {
+//         Swal.showValidationMessage("Please select an image");
+//         return;
+//       }
 
-      try {
-        const formData = new FormData();
-        formData.append("image", imageFile);
+//       try {
+//         const formData = new FormData();
+//         formData.append("image", imageFile);
 
-        const uploadRes = await axios.post(
-          "http://localhost:8080/photos/upload",
-          formData
-        );
+//         const uploadRes = await axios.post(
+//           "http://localhost:8080/photos/upload",
+//           formData
+//         );
 
-        const imageUrl = uploadRes.data.url;
+//         const imageUrl = uploadRes.data.url;
 
-        await axios.post("http://localhost:8080/photos", {
-          attractionId,
-          url: imageUrl,
-          caption: attractionName,
-        });
+//         await axios.post("http://localhost:8080/photos", {
+//           attractionId,
+//           url: imageUrl,
+//           caption: attractionName,
+//         });
 
-        Swal.fire({
-          icon: "success",
-          title: "Photo uploaded!",
-          confirmButtonText: "OK",
-          customClass: {
-            confirmButton:
-              "bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded",
-          },
-        }).then(() => {
-          searchCities();
-        });
-      } catch (error) {
-        console.error("Upload failed:", error);
-        Swal.showValidationMessage("Upload failed, please try again.");
-      }
-    },
-  });
-}
+//         Swal.fire({
+//           icon: "success",
+//           title: "Photo uploaded!",
+//           confirmButtonText: "OK",
+//           customClass: {
+//             confirmButton:
+//               "bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded",
+//           },
+//         }).then(() => {
+//           search();
+//         });
+//       } catch (error) {
+//         console.error("Upload failed:", error);
+//         Swal.showValidationMessage("Upload failed, please try again.");
+//       }
+//     },
+//   });
+// }
 
 const confirmDeleteAttraction = (id) => {
   Swal.fire({
@@ -728,7 +777,7 @@ const confirmDeleteAttraction = (id) => {
           "The attraction has been removed.",
           "success"
         );
-        await searchCities();
+        await search();
       } catch (err) {
         console.error("Delete failed", err);
         Swal.fire("Error", "Delete failed", "error");

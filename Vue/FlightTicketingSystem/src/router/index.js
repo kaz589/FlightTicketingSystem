@@ -1,16 +1,19 @@
 import { createRouter, createWebHistory } from "vue-router";
 import { useAuthStore } from "@/stores/auth"; // 引入 Pinia store
+import "swiper/css";
+import "swiper/css/navigation";
+import "swiper/css/pagination";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
       path: "/",
-      component: () => import("@/layouts/mainlayout.vue"),
+      component: () => import("@/layouts/userView.vue"),
     },
     {
       path: "/admin",
-      component: () => import("@/layouts/mainlayouts.vue"),
+      component: () => import("@/layouts/adminView.vue"),
       meta: { requiresAuth: true }, // 需要登錄的頁面
       children: [
         {

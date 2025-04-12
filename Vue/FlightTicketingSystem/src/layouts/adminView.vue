@@ -109,50 +109,50 @@ const items = ref([
     title: "會員管理",
     prependIcon: "mdi mdi-account-group",
     link: true,
-    path: "/members",
+    path: "/admin/members",
   },
   {
     title: "機場管理",
     prependIcon: "mdi-airport",
     link: true,
-    path: "/airport",
+    path: "/admin/airport",
   },
   {
     title: "航線管理",
     prependIcon: "mdi mdi-airplane-takeoff",
     link: true,
-    path: "/flight",
+    path: "/admin/flight",
   },
   {
     title: "票務訂單管理",
     prependIcon: "mdi mdi-ticket",
     link: false,
-    path: "/Ticket",
+    path: "/admin/Ticket",
   },
   {
     title: "座位管理",
     prependIcon: "mdi mdi-seat",
     link: false,
-    path: "/Seats",
+    path: "/admin/Seats",
   },
   {
     title: "旅行管理",
     prependIcon: "mdi mdi-island",
     link: false,
-    path: "/travel",
+    path: "/admin/travel",
   },
 
   {
     title: "商品管理",
     prependIcon: "mdi mdi-gift-outline",
     link: true,
-    path: "/products",
+    path: "/admin/products",
   },
   {
     title: "商品管理",
     prependIcon: "mdi mdi-gift-outline",
     link: true,
-    path: "/testtt",
+    path: "/admin/testtt",
   },
 ]);
 </script>
