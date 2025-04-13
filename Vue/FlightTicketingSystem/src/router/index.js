@@ -69,7 +69,7 @@ const router = createRouter({
         },
         {
           path: "travel",
-          component: () => import("@/components/SearchBar.vue"),
+          component: () => import("@/components/TravelPage.vue"),
         },
       ],
     },

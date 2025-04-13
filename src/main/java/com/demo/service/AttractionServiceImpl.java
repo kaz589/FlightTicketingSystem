@@ -3,9 +3,13 @@ package com.demo.service;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.demo.dto.AttractionResponse;
+import com.demo.dto.CityResponse;
 import com.demo.dto.CreateAttractionRequest;
 import com.demo.dto.UpdateAttractionRequest;
 import com.demo.entity.Attraction;
@@ -22,6 +26,13 @@ public class AttractionServiceImpl implements AttractionService {
 
     private final AttractionRepository attractionRepository;
     private final CityRepository cityRepository;
+
+    @Override
+    public Page<AttractionResponse> getAttractionsPaged(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return attractionRepository.findAll(pageable)
+                .map(this::mapToResponse);
+    }
 
     @Override
     public AttractionResponse createAttraction(CreateAttractionRequest request) {

@@ -3,6 +3,9 @@ package com.demo.service;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import com.demo.dto.CityResponse;
@@ -21,10 +24,10 @@ public class CityServiceImpl implements CityService {
     private final CityRepository cityRepository;
 
     @Override
-    public List<CityResponse> getAllCities() {
-        return cityRepository.findAll().stream()
-                .map(this::mapToResponse)
-                .collect(Collectors.toList());
+    public Page<CityResponse> getCitiesPaged(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return cityRepository.findAll(pageable)
+                .map(this::mapToResponse);
     }
 
     @Override

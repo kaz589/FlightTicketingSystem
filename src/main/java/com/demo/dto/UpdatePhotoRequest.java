@@ -7,9 +7,6 @@ import lombok.Setter;
 @Setter
 public class UpdatePhotoRequest {
 
-    private String url;
-
     private String caption;
 
-    private Long attractionId;
 }

@@ -40,11 +40,6 @@ public class PhotoServiceImpl implements PhotoService {
         Photo photo = photoRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Photo not found"));
 
-        Attraction attraction = attractionRepository.findById(request.getAttractionId())
-                .orElseThrow(() -> new EntityNotFoundException("Attraction not found"));
-
-        photo.setAttraction(attraction);
-        photo.setUrl(request.getUrl());
         photo.setCaption(request.getCaption());
 
         return mapToResponse(photoRepository.save(photo));
