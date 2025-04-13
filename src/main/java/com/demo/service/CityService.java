@@ -16,7 +16,7 @@ public interface CityService {
 
     CityResponse createCity(CreateCityRequest request);
 
-    CityResponse updateCityImage(Long id, UpdateCityRequest request);
+    CityResponse updateCity(Long id, UpdateCityRequest request);
 
     void deleteCity(Long id);
 }

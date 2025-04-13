@@ -1,19 +1,20 @@
 package com.demo.controller;
 
+import java.io.File;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.List;
+import java.util.Map;
 
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-// import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -55,31 +56,33 @@ public class CityController {
         return cityService.createCity(request);
     }
 
-    @PostMapping("/imageUrl/{id}")
-    public ResponseEntity<CityResponse> updateCityImage(
+    @PutMapping("/{id}")
+    public ResponseEntity<CityResponse> updateCity(
             @PathVariable Long id,
-            @RequestParam("image") MultipartFile imageFile) {
+            @RequestBody UpdateCityRequest request) {
+        CityResponse updatedCity = cityService.updateCity(id, request);
+        return ResponseEntity.ok(updatedCity);
+    }
 
-        try {
-            String fileName = System.currentTimeMillis() + "_" + StringUtils.cleanPath(imageFile.getOriginalFilename());
-
-            Path uploadPath = Paths.get("uploads/images");
-            if (!Files.exists(uploadPath)) {
-                Files.createDirectories(uploadPath);
-            }
-
-            Path filePath = uploadPath.resolve(fileName);
-            Files.copy(imageFile.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
-
-            UpdateCityRequest updateRequest = new UpdateCityRequest();
-            updateRequest.setImage("/images/" + fileName);
-            CityResponse updatedCity = cityService.updateCityImage(id, updateRequest);
-            return ResponseEntity.ok(updatedCity);
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+    @PostMapping("/upload")
+    public ResponseEntity<Map<String, String>> uploadImage(@RequestParam("image") MultipartFile file)
+            throws IOException {
+        if (file.isEmpty()) {
+            return ResponseEntity.badRequest().body(Map.of("error", "Empty file"));
         }
+
+        File dir = new File("uploads/images/");
+        if (!dir.exists()) {
+            dir.mkdirs();
+        }
+
+        String filename = file.getOriginalFilename();
+        Path filepath = Paths.get("uploads/images/", filename);
+        Files.copy(file.getInputStream(), filepath, StandardCopyOption.REPLACE_EXISTING);
+
+        String imageUrl = "/images/" + filename;
+
+        return ResponseEntity.ok(Map.of("url", imageUrl));
     }
 
     @DeleteMapping("/{id}")

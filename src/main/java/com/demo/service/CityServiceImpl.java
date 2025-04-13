@@ -59,10 +59,14 @@ public class CityServiceImpl implements CityService {
     }
 
     @Override
-    public CityResponse updateCityImage(Long id, UpdateCityRequest request) {
+    public CityResponse updateCity(Long id, UpdateCityRequest request) {
         City city = cityRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("City not found"));
 
+        city.setName(request.getName());
+        city.setCountry(request.getCountry());
+        city.setLatitude(request.getLatitude());
+        city.setLongitude(request.getLongitude());
         city.setImage(request.getImage());
 
         return mapToResponse(cityRepository.save(city));
