@@ -1,125 +1,271 @@
-<!-- eslint-disable vue/max-attributes-per-line -->
 <template>
-  <v-layout>
-    <v-navigation-drawer
-      v-model="drawer"
-      expand-on-hover
-      rail
-      @mouseenter="isHovered = true"
-      @mouseleave="isHovered = false"
-    >
-      <v-list density="compact" item-props :items="items" nav>
-        <v-list-item v-for="item in items" @click="$router.push(item.path)">
-          <v-icon :icon="item.prependIcon"></v-icon>
-          <span v-if="isHovered">{{ item.title }}</span>
-        </v-list-item>
-      </v-list>
-      <template #append>
-        <v-list-item
-          class="ma-2"
-          link
-          nav
-          prepend-icon="mdi-logout"
-          title="登出"
-        />
-      </template>
-    </v-navigation-drawer>
+  <div class="max-w-screen-xl mx-auto px-4">
+    <!-- Header -->
+    <header class="grid grid-cols-3 items-center py-6">
+      <!-- Left: Logo -->
+      <div class="flex justify-start">
+        <img
+          src="@/assets/Easytrip_text.png"
+          alt="Easytrip Logo"
+          width="40%"
+          height="40%" />
+      </div>
 
-    <v-app-bar border="b" class="ps-4" flat>
-      <v-app-bar-nav-icon
-        v-if="$vuetify.display.smAndDown"
-        @click="drawer = !drawer"
-      />
+      <!-- Middle: Navigation -->
+       <!-- Tabs -->
+       <div class="flex justify-center space-x-6 text-base font-semibold mb-8">
+        <div v-for="tab in tabs" :key="tab.name">
+          <button
+            @click="$router.push(tab.path)"
+            class="flex items-center space-x-1 pb-1"
+            :class="
+              selectedTab === tab.name
+                ? 'border-b-2 border-black'
+                : 'text-gray-500'
+            ">
+            <!-- Icon -->
+            <i :class="['mdi', tab.icon]"></i>
+            <!-- Name -->
+            <span>{{ tab.name }}</span>
+          </button>
+        </div>
+      </div>
 
-      <v-app-bar-title class="ms-auto"
-        >Flight Management System</v-app-bar-title
-      >
-      <h5 style="margin-left: auto">王曉明</h5>
-
-      <template #append>
-        <v-btn class="text-none me-2" height="48" icon slim>
+      <!-- Right: Language & Avatar -->
+      <div class="flex justify-end items-center space-x-4 text-base">
+        <span class="mdi mdi-web text-[30px]"></span>
+        <span
+          ><img src="https://flagcdn.com/tw.svg" width="30" alt="Taiwan"
+        /></span>
+        <span>TWD</span>
+        <v-btn class="text-none me-2" height="48"    icon slim>
           <v-avatar color="surface-light" class="mdi mdi-account" size="32" />
 
-          <v-menu activator="parent">
+          <v-menu  v-model="menuVisible" activator="parent" persistent>
             <v-list density="compact" nav>
               <v-list-item
-                append-icon="mdi-cog-outline"
+                append-icon="mdi mdi-login"
                 link
-                title="Settings"
-              />
+                title="登入" />
+              <v-list-item
+                append-icon="mdi mdi-account"
+                link
+                title="個人頁面" />
 
-              <v-list-item append-icon="mdi-logout" link title="Logout" />
+              <v-list-item
+                append-icon="mdi-logout"
+                link
+                title="登出"
+                @click="logoutChange()" />
             </v-list>
           </v-menu>
         </v-btn>
-      </template>
-    </v-app-bar>
-
-    <v-main>
-      <div class="pa-4">
-        <router-view></router-view>
       </div>
-    </v-main>
-  </v-layout>
+    </header>
+
+    <!-- Main -->
+    <main class="text-center mt-10">
+      <!-- Title -->
+      <h1 class="text-4xl font-extrabold mb-8">易趣輕鬆飛</h1>
+
+    
+
+      <!-- Search Bar -->
+      <div class="flex flex-wrap justify-center items-center gap-4">
+        <!-- From -->
+        <div
+          class="flex items-center bg-gray-100 px-4 py-3 rounded-full text-sm w-52">
+          <span class="mr-2 mdi mdi-airplane-takeoff"></span
+          ><strong>From:</strong>
+          <input
+            type="text"
+            placeholder="Origin"
+            class="bg-transparent outline-none ml-2 w-full" />
+        </div>
+
+        <!-- To -->
+        <div
+          class="flex items-center bg-gray-100 px-4 py-3 rounded-full text-sm w-52">
+          <span class="mr-2 mdi mdi-airplane-landing"></span
+          ><strong>To:</strong>
+          <input
+            type="text"
+            placeholder="Destination"
+            class="bg-transparent outline-none ml-2 w-full" />
+        </div>
+
+        <!-- Date range (one input, two pickers) -->
+        <div
+          class="flex items-center bg-gray-100 px-4 py-3 rounded-full text-sm w-64">
+          <span class="mr-2 mdi mdi-calendar-range"></span>
+          <input
+            type="text"
+            ref="dateInput"
+            placeholder="Start → End"
+            class="bg-transparent outline-none w-full"
+            readonly />
+        </div>
+
+        <!-- Travelers -->
+        <div
+          class="flex items-center bg-gray-100 px-4 py-3 rounded-full text-sm w-40">
+          <span class="mr-2 mdi mdi-account-multiple"></span>
+          <span>1 Traveler</span>
+        </div>
+
+        <!-- Search Button -->
+        <button
+          class="bg-green-400 hover:bg-green-500 text-white font-bold px-6 py-3 rounded-full">
+          Search
+        </button>
+      </div>
+      <v-container>
+    <v-row align="start" justify="center">
+      <v-col
+        v-for="flight in flights"
+        :key="flight.id"
+        align-self="center"
+        cols="9"
+        md="9"
+      >
+        <v-card>
+          <v-card-title> </v-card-title>
+          <v-card-text>
+            <div class="flight-info">
+              <div class="departure">
+                <v-subheader>{{ flight.departureCity }}</v-subheader>
+                <br />
+                <v-text>{{ flight.departureTime }}</v-text>
+              </div>
+              <div class="line"></div>
+              <div class="arrival">
+                <v-subheader>{{ flight.arrivalCity }}</v-subheader>
+                <br />
+                <v-text>{{ flight.arrivalTime }}</v-text>
+              </div>
+            </div>
+          </v-card-text>
+          <v-card-actions style="display: flex; justify-content: flex-end">
+            <v-btn
+              color="#2196F3"
+              text="選擇座位"
+              @click="reveal = true"
+            ></v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-col>
+    </v-row>
+  </v-container>
+    </main>
+  </div>
 </template>
 
 <script setup>
-import { ref, watch } from "vue";
-
-const drawer = ref(true);
-const isHovered = ref(false); // 追蹤懸停狀態
-// 使用 watch 監控 drawer 的狀態變化
-watch(drawer, (newVal, oldVal) => {
-  console.log(
-    `側邊欄狀態改變：從 ${oldVal ? "展開" : "縮起"} 到 ${
-      newVal ? "展開" : "縮起"
-    }`
-  );
-  // 在這裡可以執行其他邏輯，例如記錄狀態或觸發動畫
-});
-
-const items = ref([
+import { ref, onMounted } from "vue";
+import flatpickr from "flatpickr";
+import "flatpickr/dist/flatpickr.min.css";
+const menuVisible = ref(false);
+const flights = ref([
   {
-    title: "登入畫面",
-    prependIcon: "mdi-view-dashboard-outline",
-    link: true,
-    path: "/login",
+    id: 1,
+    departureCity: '紐約',
+    departureTime: '4/11 10:00 AM',
+    arrivalCity: '倫敦',
+    arrivalTime: '4/11 8:00 PM',
+    link: '#',
   },
   {
-    title: "會員管理",
-    prependIcon: "mdi mdi-account-group",
-    link: true,
-    path: "/members",
+    id: 2,
+    departureCity: '洛杉磯',
+    departureTime: '4/12 11:00 AM',
+    arrivalCity: '東京',
+    arrivalTime: '4/13 3:00 PM',
+    link: '#',
   },
   {
-    title: "機場管理",
-    prependIcon: "mdi-airport",
-    link: true,
-    path: "/airport",
+    id: 3,
+    departureCity: '巴黎',
+    departureTime: '4/12 9:00 AM',
+    arrivalCity: '柏林',
+    arrivalTime: '4/12 11:30 AM',
+    link: '#',
   },
   {
-    title: "航線管理",
-    prependIcon: "mdi mdi-airplane-takeoff",
-    link: false,
-    path: "",
+    id: 4,
+    departureCity: '香港',
+    departureTime: '4/13 2:00 PM',
+    arrivalCity: '悉尼',
+    arrivalTime: '4/14 10:00 AM',
+    link: '#',
   },
   {
-    title: "票務訂單管理",
-    prependIcon: "mdi mdi-ticket",
-    link: false,
-    path: "",
-  },
-  {
-    title: "測試",
-    prependIcon: "mdi-account-group",
-    link: true,
-    path: "/test",
-  },
-  {
-    title: "測試TT",
-    prependIcon: "mdi mdi-abacus",
-    link: true,
-    path: "/testtt",
+    id: 5,
+    departureCity: '上海',
+    departureTime: '4/14 6:00 PM',
+    arrivalCity: '舊金山',
+    arrivalTime: '4/14 2:00 PM',
+    link: '#',
   },
 ]);
+
+
+
+const tabs = [
+  { 
+    name: "航班", 
+    icon: "mdi-airplane",
+    path: "/login", },
+  { name: "禮品", icon: "mdi-gift" },
+  { name: "景點", icon: "mdi-map-marker-radius" },
+];
+
+const dateInput = ref(null);
+
+onMounted(() => {
+  flatpickr(dateInput.value, {
+    mode: "range",
+    minDate: "today",
+    dateFormat: "M d",
+    defaultDate: [new Date(), new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)],
+    onChange: (dates, str) => {
+      console.log("Selected range:", str);
+    },
+  });
+});
 </script>
+
+<style scoped>
+/* 可选：让输入光标不可见（仅用于 flatpickr 的只读场景） */
+input[readonly] {
+  cursor: pointer;
+}
+.card {
+  width: 700px;
+  height: 150px;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 20px;
+}
+.flight-info {
+  display: flex;
+  flex-direction: row-reverse;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.departure,
+.arrival {
+  text-align: center;
+}
+
+.line {
+  width: 40%; /* Full width line */
+  height: 1px;
+  background-color: #ccc; /* Line color */
+  margin: 10px 0; /* Adjust spacing as needed */
+}
+</style>
