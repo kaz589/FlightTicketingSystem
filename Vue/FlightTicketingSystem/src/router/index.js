@@ -1,21 +1,31 @@
 import { createRouter, createWebHistory } from "vue-router";
 import { useAuthStore } from "@/stores/auth"; // 引入 Pinia store
-import "swiper/css";
-import "swiper/css/navigation";
-import "swiper/css/pagination";
+
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
       path: "/",
-<<<<<<< HEAD
       // component: () => import("@/layouts/mainlayout.vue"),
-       component: () => import("@/layouts/mainlayoutest.vue"),
+       component: () => import("@/layouts/memberLayout.vue"),
+       children: [
+        {
+          path: "",
+          component: () => import("@/page/member/test1.vue"),
+        },
+        {
+          path: "test2",
+          component: () => import("@/page/member/test2.vue"),
+        },
+        {
+          path: "test3",
+          component: () => import("@/page/member/test3.vue"),
+        },
 
-=======
-      component: () => import("@/layouts/userView.vue"),
->>>>>>> 920e9e378d89cb6d159a8213da4b0f0d7c491593
+      ] 
+
+      // component: () => import("@/layouts/userView.vue"),
     },
     {
       path: "/admin",

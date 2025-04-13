@@ -18,11 +18,7 @@
           <button
             @click="$router.push(tab.path)"
             class="flex items-center space-x-1 pb-1"
-            :class="
-              selectedTab === tab.name
-                ? 'border-b-2 border-black'
-                : 'text-gray-500'
-            ">
+           >
             <!-- Icon -->
             <i :class="['mdi', tab.icon]"></i>
             <!-- Name -->
