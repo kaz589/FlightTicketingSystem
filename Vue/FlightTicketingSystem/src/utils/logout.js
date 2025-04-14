@@ -10,3 +10,10 @@ export function logout() {
 
     // router.push("/login");  // 確保這行沒有問題，直接將用戶跳轉到登入頁
   }
+
+
+
+  export function backToMainPage(router){
+    //跳轉至首頁
+    router.push('/');  
+  }

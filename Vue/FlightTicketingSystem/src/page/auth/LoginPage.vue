@@ -40,6 +40,11 @@
           <v-btn prepend-icon="mdi mdi-account-plus" @click="insertOpen">
             註冊
           </v-btn>
+
+          <v-btn prepend-icon="mdi mdi-account-plus" @click="insertOpen">
+            返回首頁
+          </v-btn>
+
           <div class="button-test">
             <button @click="login" v-if="!isAuthenticated">登入</button>
             <button @click="logout" v-if="isAuthenticated">登出</button>
@@ -158,7 +163,7 @@ function authentication() {
         console.log("成功登入", testUser);
 
         // 登錄後跳轉到指定頁面
-        router.push("/");
+        router.push("/admin");
         Swal.fire({
           title: "登入成功!",
           icon: "success",
@@ -221,22 +226,22 @@ function save() {
   });
 }
 
-// 登入測試
-function login() {
-  const testUser = { username: "testuser", email: "testuser@example.com" };
-  authStore.login(testUser); // 更新 Pinia 狀態為已登入，並儲存用戶資料
-  console.log("成功登入", testUser);
+// // 登入測試
+// function login() {
+//   const testUser = { username: "testuser", email: "testuser@example.com" };
+//   authStore.login(testUser); // 更新 Pinia 狀態為已登入，並儲存用戶資料
+//   console.log("成功登入", testUser);
 
-  // 登錄後跳轉到指定頁面
-  router.push({ path: "/" }); // 或者你也可以跳轉到 'members'
-}
+//   // 登錄後跳轉到指定頁面
+//   router.push({ path: "/admin" });
+// }
 
-// 登出測試
-function logout() {
-  authStore.logout(); // 更新 Pinia 狀態為未登入
+// // 登出測試
+// function logout() {
+//   authStore.logout(); // 更新 Pinia 狀態為未登入
 
-  console.log("成功登出");
-}
+//   console.log("成功登出");
+// }
 </script>
 
 <style scoped>
