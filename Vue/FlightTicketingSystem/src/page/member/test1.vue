@@ -1,9 +1,8 @@
 <template>
   <!-- Title -->
   <div class="flex justify-center mb-8">
-  <h1 class="text-4xl font-extrabold">易趣輕鬆飛</h1>
-</div>
- 
+    <h1 class="text-4xl font-extrabold">易趣輕鬆飛</h1>
+  </div>
 
   <!-- Search Bar -->
   <div class="flex flex-wrap justify-center items-center gap-4">
@@ -45,8 +44,6 @@
       />
     </div>
 
-   
-
     <!-- Search Button -->
     <button
       class="bg-green-400 hover:bg-green-500 text-white font-bold px-6 py-3 rounded-full"
@@ -63,31 +60,7 @@
         cols="9"
         md="9"
       >
-        <v-card>
-          <v-card-title> </v-card-title>
-          <v-card-text>
-            <div class="flight-info">
-              <div class="departure">
-                <label>{{ flight.departureCity }}</label>
-                <br />
-                <label> {{ flight.departureTime }}</label>
-              </div>
-              <div class="line"></div>
-              <div class="arrival">
-                <label> {{ flight.arrivalCity }}</label>
-                <br />
-                <label> {{ flight.arrivalTime }}</label>
-              </div>
-            </div>
-          </v-card-text>
-          <v-card-actions style="display: flex; justify-content: flex-end">
-            <v-btn
-              color="#2196F3"
-              text="選擇座位"
-              @click="reveal = true"
-            ></v-btn>
-          </v-card-actions>
-        </v-card>
+        <FlightCard :flight="flight"></FlightCard>
       </v-col>
     </v-row>
   </v-container>
@@ -95,10 +68,13 @@
 
 <script setup>
 import { ref, onMounted } from "vue";
+import { ApiAirport } from "@/utils/API";
 import flatpickr from "flatpickr";
 import "flatpickr/dist/flatpickr.min.css";
-const menuVisible = ref(false);
-
+import FlightCard from "@/components/flight/flightcard.vue";
+onMounted(() => {
+  getdisinairport();
+});
 const flights = ref([
   {
     id: 1,
@@ -106,6 +82,7 @@ const flights = ref([
     departureTime: "4/11 10:00 AM",
     arrivalCity: "倫敦",
     arrivalTime: "4/11 8:00 PM",
+    flightid: 1,
     link: "#",
   },
   {
@@ -114,6 +91,7 @@ const flights = ref([
     departureTime: "4/12 11:00 AM",
     arrivalCity: "東京",
     arrivalTime: "4/13 3:00 PM",
+    flightid: 1,
     link: "#",
   },
   {
@@ -122,6 +100,7 @@ const flights = ref([
     departureTime: "4/12 9:00 AM",
     arrivalCity: "柏林",
     arrivalTime: "4/12 11:30 AM",
+    flightid: 1,
     link: "#",
   },
   {
@@ -130,6 +109,7 @@ const flights = ref([
     departureTime: "4/13 2:00 PM",
     arrivalCity: "悉尼",
     arrivalTime: "4/14 10:00 AM",
+    flightid: 1,
     link: "#",
   },
   {
@@ -138,39 +118,17 @@ const flights = ref([
     departureTime: "4/14 6:00 PM",
     arrivalCity: "舊金山",
     arrivalTime: "4/14 2:00 PM",
+    flightid: 1,
     link: "#",
   },
 ]);
+function getdisinairport() {
+  ApiAirport.DistinctAirportName().then((response) => {
+    flights.value = response.data;
+  });
+}
+
+
 </script>
 
-<style scoped>
-.card {
-  width: 700px;
-  height: 150px;
-  background-color: #fff;
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  padding: 20px;
-}
-.flight-info {
-  display: flex;
-  flex-direction: row-reverse;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.departure,
-.arrival {
-  text-align: center;
-}
-
-.line {
-  width: 40%; /* Full width line */
-  height: 1px;
-  background-color: #ccc; /* Line color */
-  margin: 10px 0; /* Adjust spacing as needed */
-}
-</style>
+<style scoped></style>
