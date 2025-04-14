@@ -7,13 +7,13 @@
         <img
           src="@/assets/Easytrip_text.png"
           alt="Easytrip Logo"
-          width="40%"
-          height="40%" />
+          width="30%"
+          height="30%" />
       </div>
 
       <!-- Middle: Navigation -->
        <!-- Tabs -->
-       <div class="flex justify-start space-x-6 text-base font-semibold mb-1 mt-4">
+       <div class="flex justify-center space-x-6 text-base font-semibold mb-1 mt-4">
         <div v-for="tab in tabs" :key="tab.name">
           <v-btn
             @click="$router.push(tab.path)"
