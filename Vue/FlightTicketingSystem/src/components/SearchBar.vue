@@ -1,15 +1,18 @@
 <template>
   <div class="flex justify-center mt-6">
     <div
-      class="flex w-full max-w-xl shadow-md rounded-full border border-gray-200 overflow-hidden">
+      class="flex w-full max-w-xl shadow-md rounded-full border border-gray-200 overflow-hidden"
+    >
       <input
-        v-model="searchQuery"
+        v-model="localQuery"
         type="text"
         placeholder="請輸入關鍵字"
-        class="w-full px-6 py-3 focus:outline-none" />
+        class="w-full px-6 py-3 focus:outline-none"
+      />
       <button
         class="bg-emerald-400 text-white px-6 py-3 font-semibold hover:bg-emerald-500"
-        @click="handleSearch">
+        @click="emitSearch"
+      >
         Search
       </button>
     </div>
@@ -20,18 +23,17 @@
 import { ref, watch } from "vue";
 
 const props = defineProps({
-  selectedTab: String,
+  modelValue: String,
+});
+const emit = defineEmits(["update:modelValue", "search"]);
+
+const localQuery = ref(props.modelValue || "");
+
+watch(localQuery, (val) => {
+  emit("update:modelValue", val);
 });
 
-const emit = defineEmits(["search-city", "search-attraction"]);
-
-const searchQuery = ref("");
-
-const handleSearch = () => {
-  if (props.selectedTab === "cities") {
-    emit("search-city", searchQuery.value);
-  } else if (props.selectedTab === "attractions") {
-    emit("search-attraction", searchQuery.value);
-  }
+const emitSearch = () => {
+  emit("search");
 };
 </script>

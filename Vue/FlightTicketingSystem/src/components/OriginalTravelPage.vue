@@ -10,7 +10,8 @@
             ? 'border-b-2 border-black pb-1 font-semibold'
             : '',
         ]"
-        @click="setSelectedTab('cities')">
+        @click="setSelectedTab('cities')"
+      >
         查詢城市
       </div>
       <div
@@ -20,7 +21,8 @@
             ? 'border-b-2 border-black pb-1 font-semibold'
             : '',
         ]"
-        @click="setSelectedTab('attractions')">
+        @click="setSelectedTab('attractions')"
+      >
         查詢景點
       </div>
       <div
@@ -30,7 +32,8 @@
             ? 'border-b-2 border-black pb-1 font-semibold'
             : '',
         ]"
-        @click="showAllCities()">
+        @click="showAllCities()"
+      >
         全部城市
       </div>
       <div
@@ -40,7 +43,8 @@
             ? 'border-b-2 border-black pb-1 font-semibold'
             : '',
         ]"
-        @click="showAllAttractions()">
+        @click="showAllAttractions()"
+      >
         全部景點
       </div>
       <div
@@ -50,7 +54,8 @@
             ? 'border-b-2 border-black pb-1 font-semibold'
             : '',
         ]"
-        @click="addCity">
+        @click="addCity"
+      >
         增加城市
       </div>
       <div
@@ -60,22 +65,26 @@
             ? 'border-b-2 border-black pb-1 font-semibold'
             : '',
         ]"
-        @click="addAttraction">
+        @click="addAttraction"
+      >
         增加景點
       </div>
     </div>
 
     <div class="flex justify-center mt-6">
       <div
-        class="flex w-full max-w-xl shadow-md rounded-full border border-gray-200 overflow-hidden">
+        class="flex w-full max-w-xl shadow-md rounded-full border border-gray-200 overflow-hidden"
+      >
         <input
           v-model="searchQuery"
           type="text"
           placeholder="請輸入關鍵字"
-          class="w-full px-6 py-3 focus:outline-none" />
+          class="w-full px-6 py-3 focus:outline-none"
+        />
         <button
           class="bg-emerald-400 text-white px-6 py-3 font-semibold hover:bg-emerald-500"
-          @click="search">
+          @click="search"
+        >
           Search
         </button>
       </div>
@@ -84,16 +93,19 @@
     <!-- City Cards -->
     <div
       v-if="selectedTab === 'cities' && results.length"
-      class="mt-8 max-w-6xl mx-auto">
+      class="mt-8 max-w-6xl mx-auto"
+    >
       <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
         <div
           v-for="city in results"
           :key="city.id"
-          class="border rounded-2xl shadow-md overflow-hidden flex flex-col items-center justify-start p-3 bg-white w-[280px] min-h-[300px] mx-auto">
+          class="border rounded-2xl shadow-md overflow-hidden flex flex-col items-center justify-start p-3 bg-white w-[280px] min-h-[300px] mx-auto"
+        >
           <img
             :src="`http://localhost:8080${city.image}`"
             alt="City Image"
-            class="w-[260px] h-[160px] object-cover rounded-lg mb-4" />
+            class="w-[260px] h-[160px] object-cover rounded-lg mb-4"
+          />
           <div class="text-base font-semibold text-center mb-4">
             <div>{{ city.name }}</div>
             <div>{{ city.country }}</div>
@@ -101,12 +113,14 @@
           <div class="flex space-x-3 mt-auto">
             <button
               class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-1 rounded text-sm"
-              @click="editCity(city)">
+              @click="editCity(city)"
+            >
               修改
             </button>
             <button
               class="bg-red-600 hover:bg-red-700 text-white px-4 py-1 rounded text-sm"
-              @click="confirmDeleteCity(city.id)">
+              @click="confirmDeleteCity(city.id)"
+            >
               刪除
             </button>
           </div>
@@ -117,12 +131,14 @@
     <!-- Attraction Cards -->
     <div
       v-if="selectedTab === 'attractions' && results.length"
-      class="mt-8 max-w-6xl mx-auto">
+      class="mt-8 max-w-6xl mx-auto"
+    >
       <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
         <div
           v-for="attraction in results"
           :key="attraction.id"
-          class="border rounded-2xl shadow-md overflow-hidden flex flex-col items-center justify-start p-3 bg-white w-[280px] min-h-[380px] mx-auto">
+          class="border rounded-2xl shadow-md overflow-hidden flex flex-col items-center justify-start p-3 bg-white w-[280px] min-h-[380px] mx-auto"
+        >
           <div class="text-base font-semibold mb-2 text-center">
             {{ attraction.name }}
           </div>
@@ -130,7 +146,8 @@
             <img
               :src="attraction.photoUrl"
               alt="Attraction photo"
-              class="w-[260px] h-[160px] object-cover rounded-lg" />
+              class="w-[260px] h-[160px] object-cover rounded-lg"
+            />
           </div>
           <div class="text-center mt-2">
             <div class="flex justify-center items-center space-x-1">
@@ -145,17 +162,20 @@
           <div class="flex justify-center space-x-4 mt-auto mb-2">
             <button
               class="bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700 text-sm"
-              @click="editAttraction(attraction)">
+              @click="editAttraction(attraction)"
+            >
               編輯
             </button>
             <button
               class="bg-green-600 text-white px-3 py-1 rounded hover:bg-green-700 text-sm"
-              @click="showAllImages(attraction.id, attraction.name)">
+              @click="showAllImages(attraction.id, attraction.name)"
+            >
               查看所有圖片
             </button>
             <button
               class="bg-red-600 text-white px-3 py-1 rounded hover:bg-red-700 text-sm"
-              @click="confirmDeleteAttraction(attraction.id, attraction.name)">
+              @click="confirmDeleteAttraction(attraction.id, attraction.name)"
+            >
               刪除
             </button>
           </div>
@@ -296,7 +316,6 @@ const showAllAttractions = async (page = 0, size = 9) => {
     const attractionsRaw = res.data.content;
     const totalPages = res.data.totalPages;
 
-    // 取得每個景點的第一張照片
     const attractions = await Promise.all(
       attractionsRaw.map(async (attr) => {
         try {
@@ -319,7 +338,6 @@ const showAllAttractions = async (page = 0, size = 9) => {
       return;
     }
 
-    // 渲染卡片 HTML
     const html = `
       <div class="grid grid-cols-3 gap-4">
         ${attractions
