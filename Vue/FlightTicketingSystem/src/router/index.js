@@ -63,18 +63,22 @@ const router = createRouter({
         {
           path: "flight",
           component: () => import("@/page/admin/Flight.vue"),
+          meta: { requiresAuth: true }, // 需要登錄的頁面
         },
         {
           path: "Seats",
           component: () => import("@/page/admin/Seats.vue"),
+          meta: { requiresAuth: true }, // 需要登錄的頁面
         },
         {
           path: "Ticket",
           component: () => import("@/page/admin/Ticket.vue"),
+          meta: { requiresAuth: true }, // 需要登錄的頁面
         },
         {
           path: "travel",
           component: () => import("@/components/TravelPage.vue"),
+          meta: { requiresAuth: true }, // 需要登錄的頁面
         },
       ],
     },

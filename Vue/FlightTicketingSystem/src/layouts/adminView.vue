@@ -6,7 +6,8 @@
       expand-on-hover
       rail
       @mouseenter="isHovered = true"
-      @mouseleave="isHovered = false">
+      @mouseleave="isHovered = false"
+    >
       <v-list density="compact" item-props :items="items" nav>
         <v-list-item v-for="item in items" @click="$router.push(item.path)">
           <v-icon :icon="item.prependIcon"></v-icon>
@@ -21,14 +22,16 @@
           nav
           prepend-icon="mdi-logout"
           title="登出"
-          @click="logoutChange()" />
+          @click="logoutChange()"
+        />
       </template>
     </v-navigation-drawer>
 
     <v-app-bar border="b" class="ps-4" flat>
       <v-app-bar-nav-icon
         v-if="$vuetify.display.smAndDown"
-        @click="drawer = !drawer" />
+        @click="drawer = !drawer"
+      />
 
       <v-app-bar-title class="ms-auto"
         ><img
@@ -47,16 +50,26 @@
 
           <v-menu activator="parent">
             <v-list density="compact" nav>
+              <!-- 跳轉至前台 -->
+              <v-list-item
+                append-icon="mdi-login"
+                link
+                title="回首頁"
+                @click="backToMainPage(router)"
+              />
+
               <v-list-item
                 append-icon="mdi-cog-outline"
                 link
-                title="Settings" />
+                title="Settings"
+              />
 
               <v-list-item
                 append-icon="mdi-logout"
                 link
                 title="登出"
-                @click="logoutChange()" />
+                @click="logoutChange()"
+              />
             </v-list>
           </v-menu>
         </v-btn>
@@ -74,8 +87,9 @@
 <script setup>
 import { ref, watch } from "vue";
 import { useAuthStore } from "@/stores/auth"; // 引入 Pinia store
-import { logout } from "@/utils/logout"; // 導入登出函數
+import { logout, backToMainPage } from "@/utils/logout"; // 導入登出函數
 import { useRouter } from "vue-router"; // 引入 vue-router
+// import { backToMainPage } from "@/utils/routerChange";
 
 const router = useRouter(); // 使用 vue-router
 
