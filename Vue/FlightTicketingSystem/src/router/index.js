@@ -20,7 +20,11 @@ const router = createRouter({
         },
         {
           path: "test3",
-          component: () => import("@/page/member/test3.vue"),
+          component: () => import("@/page/member/Test.vue"),
+        },
+        {
+          path: "seatSelection",
+          component: () => import("@/page/member/seatSelection.vue"),
         },
 
       ] 
