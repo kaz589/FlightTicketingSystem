@@ -8,4 +8,6 @@ import com.demo.model.DTO.SeatDTO;
 
 public interface SeatService {
 	List<SeatDTO> findAllSeat(); // 查詢所有航班
-}
+	// 根據航班ID搜尋座位
+    List<SeatDTO> findSeatsByFlightId(Integer flightId);
+    }

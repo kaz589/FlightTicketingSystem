@@ -23,6 +23,7 @@ const router = createRouter({
           component: () => import("@/page/member/Test.vue"),
         },
         {
+          //座位選擇
           path: "seatSelection",
           component: () => import("@/page/member/seatSelection.vue"),
         },

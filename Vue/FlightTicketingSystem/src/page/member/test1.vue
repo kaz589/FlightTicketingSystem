@@ -51,14 +51,14 @@
       Search
     </button>
   </div>
-  <v-container>
-    <v-row align="start" justify="center">
+  <v-container   >  
+    <v-row align="start" justify="center"  cols="1" md="1">
       <v-col
         v-for="flight in flights"
         :key="flight.id"
         align-self="center"
-        cols="9"
-        md="9"
+        cols="7"
+        md="7"
       >
         <FlightCard :flight="flight"></FlightCard>
       </v-col>
@@ -73,7 +73,7 @@ import flatpickr from "flatpickr";
 import "flatpickr/dist/flatpickr.min.css";
 import FlightCard from "@/components/flight/flightcard.vue";
 onMounted(() => {
-  getdisinairport();
+  //getdisinairport();
 });
 const flights = ref([
   {
