@@ -1,5 +1,5 @@
 <template>
-     <v-card>
+     <v-card >
           <v-card-title> </v-card-title>
           <v-card-text>
             <div class="flight-info">
@@ -35,7 +35,7 @@ defineProps(["flight"]);
 
 <style  scoped>
 .card {
-  width: 700px;
+  width: 100px;
   height: 150px;
   background-color: #fff;
   border-radius: 8px;
@@ -60,7 +60,16 @@ defineProps(["flight"]);
 .line {
   width: 40%; /* Full width line */
   height: 1px;
-  background-color: #ccc; /* Line color */
+  background-color: black; /* Line color */
   margin: 10px 0; /* Adjust spacing as needed */
+  position: relative; /* 確保可以定位箭頭 */
+}
+.line::after {
+  content: '→'; /* 使用箭頭符號 */
+  position: absolute;
+  right: -15px; /* 調整箭頭位置 */
+  top: -14px; /* 調整箭頭垂直位置 */
+  font-size: 20px; /* 調整箭頭大小 */
+  color: black; /* 箭頭顏色 */
 }
 </style>

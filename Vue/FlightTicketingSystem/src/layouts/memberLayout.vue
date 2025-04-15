@@ -2,6 +2,7 @@
   <v-app>
     <v-app-bar>
       <header class="grid grid-cols-3 items-center py-6">
+
         <!-- Left: Logo -->
         <div class="flex justify-start">
           <img
@@ -25,6 +26,7 @@
               <span>{{ tab.name }}</span>
             </v-btn>
           </div>
+
         </div>
 
         <!-- Right: Language & Avatar -->

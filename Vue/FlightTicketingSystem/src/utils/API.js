@@ -97,9 +97,11 @@ export const ApiMember = {
 };
 
 
-
+//座位相關API
 export  const ApiSeats={
   getAllSeats: () => instance.get("/seat/getAll"),
+  getSeatsByFlightId: (flightId) => instance.get(`/seat/flights/${flightId}`),
+  
 };
 
 // 票務相關 API

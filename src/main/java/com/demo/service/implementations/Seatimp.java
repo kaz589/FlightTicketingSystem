@@ -29,4 +29,16 @@ public class Seatimp  implements SeatService{
 		return newSeatDTO;
 	}
 
+	@Override
+	public List<SeatDTO> findSeatsByFlightId(Integer flightId) {
+		 List <SeatDTO> newSeatDTO=seatRepository.findSeatsByFlightId(flightId).stream()
+					.map(SeatDTO::new)
+					.toList();
+		 
+		 
+		
+		
+		return newSeatDTO;
+	}
+
 }
