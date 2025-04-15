@@ -41,7 +41,10 @@
             註冊
           </v-btn>
 
-          <v-btn prepend-icon="mdi mdi-account-plus" @click="insertOpen">
+          <v-btn
+            prepend-icon="mdi mdi-account-plus"
+            @click="backToMainPage(router)"
+          >
             返回首頁
           </v-btn>
 
@@ -126,10 +129,12 @@
 <script setup>
 import { ref, shallowRef, computed } from "vue";
 import { useRouter } from "vue-router";
-import { ApiAdmin } from "@/utils/API";
+import { ApiAdmin, ApiMember } from "@/utils/API";
 import Swal from "sweetalert2";
 import "sweetalert2/dist/sweetalert2.min.css";
 import { useAuthStore } from "@/stores/auth"; // 引入 Pinia store
+import { backToMainPage } from "@/utils/routerChange";
+import { jwtDecode } from "jwt-decode";
 
 // Pinia store 實例
 const authStore = useAuthStore();
@@ -145,24 +150,63 @@ const DEFAULT_SEARCH = ref({
 const router = useRouter();
 const rawData = ref({ ...DEFAULT_SEARCH.value });
 
+// function authentication() {
+//   console.log("驗證過程");
+//   console.log("帳號 : " + rawData.value.username);
+//   console.log("密碼 : " + rawData.value.password);
+//   ApiAdmin.login(rawData.value)
+//     .then((res) => {
+//       //做登入
+
+//       //回傳直res.data如果是true則執行登入
+//       if (res.data) {
+//         // console.log(res.data);
+//         const testUser = {
+//           username: rawData.value.username,
+//         };
+//         authStore.login(testUser); // 更新 Pinia 狀態為已登入，並儲存用戶資料
+//         console.log("成功登入", testUser);
+
+//         // 登錄後跳轉到指定頁面
+//         router.push("/admin");
+//         Swal.fire({
+//           title: "登入成功!",
+//           icon: "success",
+//           draggable: true,
+//         });
+//       } else {
+//         Swal.fire({
+//           icon: "error",
+//           title: "密碼不符合",
+//           text: "請確認密碼是否輸入正確",
+//         });
+//       }
+//     })
+//     .catch((error) => {
+//       // 處理錯誤
+//       Swal.fire({
+//         icon: "error",
+//         title: "登入失敗",
+//         text: "請確認帳號密碼",
+//       });
+//     });
+// }
+
 function authentication() {
-  console.log("驗證過程");
-  console.log("帳號 : " + rawData.value.username);
-  console.log("密碼 : " + rawData.value.password);
-  ApiAdmin.login(rawData.value)
+  console.log(rawData.value);
+  //登入取得JWT
+  ApiMember.login(rawData.value)
     .then((res) => {
-      //做登入
-
-      //回傳直res.data如果是true則執行登入
       if (res.data) {
-        // console.log(res.data);
+        console.log(res.data.token);
+        const token = res.data.token;
+        const payload = jwtDecode(token);
+        console.log("JWT Payload:", payload.sub);
         const testUser = {
-          username: rawData.value.username,
+          username: payload.sub,
         };
-        authStore.login(testUser); // 更新 Pinia 狀態為已登入，並儲存用戶資料
-        console.log("成功登入", testUser);
-
-        // 登錄後跳轉到指定頁面
+        authStore.login(testUser, token); // 更新 Pinia 狀態為已登入，並儲存用戶資料  並放入token
+        //登錄後跳轉到指定頁面;
         router.push("/admin");
         Swal.fire({
           title: "登入成功!",
@@ -177,13 +221,22 @@ function authentication() {
         });
       }
     })
+    //確認錯誤
     .catch((error) => {
-      // 處理錯誤
-      Swal.fire({
-        icon: "error",
-        title: "登入失敗",
-        text: "請確認帳號密碼",
-      });
+      if (error.response.status === 403) {
+        Swal.fire({
+          icon: "error",
+          title: "密碼不符合",
+          text: "請確認密碼是否輸入正確",
+        });
+      }
+
+      if (error.response) {
+        console.error("Error status:", error.response.status);
+        console.error("Error details:", error.response.data);
+      } else {
+        console.error("Unexpected error:", error.message);
+      }
     });
 }
 

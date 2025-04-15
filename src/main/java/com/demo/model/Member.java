@@ -58,14 +58,19 @@ public class Member {
 	
 	@Column(name = "membership_level")
 	String membershipLevel;
+	
+	@Column(name = "authority")
+	String authority;
+	
 
 	public Member() {
 		super();
 	}
 
+
 	public Member(String fullName, String username, String password, String email, Integer totalMiles,
 			Integer remainingMiles, String phoneNumber, Date registrationDate, boolean emailVerified,
-			boolean phoneVerified, String membershipLevel) {
+			boolean phoneVerified, String membershipLevel, String authority) {
 		super();
 		this.fullName = fullName;
 		this.username = username;
@@ -78,7 +83,10 @@ public class Member {
 		this.emailVerified = emailVerified;
 		this.phoneVerified = phoneVerified;
 		this.membershipLevel = membershipLevel;
+		this.authority = authority;
 	}
+
+
 
 	
 	

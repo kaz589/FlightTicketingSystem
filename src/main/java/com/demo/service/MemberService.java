@@ -5,7 +5,8 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import com.demo.controller.PasswordHashing;
 import com.demo.model.Member;
 import com.demo.repository.MemberRepository;
@@ -15,6 +16,9 @@ public class MemberService {
 	
 	@Autowired
 	private MemberRepository memberRepository;
+	
+	 // 引入 BCryptPasswordEncoder 用於密碼加密
+    private final PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
 	public Member getOne(Integer id) {
 		
@@ -40,7 +44,7 @@ public class MemberService {
 		
 		//密碼需要加密
 		String password = member.getPassword();
-		String password_Hashing = PasswordHashing.hashPassword(password);
+		String password_Hashing = passwordEncoder.encode(password);  // 使用 BCrypt 進行加密
 		member.setPassword(password_Hashing);
 		
 		memberRepository.save(member);
@@ -56,7 +60,7 @@ public class MemberService {
 			
 			//密碼需要加密
 			String password = member.getPassword();
-			String password_Hashing = PasswordHashing.hashPassword(password);
+			String password_Hashing = passwordEncoder.encode(password);  // 使用 BCrypt 進行加密
 			dbMember.setPassword(password_Hashing);
 			
 			dbMember.setEmail(member.getEmail());
