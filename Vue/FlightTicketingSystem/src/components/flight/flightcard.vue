@@ -1,6 +1,6 @@
 <template>
-     <v-card >
-          <v-card-title> </v-card-title>
+     <v-card  class="border-xl">
+          
           <v-card-text>
             <div class="flight-info">
               <div class="departure">
@@ -34,17 +34,7 @@ defineProps(["flight"]);
 </script>
 
 <style  scoped>
-.card {
-  width: 100px;
-  height: 150px;
-  background-color: #fff;
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  padding: 20px;
-}
+
 .flight-info {
   display: flex;
   flex-direction: row-reverse;
