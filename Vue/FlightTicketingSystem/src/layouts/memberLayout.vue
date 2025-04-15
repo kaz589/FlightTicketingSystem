@@ -68,6 +68,7 @@
         </div>
       </header>
     </v-app-bar>
+    <br />
     <v-main>
       <div class="pa-4">
         <router-view></router-view>
@@ -79,6 +80,7 @@
 <script setup>
 import { ref, onMounted } from "vue";
 import { useRouter } from "vue-router"; // 引入 vue-router
+
 const router = useRouter(); // 使用 vue-router
 const tabs = ref([
   {
