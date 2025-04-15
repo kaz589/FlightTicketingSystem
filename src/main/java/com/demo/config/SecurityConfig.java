@@ -10,6 +10,7 @@ import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -26,6 +27,7 @@ import com.demo.utils.JwtTokenProvider;
 
 @EnableWebSecurity
 @Configuration
+@EnableMethodSecurity(prePostEnabled = true) //開啟方法級別的Security支援
 public class SecurityConfig {
 	
 	@Autowired
@@ -42,14 +44,14 @@ public class SecurityConfig {
 	         .cors(Customizer.withDefaults())
 	         .csrf(csrf -> csrf.disable())
 	         .authorizeHttpRequests(auth -> auth
-//	        		 .anyRequest().permitAll() // 這裡放行所有請求
-	             .requestMatchers(
-	                 "/api/auth/**",          // ✅ 放行登入
-	                 "/api/auth/register",       // ✅ 放行註冊（如果你有）
-	                 "/swagger-ui/**",           // ✅ 放行 Swagger（如需）
-	                 "/v3/api-docs/**"           // ✅ 放行 Swagger JSON（如需）
-	             ).permitAll()
-	             .anyRequest().authenticated() // 其餘都需認證
+	        		 .anyRequest().permitAll() // 這裡放行所有請求
+//	             .requestMatchers(
+//	                 "/api/auth/**",          // ✅ 放行登入
+//	                 "/api/auth/register",       // ✅ 放行註冊（如果你有）
+//	                 "/swagger-ui/**",           // ✅ 放行 Swagger（如需）
+//	                 "/v3/api-docs/**"           // ✅ 放行 Swagger JSON（如需）
+//	             ).permitAll()
+//	             .anyRequest().authenticated() // 其餘都需認證
 	         )
 	         .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class)
 	         .build();

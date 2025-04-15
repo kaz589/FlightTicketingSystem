@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 //import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.demo.Security.annotation.RequireJwt;
 import com.demo.model.Member;
 import com.demo.service.MemberService;
 
@@ -57,6 +58,8 @@ public class MemberController {
 		return "查無此會員";
 	}
 //  更新里程數(累積里程)
+	
+	@RequireJwt
 	@PutMapping("/IncreaseMiles/{id}/{increaseMiles}")
 	public Member increaseMilesById(@PathVariable Integer id,
 									@PathVariable Integer increaseMiles) {

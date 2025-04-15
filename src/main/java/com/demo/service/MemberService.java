@@ -40,8 +40,31 @@ public class MemberService {
 		return memberRepository.findAll();		
 	}
 	
+	
+	//判斷username是否存在
+		public boolean usernameExist(String username) {
+			
+			//透過username查admin
+			Member member = memberRepository.findByUsername(username);
+			if (member != null) {
+				return true;
+			}
+			return false;
+		}
+	
+	
+	
 	public Member insertMember(Member member) {
 		
+		
+		// 要確認username是否重複
+		// 先透過username查有沒有密碼
+		boolean result = usernameExist(member.getUsername());
+		if (result) {
+			//username存在，不能新增
+			return null;
+			
+		}		
 		//密碼需要加密
 		String password = member.getPassword();
 		String password_Hashing = passwordEncoder.encode(password);  // 使用 BCrypt 進行加密

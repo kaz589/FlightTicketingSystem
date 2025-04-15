@@ -2,7 +2,6 @@
   <v-app>
     <v-app-bar>
       <header class="grid grid-cols-3 items-center py-6">
-
         <!-- Left: Logo -->
         <div class="flex justify-start">
           <img
@@ -26,7 +25,6 @@
               <span>{{ tab.name }}</span>
             </v-btn>
           </div>
-
         </div>
 
         <!-- Right: Language & Avatar -->
@@ -36,6 +34,9 @@
             ><img src="https://flagcdn.com/tw.svg" width="30" alt="Taiwan"
           /></span>
           <span>TWD</span>
+          <button class="login-btn" @click="router.push('/loginUser')">
+            <span>登入</span>
+          </button>
           <v-btn class="text-none me-2" height="48" icon slim>
             <v-avatar color="surface-light" class="mdi mdi-account" size="32" />
 
@@ -47,10 +48,12 @@
                   title="管理員登入"
                   @click="router.push('/login')"
                 />
+
                 <v-list-item
                   append-icon="mdi mdi-account"
                   link
                   title="個人頁面"
+                  @click="router.push('/memberFront')"
                 />
 
                 <v-list-item
@@ -94,4 +97,18 @@ function logoutChange() {
 }
 </script>
 
-<style scoped></style>
+<style scoped>
+.login-btn {
+  padding: 8px 16px;
+  border: 1px solid transparent;
+  background-color: white;
+  transition: all 0.3s;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.login-btn:hover {
+  border-color: #ccc; /* 灰色邊框 */
+  box-shadow: 0 0 5px #ccc; /* 灰色陰影 */
+}
+</style>

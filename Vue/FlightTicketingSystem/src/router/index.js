@@ -1,15 +1,14 @@
 import { createRouter, createWebHistory } from "vue-router";
 import { useAuthStore } from "@/stores/auth"; // 引入 Pinia store
 
-
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
       path: "/",
       // component: () => import("@/layouts/mainlayout.vue"),
-       component: () => import("@/layouts/memberLayout.vue"),
-       children: [
+      component: () => import("@/layouts/memberLayout.vue"),
+      children: [
         {
           path: "",
           component: () => import("@/page/member/test1.vue"),
@@ -27,8 +26,12 @@ const router = createRouter({
           path: "seatSelection",
           component: () => import("@/page/member/seatSelection.vue"),
         },
-
-      ] 
+        {
+          //會員專區
+          path: "memberFront",
+          component: () => import("@/page/member/MemberPageFront.vue"),
+        },
+      ],
 
       // component: () => import("@/layouts/userView.vue"),
     },
@@ -96,6 +99,12 @@ const router = createRouter({
       component: () => import("@/layouts/memberLayout.vue"),
       meta: { requiresAuth: true }, // 需要登錄的頁面
     },
+    {
+      //會員專區
+      path: "/loginUser",
+      component: () => import("@/page/member/LoginMember.vue"),
+    },
+
     // {
     //   path: '/about',
     //   name: 'about',

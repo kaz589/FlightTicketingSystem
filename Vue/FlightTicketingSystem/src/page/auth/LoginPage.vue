@@ -42,7 +42,7 @@
           </v-btn>
 
           <v-btn
-            prepend-icon="mdi mdi-account-plus"
+            prepend-icon="mdi mdi-home-export-outline"
             @click="backToMainPage(router)"
           >
             返回首頁
@@ -105,6 +105,7 @@
                       v-model="insertData.registrationDate"
                       label="註冊時間"
                       required
+                      readonly
                     ></v-text-field>
                   </v-col>
                 </v-row>
@@ -135,6 +136,7 @@ import "sweetalert2/dist/sweetalert2.min.css";
 import { useAuthStore } from "@/stores/auth"; // 引入 Pinia store
 import { backToMainPage } from "@/utils/routerChange";
 import { jwtDecode } from "jwt-decode";
+import { hasRole } from "@/utils/roleHelper";
 
 // Pinia store 實例
 const authStore = useAuthStore();
@@ -201,18 +203,30 @@ function authentication() {
         console.log(res.data.token);
         const token = res.data.token;
         const payload = jwtDecode(token);
-        console.log("JWT Payload:", payload.sub);
+        console.log("JWT Payload:", payload.roles); //確認角色有哪些
         const testUser = {
           username: payload.sub,
         };
-        authStore.login(testUser, token); // 更新 Pinia 狀態為已登入，並儲存用戶資料  並放入token
-        //登錄後跳轉到指定頁面;
-        router.push("/admin");
-        Swal.fire({
-          title: "登入成功!",
-          icon: "success",
-          draggable: true,
-        });
+
+        //如果是ADMIN 才能登入後台頁面
+        if (hasRole(payload, "ADMIN")) {
+          console.log("是 ADMIN");
+          authStore.login(testUser, token); // 更新 Pinia 狀態為已登入，並儲存用戶資料  並放入token
+          //登錄後跳轉到指定頁面;
+          router.push("/admin");
+
+          Swal.fire({
+            title: "登入成功!",
+            icon: "success",
+            draggable: true,
+          });
+        } else {
+          Swal.fire({
+            icon: "error",
+            title: "沒有此權限",
+            text: "請使用管理員帳號登入",
+          });
+        }
       } else {
         Swal.fire({
           icon: "error",
@@ -247,7 +261,8 @@ const DEFAULT_FORM = ref({
   password: "1",
   email: "1",
   phoneNumber: "1",
-  registrationDate: "2010-11-11",
+  registrationDate: new Date().toISOString().slice(0, 10), // 自動填入今天日期
+  authority: "ADMIN",
 });
 
 const insertData = ref({ ...DEFAULT_FORM.value });
@@ -260,15 +275,30 @@ function insertOpen() {
 
 const test = ref("");
 
+// 滑鼠focus的時候清空錯誤框
 function focusUsername() {
   test.value = "";
 }
 
+// function save() {
+//   //透過api更改
+//   ApiAdmin.insertAdmin(insertData.value).then((res) => {
+//     console.log(res);
+//     //如果res是 null, 顯示新增失敗(使用者重複)
+//     if (res === null) {
+//       // alert("使用者重複");
+//       test.value = "使用者重複";
+//     } else {
+//       Swal.fire("更新成功", "", "success"); // 顯示成功的提示框
+//       dialog.value = false; //關閉彈出框
+//     }
+//   });
+// }
+
+//更改成新增member，但是預設為新增authority: "ADMIN"
 function save() {
-  //透過api更改
-  ApiAdmin.insertAdmin(insertData.value).then((res) => {
-    console.log(res);
-    //如果res是 null, 顯示新增失敗(使用者重複)
+  console.log("準備註冊");
+  ApiMember.insertMember(insertData.value).then((res) => {
     if (res === null) {
       // alert("使用者重複");
       test.value = "使用者重複";
