@@ -13,7 +13,7 @@ export function logout() {
 
 
 
-  export function backToMainPage(router){
-    //跳轉至首頁
-    router.push('/');  
-  }
+  // export function backToMainPage(router){
+  //   //跳轉至首頁
+  //   router.push('/');  
+  // }

@@ -1,5 +1,5 @@
 import axios from "axios";
-
+import { useAuthStore } from '@/stores/auth';
 //axios通用設定
 const instance = axios.create({
   baseURL:'http://localhost:8080/api',
@@ -10,6 +10,15 @@ const instance = axios.create({
 instance.interceptors.request.use(
   (config) => {
     // 在發送請求之前進行一些處理，例如添加 Token
+
+    const auth = useAuthStore();
+    if(auth.token){
+      //有token要帶入request header(Authorization 標頭)
+      console.log("有攜帶token");
+      
+      config.headers.Authorization = `Bearer ${auth.token}`;
+    }
+
     return config;
   },
   (error) => {

@@ -87,9 +87,9 @@
 <script setup>
 import { ref, watch } from "vue";
 import { useAuthStore } from "@/stores/auth"; // 引入 Pinia store
-import { logout, backToMainPage } from "@/utils/logout"; // 導入登出函數
+import { logout } from "@/utils/logout"; // 導入登出函數
 import { useRouter } from "vue-router"; // 引入 vue-router
-// import { backToMainPage } from "@/utils/routerChange";
+import { backToMainPage } from "@/utils/routerChange"; // 導入登出函數"
 
 const router = useRouter(); // 使用 vue-router
 

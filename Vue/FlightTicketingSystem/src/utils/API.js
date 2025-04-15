@@ -90,6 +90,10 @@ export const ApiMember = {
   deleteMemberById: (id) => instance.delete(`/member/DeleteMember/${id}`),
   increaseMiles: (id, plus) => instance.put(`/member/IncreaseMiles/${id}/${plus}`),
   decreaseMiles: (id, minus) => instance.put(`/member/DecreaseMiles/${id}/${minus}`),
+
+
+  login:(loginInfo)=> instance.post(`/auth/login`,loginInfo)
+
 };
 
 
@@ -131,20 +135,22 @@ export const ApiAdmin = {
         console.log("API 請求成功:", response);
         return response.data; // 返回 API 響應資料
       }
-
-
-      
-
     })
 
       .catch((error) => {
         console.error("API 請求錯誤:", error);
         throw error; // 抛出錯誤以便外層處理
       }),
-  login: (admin) =>
-    instance.post(`/admin/GetPassword`, admin)
+  // login: (admin) =>
+  //   instance.post(`/admin/GetPassword`, admin)
 
 }
+
+
+
+
+
+
 
 //里程兌換-商品管理相關API
 export const ApiProducts = {
