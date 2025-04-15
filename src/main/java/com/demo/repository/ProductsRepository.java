@@ -13,7 +13,7 @@ import com.demo.model.Products;
 @Repository
 public interface ProductsRepository extends JpaRepository<Products, Integer>{
 
-
+	Products findOneById(Integer id);
 	List<Products> findByNameContaining(String Name);
 	
 	@Query("from Products p where p.quantity<:threshold ")

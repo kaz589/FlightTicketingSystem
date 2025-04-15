@@ -1,9 +1,11 @@
 package com.demo.controller;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -16,11 +18,13 @@ import org.springframework.web.server.ResponseStatusException;
 
 import com.demo.model.Products;
 import com.demo.service.IProductsService;
+
+import jakarta.validation.Valid;
+
 import org.springframework.web.bind.annotation.RequestBody;
 
-/**
- * 
- */
+
+@CrossOrigin(origins = "http://localhost:5173") 
 @RestController
 @RequestMapping("/api/products")
 public class ProductsController {
@@ -30,66 +34,60 @@ public class ProductsController {
 
 	/**
 	 * 根據商品ID查詢商品。
-	 * 
 	 * @param id 商品的ID
 	 * @return 產品的詳細資料
 	 */
 	@GetMapping("/{id}")
 	public Products findProductById(@PathVariable("id") Integer id) {
-
-		Products product = iProductsService.findProductsById(id);
-		if (product == null) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "商品不存在");
-        }
-		return product;
+		return iProductsService.findProductById(id)
+				.orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "商品不存在"));
 	}
 
 	/**
 	 * 查詢所有商品。
-	 * 
 	 * @return 所有商品的列表
 	 */
 
 	@GetMapping("/all")
 	public List<Products> findAllProducts() {
 		List<Products> products = iProductsService.findAllProducts();
-		 if (products.isEmpty()) {
-	            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "沒有商品資料");
-	        }
-		return products;
+		return checkNotEmpty(products, "沒有商品資料");
 	}
 
-	// 根據商品名稱查詢商品
-
+	
+	/**
+	 * @param name
+	 * @return 查詢到符合名稱的商品的列表
+	 */
 	@GetMapping("/name")
 	public List<Products> findProductsByName(@RequestParam("name") String name) {
 		List<Products> products = iProductsService.findProductsByName(name);
-		 if (products.isEmpty()) {
-	            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "沒有符合名稱的商品");
-	        }
-		return products;
+		return checkNotEmpty(products, "沒有商品資料");
 	}
 
-	// 查詢低庫存商品
+	/**
+	 * 查詢低庫存商品
+	 * @param threshold
+	 * @return 庫存低於threshold的商品列表
+	 */
 	@GetMapping("/lowstock")
-	public List<Products> searchlowstock(@RequestParam("threshold") Integer threshold) {
+	public List<Products> searchLowStock(@RequestParam("threshold") Integer threshold) {
 		List<Products> products = iProductsService.findLowStockProducts(threshold);
-		 if (products.isEmpty()) {
-	            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "庫存不足的商品未找到");
-	        }
-		return products;
+		return checkNotEmpty(products, "沒有商品資料");
 	}
 
-	// 根據里程範圍查詢商品
 
+	/**
+	 * 根據里程範圍查詢商品
+	 * @param min
+	 * @param max
+	 * @return
+	 */
 	@GetMapping("/needmiles")
-	public List<Products> searchByNeedmiles(@RequestParam("min") Integer min,@RequestParam("max") Integer max) {
+	public List<Products> searchByNeedmiles(@RequestParam(name = "min", required = false, defaultValue = "0") Integer min,
+			@RequestParam(name = "max", required = false, defaultValue = "999999") Integer max) {
 		List<Products> products = iProductsService.findProductsByNeedmiles(min, max);
-		;
-		 if (products.isEmpty()) {
-	            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "沒有符合的商品");
-	        }
-		return products;
+		return checkNotEmpty(products, "沒有商品資料");
 	}
 
 	/**
@@ -98,29 +96,52 @@ public class ProductsController {
 	 * @return product 新增的商品資料
 	 */
 	@PostMapping
-	public Products create(@RequestBody Products product) {
+	public Products create(@RequestBody @Valid Products product) {
 
-		return iProductsService.save(product);
+		return iProductsService.saveProduct(product);
+
 	}
 
+	/**
+	 * 刪除一個商品
+	 * @param id
+	 */
 	@DeleteMapping("/{id}")
 	public void delete(@PathVariable Integer id) {
-		iProductsService.deleteProductsById(id);
+		  iProductsService.findProductById(id)
+	        .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "商品不存在"));
+	    	
+		iProductsService.deleteProductById(id);
 	}
 
 	/**
 	 * 更新指定ID商品的詳細資料。
-	 * 
-	 * @param productId      商品ID
-	 * @param product 更新後的商品資料
+	 * @param id 商品ID
+	 * @param product   更新後的商品資料
 	 * @return 更新後的商品資料
 	 */
+
 	@PutMapping("/{id}")
-	public Products update(@PathVariable Integer id, @RequestBody Products product) {
-		  Products existingProduct = iProductsService.findProductsById(id);
-	        if (existingProduct == null) {
-	            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "商品不存在");
-	        }
-		return iProductsService.updateProductsById(id, product);
+	public Products update(@PathVariable Integer id, @RequestBody @Valid Products product) {
+		Optional<Products> existingProduct = iProductsService.findProductById(id);
+			if (existingProduct.isEmpty() ) {
+				  throw new ResponseStatusException(HttpStatus.NOT_FOUND, "商品不存在");
+			}
+		return iProductsService.updateProductById(id, product);
 	}
+
+	/**
+	 * 檢查有無商品並回傳訊息
+	 * @param <T>
+	 * @param list
+	 * @param errorMessage
+	 * @return 查詢到的商品列表
+	 */
+	private <T> List<T> checkNotEmpty(List<T> list, String errorMessage) {
+		if (list.isEmpty()) {
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND, errorMessage);
+		}
+		return list;
+	}
+
 }

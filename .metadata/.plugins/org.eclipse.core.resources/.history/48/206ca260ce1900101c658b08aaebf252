@@ -1,0 +1,49 @@
+spring.application.name=FlightTicketingSystem
+server.servlet.context-path=/
+spring.mvc.hiddenmethod.filter.enabled=true
+##################### upload size config #####################
+spring.servlet.multipart.max-file-size=50MB
+spring.servlet.multipart.max-request-size=50MB
+##################### conntection config #####################
+
+
+# spring.datasource.driver-class-name=com.microsoft.sqlserver.jdbc.SQLServerDriver
+# spring.datasource.url=jdbc:sqlserver://localhost:1434;databaseName=project_planeticket;trustServerCertificate=true;;sendStringParametersAsUnicode=true
+# spring.datasource.username=sa
+# spring.datasource.password=Tata0912!
+
+#spring.datasource.driver-class-name=com.microsoft.sqlserver.jdbc.SQLServerDriver
+#spring.datasource.url=jdbc:sqlserver://localhost:1433;databaseName=project_planeticket;trustServerCertificate=true
+#spring.datasource.username=watcher
+#spring.datasource.password=P@ssw0rd
+
+
+#spring.datasource.driver-class-name=com.microsoft.sqlserver.jdbc.SQLServerDriver
+#spring.datasource.url=jdbc:sqlserver://localhost:1433;databaseName=project_planeticket;trustServerCertificate=true
+#spring.datasource.username=watcher
+#spring.datasource.password=P@ssw0rd
+
+
+
+#spring.datasource.driver-class-name=com.microsoft.sqlserver.jdbc.SQLServerDriver
+#spring.datasource.url=jdbc:sqlserver://localhost:1433;databaseName=project_planeticket;encrypt=true;trustServerCertificate=true
+#spring.datasource.username=watcher
+#spring.datasource.password=P@ssw0rd
+
+spring.datasource.driver-class-name=com.microsoft.sqlserver.jdbc.SQLServerDriver
+spring.datasource.url=jdbc:sqlserver://localhost:1433;databaseName=easytrip;encrypt=true;trustServerCertificate=true
+spring.datasource.username=sa
+spring.datasource.password=victor
+
+##################### JPA config #####################
+spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.SQLServerDialect
+spring.jpa.show-sql=true
+spring.jpa.properties.hibernate.format=true
+
+
+
+##################### OpenAPI #####################
+springdoc.swagger-ui.enabled=true
+springdoc.swagger-ui.path=/swagger-ui.html
+springdoc.api-docs.path=/v3/api-docs
+springdoc.swagger-ui.operations-sorter=method

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section name="Workbench">
+	<item key="hasShownOverlayPopupBefore" value="true"/>
+	<section name="java.lang.Class">
+		<item key="replaceBarOpen" value="false"/>
+		<list key="findhistory">
+			<item value="Optional"/>
+			<item value="O"/>
+			<item value="pruductsRepo"/>
+			<item value="product_id"/>
+			<item value="admin"/>
+			<item value="spring-boot-starter-web"/>
+			<item value="jackson"/>
+			<item value="charset"/>
+		</list>
+	</section>
+</section>

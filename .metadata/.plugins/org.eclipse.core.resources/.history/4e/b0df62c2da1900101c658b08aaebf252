@@ -1,0 +1,23 @@
+package com.demo.model;
+
+import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+@Entity@NoArgsConstructor
+@Getter@Setter
+@Table(name = "redeem_item")
+public class Redeem_item {
+
+	private Integer redeemItemId;
+	private Integer redeem_id;
+	private Integer product_id;
+	private Integer quantity;
+	
+	private Redeem redeem;
+	private Products products;
+	
+	
+}
