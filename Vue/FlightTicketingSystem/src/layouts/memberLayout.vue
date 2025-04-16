@@ -34,10 +34,22 @@
             ><img src="https://flagcdn.com/tw.svg" width="30" alt="Taiwan"
           /></span>
           <span>TWD</span>
-          <button class="login-btn" @click="router.push('/loginUser')">
+          <span>{{ roleLabel }}</span>
+          <button
+            class="login-btn"
+            @click="router.push('/loginUser')"
+            v-if="showLoginBtn"
+          >
             <span>登入</span>
           </button>
-          <v-btn class="text-none me-2" height="48" icon slim>
+
+          <v-btn
+            class="text-none me-2"
+            height="48"
+            icon
+            slim
+            v-if="showUserBtn > 0"
+          >
             <v-avatar color="surface-light" class="mdi mdi-account" size="32" />
 
             <v-menu v-model="menuVisible" activator="parent" persistent>
@@ -45,15 +57,16 @@
                 <v-list-item
                   append-icon="mdi mdi-login"
                   link
-                  title="管理員登入"
-                  @click="router.push('/login')"
+                  title="後台首頁"
+                  @click="router.push('/admin')"
+                  v-if="showUserBtn === 2"
                 />
 
                 <v-list-item
                   append-icon="mdi mdi-account"
                   link
                   title="個人頁面"
-                  @click="router.push('/memberFront')"
+                  @click="test"
                 />
 
                 <v-list-item
@@ -78,10 +91,31 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from "vue";
+import { ref, onMounted, computed } from "vue";
 import { useRouter } from "vue-router"; // 引入 vue-router
+import { useAuthStore } from "@/stores/auth"; // 引入 Pinia store
+import { logout } from "@/utils/logout"; // 導入登出函數
 
 const router = useRouter(); // 使用 vue-router
+const authStore = useAuthStore();
+
+// 👉 根據 store 判斷是否顯示登入按鈕
+const showLoginBtn = computed(() => !authStore.isAuthenticated);
+
+// 👉 根據角色來判斷顯示 User/Admin 按鈕
+const showUserBtn = computed(() => {
+  if (authStore.hasRole("ADMIN")) return 2;
+  if (authStore.hasRole("USER")) return 1;
+  return 0;
+});
+
+//計算是什麼角色
+const roleLabel = computed(() => {
+  if (showUserBtn.value === 2) return "管理員";
+  if (showUserBtn.value === 1) return "會員";
+  return "";
+});
+
 const tabs = ref([
   {
     name: "航班",
@@ -93,9 +127,19 @@ const tabs = ref([
 ]);
 const selectedTab = ref(tabs.value[0].name);
 const menuVisible = ref(false);
-function logoutChange() {
-  // 登出邏輯
-  console.log("User logged out");
+const logoutChange = () => {
+  logout(); // 將 router 實例傳遞給 logout 函數
+  router.push("/");
+  console.log("登出成功");
+};
+
+function test() {
+  const role = localStorage.getItem("roles");
+  const user = JSON.parse(localStorage.getItem("user"));
+  const isLoggedIn = localStorage.getItem("isLoggedIn");
+  console.log(isLoggedIn);
+  console.log(user);
+  console.log(role);
 }
 </script>
 

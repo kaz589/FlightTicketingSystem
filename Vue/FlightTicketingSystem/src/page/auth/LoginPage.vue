@@ -130,13 +130,14 @@
 <script setup>
 import { ref, shallowRef, computed } from "vue";
 import { useRouter } from "vue-router";
-import { ApiAdmin, ApiMember } from "@/utils/API";
+import { ApiMember } from "@/utils/API";
 import Swal from "sweetalert2";
 import "sweetalert2/dist/sweetalert2.min.css";
 import { useAuthStore } from "@/stores/auth"; // 引入 Pinia store
 import { backToMainPage } from "@/utils/routerChange";
 import { jwtDecode } from "jwt-decode";
 import { hasRole } from "@/utils/roleHelper";
+import { cleanRole } from "@/utils/roleHelper";
 
 // Pinia store 實例
 const authStore = useAuthStore();
@@ -201,17 +202,21 @@ function authentication() {
     .then((res) => {
       if (res.data) {
         console.log(res.data.token);
-        const token = res.data.token;
-        const payload = jwtDecode(token);
+        const token = res.data.token; //接住token
+        const payload = jwtDecode(token); // 解碼 JWT
         console.log("JWT Payload:", payload.roles); //確認角色有哪些
         const testUser = {
           username: payload.sub,
         };
+        const clean = cleanRole(payload); //取得乾淨角色
+        console.log(clean);
 
         //如果是ADMIN 才能登入後台頁面
         if (hasRole(payload, "ADMIN")) {
           console.log("是 ADMIN");
-          authStore.login(testUser, token); // 更新 Pinia 狀態為已登入，並儲存用戶資料  並放入token
+          authStore.login(testUser, token, clean); // 更新 Pinia 狀態為已登入，並儲存用戶資料  並放入token以及乾淨角色
+          console.log("儲存角色為" + localStorage.getItem("roles")); //可以透過localStorage.getItem("roles")取出角色
+
           //登錄後跳轉到指定頁面;
           router.push("/admin");
 
