@@ -78,7 +78,7 @@
               data-mdb-ripple-init
               class="btn btn-primary btn-lg btn-block"
               style="background-color: #dd4b39"
-              href="#!"
+              href="http://localhost:8080/oauth2/authorization/google"
               role="button"
             >
               <i class="fab fa-google me-2"></i>使用GOOGLE登入</a

@@ -21,7 +21,9 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import com.demo.filter.JwtAuthenticationFilter;
+import com.demo.service.CustomOAuth2UserService;
 import com.demo.service.MyUserDetailsService;
+import com.demo.service.OAuth2LoginSuccessHandler;
 import com.demo.utils.JwtTokenProvider;
 
 
@@ -29,6 +31,14 @@ import com.demo.utils.JwtTokenProvider;
 @Configuration
 @EnableMethodSecurity(prePostEnabled = true) //開啟方法級別的Security支援
 public class SecurityConfig {
+	
+	
+	@Autowired
+    private CustomOAuth2UserService customOAuth2UserService;
+
+	
+	@Autowired
+	private OAuth2LoginSuccessHandler oAuth2LoginSuccessHandler;
 	
 	@Autowired
 	private final JwtTokenProvider jwtTokenProvider;
@@ -52,6 +62,10 @@ public class SecurityConfig {
 //	                 "/v3/api-docs/**"           // ✅ 放行 Swagger JSON（如需）
 //	             ).permitAll()
 //	             .anyRequest().authenticated() // 其餘都需認證
+	         )
+	         .oauth2Login(oauth2 -> oauth2
+	                 .userInfoEndpoint(userInfo -> userInfo.userService(customOAuth2UserService))
+	                 .successHandler(oAuth2LoginSuccessHandler)
 	         )
 	         .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class)
 	         .build();

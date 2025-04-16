@@ -31,9 +31,11 @@ public class JwtTokenProvider {
     }
     // 新增：支援只傳單一角色（自動轉成 List）
     public String generateToken(String username, String role) {
+        if (role == null) {
+            return generateToken(username, List.of("USER")); // 預設給 USER 角色
+        }
         return generateToken(username, List.of(role));
     }
-    
     
 
     // 從 JWT Token 中提取用戶名

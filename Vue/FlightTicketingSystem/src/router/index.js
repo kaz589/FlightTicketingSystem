@@ -108,6 +108,12 @@ const router = createRouter({
       path: "/SignUp",
       component: () => import("@/page/member/SignUp.vue"),
     },
+    //google 第三方登入
+    {
+      path: "/oauth2/google/success",
+      name: "OAuthSuccess",
+      component: () => import("@/page/oauth/OAuthSuccess.vue"),
+    },
 
     // {
     //   path: '/about',

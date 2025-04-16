@@ -116,6 +116,12 @@
     		<version>6.0.0</version> <!-- Spring Boot 3+ 使用 Jakarta -->
     		<scope>provided</scope>
 		</dependency>
+		<!-- Spring Security OAuth2 Client -->
+		<dependency>
+    		<groupId>org.springframework.boot</groupId>
+    		<artifactId>spring-boot-starter-oauth2-client</artifactId>
+		</dependency>
+
 		
 
 	</dependencies>
