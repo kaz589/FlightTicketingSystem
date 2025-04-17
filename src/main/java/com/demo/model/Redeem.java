@@ -2,6 +2,8 @@ package com.demo.model;
 
 import java.util.Date;
 
+import org.springframework.stereotype.Component;
+
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
 import jakarta.persistence.Column;
@@ -17,6 +19,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+
 @NoArgsConstructor
 @Getter@Setter
 @Entity@Table(name = "redeem")
@@ -29,16 +32,14 @@ public class Redeem {
 	@Column(name="redeem_status")
 	private String redeemStatus;
 	
-	@Column(name="redeem_time")
-	private	Date redeemTime;
+	@Column(name="create_at")
+	private	Date createAt;
+	
+	@Column(name = "is_deleted")
+	private boolean isDeleted;
 	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "member_id", referencedColumnName = "member_id")
 	@JsonBackReference
 	private Member member;
-	
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "product_id", referencedColumnName = "product_id")
-	@JsonBackReference
-	private Products product;
 }

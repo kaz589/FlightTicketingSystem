@@ -9,9 +9,9 @@ export const ApiAirport = {
   // 獲取所有機場資料
   getAllAirports: () => instance.get("/airports/getAll"),
   // 獲取所有不重複的國家/地區名稱
-  DistinctCountryRegions: () =>instance.get("/airports/distinct-country-regions"),
+  DistinctCountryRegions: () => instance.get("/airports/distinct-country-regions"),
   // 獲取所有不重複的機場名稱
-  DistinctAirportName: () =>instance.get("/airports/distinct-AirportName"),
+  DistinctAirportName: () => instance.get("/airports/distinct-AirportName"),
   // 新增機場
   addAirport: (airport) => instance.post("/airports", airport),
   // 刪除機場
@@ -19,7 +19,7 @@ export const ApiAirport = {
   // 更新機場
   updateAirport: (id, airport) => instance.put(`/airports/${id}`, airport),
   //搜尋機場
-  searchAirports: (keyword,city,countryRegion,page,size,sortBy,sortOrder) =>
+  searchAirports: (keyword, city, countryRegion, page, size, sortBy, sortOrder) =>
     instance.get(`/airports/search`, {
       params: {
         keyword: keyword || "all", // 默認值為 "all"
@@ -94,7 +94,7 @@ export const ApiMember = {
 
 
 
-export  const ApiSeats={
+export const ApiSeats = {
   getAllSeats: () => instance.get("/seat/getAll"),
 };
 
@@ -107,31 +107,31 @@ export const ApiTicket = {
   // 更新票務
   updateTicket: (id, ticketDetails) =>
     instance.put(`/Ticket/${id}`, ticketDetails),
-   // 刪除票務
-   deleteTicket: (id) => instance.delete(`/Ticket/${id}`),
+  // 刪除票務
+  deleteTicket: (id) => instance.delete(`/Ticket/${id}`),
 };
 
 //管理員相關API
 export const ApiAdmin = {
 
-  getAdmin: (id)=>instance.get(`/admin/GetAdmin/${id}`),
-  insertAdmin:(adminInsert) =>
-    instance.post(`/admin/InsertAdmin`,adminInsert).then((response)=>{
+  getAdmin: (id) => instance.get(`/admin/GetAdmin/${id}`),
+  insertAdmin: (adminInsert) =>
+    instance.post(`/admin/InsertAdmin`, adminInsert).then((response) => {
 
 
       console.log(response.data);
-      
+
       //如果沒回傳，代表username存在
-      if(!response.data || response.data.length === 0){
+      if (!response.data || response.data.length === 0) {
         console.log("username存在");
         return null;
-      }else{
+      } else {
         console.log("API 請求成功:", response);
         return response.data; // 返回 API 響應資料
       }
 
 
-      
+
 
     })
 
@@ -169,3 +169,5 @@ export const ApiProducts = {
   updateProduct: (id, products) => instance.put(`/products/${id}`, products),
 
 }
+
+

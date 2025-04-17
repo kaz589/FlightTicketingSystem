@@ -8,8 +8,8 @@ const router = createRouter({
     {
       path: "/",
       // component: () => import("@/layouts/mainlayout.vue"),
-       component: () => import("@/layouts/memberLayout.vue"),
-       children: [
+      component: () => import("@/layouts/memberLayout.vue"),
+      children: [
         {
           path: "",
           component: () => import("@/page/member/test1.vue"),
@@ -27,7 +27,7 @@ const router = createRouter({
           component: () => import("@/page/member/seatSelection.vue"),
         },
 
-      ] 
+      ]
 
       // component: () => import("@/layouts/userView.vue"),
     },
@@ -91,6 +91,11 @@ const router = createRouter({
       component: () => import("@/layouts/memberLayout.vue"),
       meta: { requiresAuth: true }, // 需要登錄的頁面
     },
+    {
+      path: '/productDetail',
+      name: 'ProductDetail',
+      component: () => import('@/page/member/ProductDetail.vue')
+    }
     // {
     //   path: '/about',
     //   name: 'about',

@@ -33,9 +33,13 @@ public class RedeemImp implements IRedeemService {
 	}
 
 	@Override
-	public List<Redeem> selectRedeemByTime(Date redeem_time) {
-	
-		return redeemRepository.selectRedeemByTime(redeem_time);
+	public List<Redeem> selectRedeemByTime(Date redeemTime) {
+		// TODO Auto-generated method stub
+		return null;
 	}
+
+
+
+	
 
 }
