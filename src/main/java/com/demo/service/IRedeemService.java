@@ -37,4 +37,6 @@ public interface IRedeemService {
 	 * @return 返回符合時間條件的Redeem紀錄列表
 	 */
 	List<Redeem> selectRedeemByTime(Date redeemTime);
+	
+	
 }

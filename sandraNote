@@ -1,6 +1,19 @@
-里程兌換可以做的功能
-前台:商品收藏、下訂單、查看訂單狀態
-後台:庫存管理、訂單管理
+前台功能
+查看可兌換商品列表	
+findAllProducts
+findProductsByNeedmiles
+findLowStockProducts
+findProductsByCategoryId
+
+下訂單（兌換）	addRedeem + addRedeemItem 
+1. 檢查商品庫存
+2. 檢查會員是否有足夠里程
+3. 扣減會員里程與商品庫存（事務處理）
+查看個人總里程數	✅ Member 表有 mileage_balance
+	
+查看訂單狀態	✅ findRedeemById（要回傳訂單＋明細）
+✅ findAllRedeem（依會員查）	✔ 建議加：findRedeemByMemberId
+	----------------------------------------------------------------------------
 
 admin 
 selectAdminByName --這裡可以查看訂單明細
@@ -10,40 +23,44 @@ category
 	addCategory 加入重複檢查，避免插入重複的類別名稱。
 	deleteCategoryById
 	findAllCategories
+	findProductsByCategoryId
 	
+redeem 訂單管理
+	addRedeem
+	deleteRedeem
+	findRedeemById
+	findAllRedeem
+	updateRedeemStatusById
+	selectAdminById查看訂單明細
+
 product 商品管理
-	
+	addProducts 考慮商品名稱的唯一性，避免名稱重複
+	deleteProducts
+	updateProductsById
 	findProductsById考慮商品名稱的唯一性，避免名稱重複
 	findAllProducts
 	findProductsByName
 	findLowStockProducts
 	findProductsByNeedmiles前台
+	建議加：查詢單一商品是否存在（名稱查重）
 	
-	addProducts 考慮商品名稱的唯一性，避免名稱重複
-	deleteProducts
-	updateProductsById
-	
-	
+member
+	會員里程管理	✅ Member 表有餘額欄位	✔ 建議加：findMemberMileageById
 	
 
-redeem 訂單管理
-	insertRedeemByName
-	deleteRedeemByName
-	selectRedeemByStatus
-	selectRedeemByTime
+	
+redeem_item	成立訂單
+addRedeemItem
+deleteRedeemItem
 
-建議:
-效能：當系統的資料量增多時，這些查詢操作可能會變得比較繁重。你可能需要考慮是否需要在資料庫層面加上一些索引，尤其是對 selectByName、selectById、selectByRedeemStatus 等查詢欄位進行索引，以提高查詢效率。
+	
+Cart_item 購物項目
+addCartItem
+deleteCartItem
+findCartItemsByMemberId：讓使用者查看購物車內容
 
-錯誤處理：是否有處理過插入、更新或刪除操作中的錯誤，例如重複項目、外鍵約束錯誤等？適當的錯誤處理會讓系統更健壯。
+Cart
+clearCartByMemberId：兌換成功後清空購物車
 
-4/3
-資料庫表格建立
-建立Bean
-category id改用identity
 
-4/4建model
-admin
-category 
-product 
-redeem
+

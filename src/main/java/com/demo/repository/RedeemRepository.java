@@ -27,7 +27,6 @@ public interface RedeemRepository extends JpaRepository<Redeem, Integer> {
 	 * @param redeem_time Redeem的時間
 	 * @return 返回符合條件的Redeem紀錄列表
 	 */
-	@Query("FROM Redeem r WHERE redeemTime=:redeemTime")
-	List<Redeem> selectRedeemByTime(@Param("redeemTime") Date redeemTime);
+	List<Redeem> findByCreateAt(Date date);
 
 }
