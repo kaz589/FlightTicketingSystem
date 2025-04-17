@@ -1,6 +1,7 @@
 package com.demo.controller;
 
 import java.io.IOException;
+import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -11,6 +12,7 @@ import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.ResourceLoader;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -159,8 +161,8 @@ public class ProductsController {
 		return list;
 	}
 
-	@Value("${file.upload.directory}")
-	private String uploadDirectory;// 在 application.properties 中配置儲存路徑字串
+	@Autowired
+    private ResourceLoader resourceLoader;
 
 	@PostMapping("/{productId}/uploadImage")
 	public ResponseEntity<String> uploadProductImage(@PathVariable Integer id,
@@ -177,8 +179,10 @@ public class ProductsController {
 		}
 		String uniqueFileName = UUID.randomUUID().toString()+fileExtension;
 
-        // 建立儲存路徑
-		Path uploadPath = Paths.get(uploadDirectory);
+		 // 建立儲存路徑到 static/ProductsImg/
+		URI staticUri = resourceLoader.getResource("classPath:static/ProductsImg").getURI();
+		Path uploadPath = Paths.get(staticUri);
+		
 		//確認儲存圖片的資料夾存在，若不存在就創建。
 		if(!Files.exists(uploadPath)) {
 				Files.createDirectories(uploadPath);
@@ -189,7 +193,7 @@ public class ProductsController {
 		Files.copy(image.getInputStream(),targetPath,StandardCopyOption.REPLACE_EXISTING);
 		  
 		// 產生可訪問的圖片路徑 (這裡使用相對路徑)
-		String imageUrl = "/images/"+uniqueFileName;//靜態資源路徑配置為 /images/
+		String imageUrl = "/ProductsImg/"+uniqueFileName;//靜態資源路徑配置為 /ProductsImg/
 		
 		// 更新商品表的圖片路徑
 		Products product = productsService.getProductById(id);  
@@ -203,7 +207,10 @@ public class ProductsController {
 		  } catch (IOException e) {
 			  e.printStackTrace();
 			   return new ResponseEntity<>("圖片上傳失敗", HttpStatus.INTERNAL_SERVER_ERROR);
-		  }
+		  } catch (Exception e) {
+	            e.printStackTrace();
+	            return new ResponseEntity<>("處理靜態資源路徑時發生錯誤", HttpStatus.INTERNAL_SERVER_ERROR);
+	        }
 	}
 
 }

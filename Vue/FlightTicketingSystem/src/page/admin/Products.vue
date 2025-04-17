@@ -54,9 +54,6 @@
  取得資料
  <v-form>
     <v-row>
-     
-        
-      
       <v-col
         ><v-text-field
           v-model="insertData.name"
@@ -90,13 +87,14 @@
         ></v-text-field
       ></v-col>
       <v-col
-        ><v-text-field
-          v-model="insertData.image"
-          :counter="10"
-          label="商品照片"
-          required
-        ></v-text-field
-      ></v-col>
+        ><v-file-input
+        v-model="insertImageFile"
+        label="商品照片"
+        accept="image/*"
+        required
+        @change="handleInsertImageChange"
+      ></v-file-input>
+    </v-col>
     
     </v-row>
   </v-form>
@@ -106,9 +104,6 @@
 <br>
 <v-form>
     <v-row>
-     
-        
-      
       <v-col
         ><v-text-field
           v-model="updateData.name"
@@ -142,20 +137,19 @@
         ></v-text-field
       ></v-col>
       <v-col
-        ><v-text-field
-          v-model="updateData.image"
+        ><v-file-input
+          v-model="updateImageFile"
           :counter="10"
           label="商品照片"
-          required
-        ></v-text-field
+         accept = "image/*"
+         @change="handleUpdateImageChange"
+        ></v-file-input>
+        <div v-if="updateData.image">目前圖片: {{ updateData.image }}</div>
       ></v-col>
-    
     </v-row>
   </v-form>
   <v-btn prepend-icon="mdi mdi-account-plus" @click="update"> 修改商品 </v-btn>
 </v-container>
-
-
 </template>
 
 <script setup>
@@ -171,10 +165,29 @@ onMounted(() => {
 // 商品資料變數
 const Allproducts = ref([]);
 
-//新增會員
-
+//新增商品表單相關
 const DEFAULT_FORM = ref({
 name: "",
+  desc: "",
+  needmiles: 0,
+  quantity: 0,
+  image: "",// 後端返回的圖片路徑
+  category: {
+    categoryId: 1
+  },
+});
+
+
+const insertData = ref({ ...DEFAULT_FORM.value });
+const insertImageFile = ref(null);// 用於儲存選擇的圖片檔案
+
+const handleInsertImageChange = (files) => {
+  insertImageFile.value = files[0];// 取得選取的第一個檔案
+}
+
+//修改商品表單相關
+const DEFAULT_UPDATE = ref({
+    name: "",
   desc: "",
   needmiles: 0,
   quantity: 0,
@@ -183,9 +196,13 @@ name: "",
     categoryId: 1
   },
 });
+const updateData = ref({ ...DEFAULT_UPDATE.value });
+const updateImageFile = ref(null); // 用於儲存選擇的圖片檔案 (用於更新)
 
-
-const insertData = ref({ ...DEFAULT_FORM.value });
+const updateId = ref(1);
+const handleUpdateImageChange = (files) => {
+  updateImageFile.value = files ? files[0] : null; // 取得選取的第一個檔案，如果取消選擇則為 null
+};
 
 //搜尋用輸入名稱
 const searchFilters = ref({
@@ -226,9 +243,7 @@ const name = searchFilters.value.name;
   });
 }
 
-//根據商品id查詢函式
-
-
+//根據商品id查詢函式 
 function searchOne() {
  ApiProducts.searchById(id).then((res) => {
     Allproducts.value = res.data;
@@ -236,15 +251,36 @@ function searchOne() {
     
   });
 }
-//新增商品函式
-function insert() {
-  
-    ApiProducts.addProduct(insertData.value).then((res) => {
-        // console.log("🚀 ~ Products.vue:243 ~ ApiProducts.addProduct ~ insertData.value:", insertData.value)
-        searchByName();
-        console.log("新增商品：",  insertData.value);
-    });
- }
+//新增商品函式(包含圖片上傳)
+async function insert() {
+  const formData = new FormData();
+  formData.append('name', insertData.value.name);
+  formData.append('desc', insertData.value.desc);
+  formData.append('needmiles', insertData.value.needmiles);
+  formData.append('quantity', insertData.value.quantity);
+  formData.append('category.categoryId', insertData.value.category.categoryId);
+  if (insertImageFile.value) {
+    formData.append('image',insertImageFile.value)
+  }
+  try {
+  const response = await axios.post('/products/0/uploadImage', formData, {
+    headers: {
+      'Content-Type': 'multipart/form-data'
+    }
+  });
+  Swal.fire("新增成功", response.data, "success").then(() => {
+    search();
+    insertData.value = { ...DEFAULT_FORM.value }// 清空表單
+    insertImageFile.value = null;// 清空圖片選擇
+
+  });
+  console.log("新增商品成功:", response.data);
+  } catch (error) {
+    console.error("新增商品失敗:", error);
+    Swal.fire("新增失敗", error.response?.data || "上傳發生錯誤", "error");
+  }
+}
+
 
 
 //刪除商品函式
@@ -257,19 +293,6 @@ function remove(id) {
         search();
       }); 
   };
-//修改商品函式
-const DEFAULT_UPDATE = ref({
-    name: "",
-  desc: "",
-  needmiles: 0,
-  quantity: 0,
-  image: "",
-  category: {
-    categoryId: 1
-  },
-});
-const updateData = ref({ ...DEFAULT_UPDATE.value });
-const updateId = ref(1);
 
 function edit(id) {
     console.log(id);
@@ -283,15 +306,33 @@ console.log(found);
    
     };
 
-function update() {
-    ApiProducts.updateProduct(updateData.value.id,updateData.value).then((res) => {
-      
-        searchByName();
-        console.log("編輯商品：", found.value);
-       
-})
- }
-
+//修改商品函式 (包含圖片更新)
+async function update() {
+  const formData = new FormData();
+  formData.append('name', updateData.value.name);
+  formData.append('desc', updateData.value.desc);
+  formData.append('needmiles', updateData.value.needmiles);
+  formData.append('quantity', updateData.value.quantity);
+  formData.append('category.categoryId', updateData.value.category.categoryId);
+  if (updateImageFile.value) {
+    formData.append('image', updateImageFile.value);
+  }
+  try {
+    const response = await axios.post(`/products/${updateData.value.id}/uploadImage`, formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    });
+    Swal.fire("修改成功", response.data, "success").then(() => {
+      search();
+      updateImageFile.value = null;
+    });
+    console.log("編輯商品成功:", response.data);
+  } catch (error) {
+    console.error("編輯商品失敗:", error);
+    Swal.fire("編輯失敗", error.response?.data || "更新發生錯誤", "error");
+  }
+}
 
 </script>
 
