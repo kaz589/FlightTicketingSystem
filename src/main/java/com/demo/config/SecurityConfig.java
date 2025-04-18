@@ -21,6 +21,7 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import com.demo.filter.JwtAuthenticationFilter;
+import com.demo.service.CustomOAuth2FailureHandler;
 import com.demo.service.CustomOAuth2UserService;
 import com.demo.service.MyUserDetailsService;
 import com.demo.service.OAuth2LoginSuccessHandler;
@@ -39,6 +40,10 @@ public class SecurityConfig {
 	
 	@Autowired
 	private OAuth2LoginSuccessHandler oAuth2LoginSuccessHandler;
+	
+	@Autowired
+    private CustomOAuth2FailureHandler customOAuth2FailureHandler;
+	
 	
 	@Autowired
 	private final JwtTokenProvider jwtTokenProvider;
@@ -64,9 +69,10 @@ public class SecurityConfig {
 //	             .anyRequest().authenticated() // 其餘都需認證
 	         )
 	         .oauth2Login(oauth2 -> oauth2
-	                 .userInfoEndpoint(userInfo -> userInfo.userService(customOAuth2UserService))
-	                 .successHandler(oAuth2LoginSuccessHandler)
-	         )
+	                 .userInfoEndpoint(userInfo -> userInfo.userService(customOAuth2UserService))//customOAuth2UserService幫忙註冊
+	                 .successHandler(oAuth2LoginSuccessHandler) //透過這個產生jwt並傳到前端  (成功)
+	                 .failureHandler(customOAuth2FailureHandler) // 註冊(失敗)
+	        	)
 	         .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class)
 	         .build();
 	 }

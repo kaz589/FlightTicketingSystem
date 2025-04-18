@@ -39,6 +39,6 @@ public class OAuth2LoginSuccessHandler extends SimpleUrlAuthenticationSuccessHan
         String token = jwtTokenProvider.generateToken(member.getEmail(),roles);
 
         // 回傳到前端（用 redirect 搭 token）
-        response.sendRedirect("http://localhost:5173/oauth2/google/success?token=" + token);
+        response.sendRedirect("http://localhost:5173/oauth2/success?token=" + token);
     }
 }

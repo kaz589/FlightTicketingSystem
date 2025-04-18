@@ -100,7 +100,7 @@ const router = createRouter({
       meta: { requiresAuth: true }, // 需要登錄的頁面
     },
     {
-      //會員專區
+      //會員登入
       path: "/loginUser",
       component: () => import("@/page/member/LoginMember.vue"),
     },
@@ -108,9 +108,9 @@ const router = createRouter({
       path: "/SignUp",
       component: () => import("@/page/member/SignUp.vue"),
     },
-    //google 第三方登入
+    //google 第三方登入(GOOGLE , FACEBOOK)
     {
-      path: "/oauth2/google/success",
+      path: "/oauth2/success",
       name: "OAuthSuccess",
       component: () => import("@/page/oauth/OAuthSuccess.vue"),
     },

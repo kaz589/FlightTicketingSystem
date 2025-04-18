@@ -69,7 +69,7 @@
               data-mdb-ripple-init
               class="btn btn-primary btn-lg btn-block"
               style="background-color: #3b5998"
-              href="#!"
+              href="http://localhost:8080/oauth2/authorization/facebook"
               role="button"
             >
               <i class="fab fa-facebook-f me-2"></i>使用FACEBOOK登入
@@ -163,6 +163,12 @@ function authentication() {
         });
       }
     });
+}
+
+//登入錯誤處理
+const urlParams = new URLSearchParams(window.location.search);
+if (urlParams.get("error") === "oauth2_failed") {
+  alert("Facebook 登入被取消或發生錯誤，請再試一次！");
 }
 </script>
 

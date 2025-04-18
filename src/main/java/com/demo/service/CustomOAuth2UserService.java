@@ -1,5 +1,7 @@
 package com.demo.service;
 
+
+import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,31 +21,52 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
     @Autowired
     private MemberRepository memberRepository;
 
-    
-    //定義一個自訂的服務，處理從 Google 拿回來的用戶資料
     @Override
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
         OAuth2User oAuth2User = new DefaultOAuth2UserService().loadUser(userRequest);
 
-        String email = oAuth2User.getAttribute("email");
-        String name = oAuth2User.getAttribute("name");
-        String picture = oAuth2User.getAttribute("picture");
+        String registrationId = userRequest.getClientRegistration().getRegistrationId(); // google / facebook
+        Map<String, Object> attributes = oAuth2User.getAttributes();
 
+        String email = null;
+        String name = null;
+        String picture = null;
+
+        //判斷是哪裡的資料
+        if ("google".equals(registrationId)) {
+            email = (String) attributes.get("email");
+            name = (String) attributes.get("name");
+            picture = (String) attributes.get("picture");
+        } else if ("facebook".equals(registrationId)) {
+            email = (String) attributes.get("email");
+            name = (String) attributes.get("name");
+            // Facebook 的 picture 是 nested 的，要特別解析
+            Map<String, Object> pictureObj = (Map<String, Object>) attributes.get("picture");
+            if (pictureObj != null && pictureObj.containsKey("data")) {
+                Map<String, Object> data = (Map<String, Object>) pictureObj.get("data");
+                picture = (String) data.get("url");
+            }
+        }
+
+        // ⚠️ 檢查 email，不然不能繼續（部分用戶可能隱藏 email）
+        if (email == null) {
+            throw new OAuth2AuthenticationException("Email not found from OAuth2 provider: " + registrationId);
+        }
+
+        // 新用戶註冊
         Optional<Member> memberOptional = memberRepository.findByEmail(email);
-        //如果沒找到，表示第一次用 Google 登入，就自動幫他註冊進資料庫 ✅
         if (memberOptional.isEmpty()) {
             Member newMember = new Member();
             newMember.setEmail(email);
             newMember.setFullName(name);
-//            newMember.setUsername("userTest");
             newMember.setAuthority("USER");
             newMember.setTotalMiles(0);
             newMember.setRemainingMiles(0);
 //            newMember.setPicture(picture);
-//            newMember.setProvider("GOOGLE");
+//            newMember.setProvider(registrationId.toUpperCase()); // GOOGLE / FACEBOOK
             memberRepository.save(newMember);
         }
-        //回傳用戶資訊給 Spring Security，表示登入成功
+
         return oAuth2User;
     }
 }
