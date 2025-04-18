@@ -109,6 +109,10 @@ export const ApiMember = {
     instance.put(`/member/IncreaseMiles/${id}/${plus}`),
   decreaseMiles: (id, minus) =>
     instance.put(`/member/DecreaseMiles/${id}/${minus}`),
+  getMemberByUserName: (username) =>
+    instance.get(`/member/GetMemberByUsername/${username}`),
+  getMemberByEmail: (email) =>
+    instance.get(`/member/GetMemberByEmail/${email}`),
 
   login: (loginInfo) => instance.post(`/auth/login`, loginInfo),
 };

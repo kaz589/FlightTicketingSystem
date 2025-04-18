@@ -66,7 +66,7 @@
                   append-icon="mdi mdi-account"
                   link
                   title="個人頁面"
-                  @click="test"
+                  @click="userPage"
                 />
 
                 <v-list-item
@@ -133,13 +133,18 @@ const logoutChange = () => {
   console.log("登出成功");
 };
 
-function test() {
-  const role = localStorage.getItem("roles");
-  const user = JSON.parse(localStorage.getItem("user"));
-  const isLoggedIn = localStorage.getItem("isLoggedIn");
-  console.log(isLoggedIn);
-  console.log(user);
-  console.log(role);
+//測試當前狀態
+// function test() {
+//   const role = localStorage.getItem("roles");
+//   const user = JSON.parse(localStorage.getItem("user"));
+//   const isLoggedIn = localStorage.getItem("isLoggedIn");
+//   console.log(isLoggedIn);
+//   console.log(user);
+//   console.log(role);
+// }
+
+function userPage() {
+  router.push("/memberFront");
 }
 </script>
 

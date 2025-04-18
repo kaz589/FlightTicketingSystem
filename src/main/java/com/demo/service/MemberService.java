@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import com.demo.controller.PasswordHashing;
@@ -83,9 +84,10 @@ public class MemberService {
 			
 			//密碼需要加密
 			String password = member.getPassword();
-			String password_Hashing = passwordEncoder.encode(password);  // 使用 BCrypt 進行加密
-			dbMember.setPassword(password_Hashing);
-			
+			if (member.getPassword() != null) {
+			    String encodedPassword = passwordEncoder.encode(member.getPassword());// 使用 BCrypt 進行加密
+			    dbMember.setPassword(encodedPassword);
+			}			
 			dbMember.setEmail(member.getEmail());
 			dbMember.setTotalMiles(member.getTotalMiles());
 			dbMember.setRemainingMiles(member.getRemainingMiles());
@@ -150,6 +152,25 @@ public class MemberService {
 				return member;
 			}
 			return null;		
+		}
+		
+	// 透過username找會員
+		public Member getOneByUsername(String username) {
+			
+			 Member member = memberRepository.findByUsername(username);
+			 if (member == null) {
+		            throw new UsernameNotFoundException("使用者不存在: " + username);
+		       }
+			 return member;
+		}
+		// 透過email找會員
+		public Member getOneByEmail(String email) {
+			
+			  Optional<Member> op = memberRepository.findByEmail(email);
+			 if (op.isEmpty()) {
+		            throw new UsernameNotFoundException("使用者不存在: " + email);
+		       }
+			 return op.get();
 		}
 		
 		

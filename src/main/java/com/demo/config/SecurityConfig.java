@@ -51,7 +51,7 @@ public class SecurityConfig {
 	 @Bean
 	 public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 	     return http
-	         .cors(Customizer.withDefaults())
+	    	.cors(cors -> cors.configurationSource(corsConfigurationSource())) // 使用自定義的 CORS 配置
 	         .csrf(csrf -> csrf.disable())
 	         .authorizeHttpRequests(auth -> auth
 	        		 .anyRequest().permitAll() // 這裡放行所有請求

@@ -3,6 +3,7 @@ package com.demo.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -18,6 +19,8 @@ import com.demo.Security.annotation.RequireJwt;
 import com.demo.model.Member;
 import com.demo.service.MemberService;
 
+
+@CrossOrigin("*")
 @RestController
 @RequestMapping("/api/member")
 public class MemberController {
@@ -77,6 +80,19 @@ public class MemberController {
 		
 	}
 	
+//透過username找尋
+	@GetMapping("/GetMemberByUsername/{username}")
+	public Member GetMemberByUsername(@PathVariable String username) {
+		return memberService.getOneByUsername(username);
+	}
+	
+	
+	
+	//透過email找尋
+		@GetMapping("/GetMemberByEmail/{email}")
+		public Member GetMemberByEmail(@PathVariable String email) {
+			return memberService.getOneByEmail(email);
+		}	
 	
 	
 

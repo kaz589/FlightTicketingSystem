@@ -27,6 +27,7 @@ onMounted(() => {
 
     // 儲存到 localStorage（或 pinia/vuex 也可）
     localStorage.setItem("token", queryToken);
+    console.log(token.value);
 
     // console.log(queryToken);
 
@@ -40,7 +41,7 @@ onMounted(() => {
     console.log(testUser);
 
     //登入成功(無論是甚麼角色都更改成login狀態)，放角色進入pinia
-    authStore.login(testUser, token, clean); // 更新 Pinia 狀態為已登入，並儲存用戶資料  並放入token以及乾淨角色
+    authStore.login(testUser, token.value, clean); // 更新 Pinia 狀態為已登入，並儲存用戶資料  並放入token以及乾淨角色
 
     //登錄後跳轉到指定頁面;
     router.push("/");
