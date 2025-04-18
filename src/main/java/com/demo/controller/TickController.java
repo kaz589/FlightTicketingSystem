@@ -1,7 +1,9 @@
 package com.demo.controller;
 
 import java.time.LocalDateTime;
+import java.util.Hashtable;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +26,7 @@ import com.demo.model.Seat;
 import com.demo.model.Ticket;
 import com.demo.model.DTO.TicketDTO;
 import com.demo.service.TicketService;
+import com.demo.utils.CheckMacValueCalculator;
 
 @RestController
 @RequestMapping("/api/Ticket")
@@ -31,6 +34,8 @@ public class TickController {
 	
 	@Autowired
 	private TicketService ticketService;
+	
+	
 	
 	 // 查詢所有訂票
     @GetMapping("/getAll")
@@ -92,5 +97,18 @@ public class TickController {
         List<Seat> seats = ticketService.findSeatsByTicketId(ticketId);
         return ResponseEntity.ok(seats);
     }
+    
+    //訂單加密
+    @PostMapping("/calculate-mac")
+    public String calculateMac(@RequestBody Hashtable <String, String> params) {
+        try {
+            return CheckMacValueCalculator.genCheckMacValue(params);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "Error calculating MAC";
+        }
+    }
+    
+    
 
 }

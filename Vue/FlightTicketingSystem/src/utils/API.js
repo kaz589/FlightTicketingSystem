@@ -111,6 +111,8 @@ export const ApiTicket = {
     instance.put(`/Ticket/${id}`, ticketDetails),
    // 刪除票務
    deleteTicket: (id) => instance.delete(`/Ticket/${id}`),
+
+   getCheckMacValue:(params)=>instance.post("/Ticket/calculate-mac",params),
 };
 
 //管理員相關API

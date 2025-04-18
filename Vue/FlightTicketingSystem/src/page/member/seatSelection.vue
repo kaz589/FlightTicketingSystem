@@ -68,13 +68,14 @@
        
         cols="4"
       >
-      <p>總計： <span class="text-red-600 text-xl font-bold">${{totalPrice}}</span></p>
-      <v-btn prepend-icon="$vuetify" stacked> Button</v-btn>
+      <p>總計： <span class="text-red-600 text-xl font-bold">${{seatStore.totalPrice}}</span></p>
+      <v-btn prepend-icon="$vuetify" @click="$router.push('SeatPayment?flightid='+flightId.value)" stacked> Button</v-btn>
       </v-col>
     </v-row>
 </template>
 
 <script setup>
+import { storeToRefs } from 'pinia';
 import { ref, computed, onMounted } from "vue";
 import { ApiSeats } from "@/utils/API";
 import Seatscard from "@/components/seats/Seatscard.vue";
@@ -94,7 +95,7 @@ const aisleIndex = ref(0); // 初始走道位置
 const aisleWidth = '18px';
 const seatStore = useSeatStore(); // 獲取 Pinia store
 const selectseats = seatStore.selectseats; // 從 store 中獲取 selectseats
-const totalPrice = ref(0);
+
 
 
 const sections = ref([
@@ -116,14 +117,14 @@ const filteredSeatColumns = computed(() => {
       selectedSeat => selectedSeat.seatNumber === seat.seatNumber
     );
   });
- console.log(filteredSeats);
+ 
 
  
   const columns = [];
   for (let i = 0; i < filteredSeats.length; i += seatsPerColumn) {
     columns.push(filteredSeats.slice(i, i + seatsPerColumn));
   }
-  console.log(columns);
+ 
   
   return columns;
 });
@@ -138,10 +139,6 @@ function toggleSeat(columnIndex, seatIndex) {
 
   const seat = filteredSeatColumns.value[columnIndex][seatIndex];
   seatStore.toggleSeat(seat);
-  totalPrice.value=seatStore.totalPrice;
-    
-  
-  
 }
 
 function getseat(id) {

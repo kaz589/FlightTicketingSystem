@@ -27,6 +27,11 @@ const router = createRouter({
           path: "seatSelection",
           component: () => import("@/page/member/seatSelection.vue"),
         },
+        {
+          //支付頁面
+          path: "SeatPayment",
+          component: () => import("@/page/member/SeatPayment.vue"),
+        },
 
       ] 
 

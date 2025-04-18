@@ -29,7 +29,7 @@
 <script setup>
 // import { defineProps } from "vue";
 import { useRouter } from "vue-router"; // 引入 vue-router
-const router = useRouter(); // 使用 vue-router
+
 defineProps(["flight"]);
 </script>
 

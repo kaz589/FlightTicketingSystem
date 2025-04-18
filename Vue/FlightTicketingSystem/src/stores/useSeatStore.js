@@ -5,7 +5,7 @@ export const useSeatStore = defineStore('seatStore', () => {
   
     function toggleSeat(seat) {
       seat.booked = !seat.booked;
-      console.log(`Toggling seat: ${seat.seatNumber}, booked: ${seat.booked}`);
+      
       if (seat.booked) {
         selectseats.value.push(seat);
       } else {
@@ -18,9 +18,9 @@ export const useSeatStore = defineStore('seatStore', () => {
       }
     }
     const totalPrice = computed(() => {
-        // console.log(selectseats.value.reduce((sum, seat) => sum + seat.price, 0));
+    
         return selectseats.value.reduce((sum, seat) => sum + seat.price, 0);
-        console.log('Total price calculated:', price);
+      
       });
     return { selectseats, toggleSeat,totalPrice };
 }, {
