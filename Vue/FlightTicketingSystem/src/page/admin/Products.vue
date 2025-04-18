@@ -16,7 +16,7 @@
    <!-- 搜尋按鈕 -->
     <v-btn prepend-icon="mdi-magnify" @click="searchByName"> 搜尋 </v-btn>
     <!-- 新增按鈕 -->
-    <v-btn color="primary" @click="insert">新增商品</v-btn>
+    <!-- <v-btn color="primary" @click="insert">新增商品</v-btn> -->
 <br />
 <br />
    <!-- 顯示欄位 裡面有刪除和修改 -->
@@ -91,7 +91,6 @@
         v-model="insertImageFile"
         label="商品照片"
         accept="image/*"
-        required
         @change="handleInsertImageChange"
       ></v-file-input>
     </v-col>
@@ -144,7 +143,8 @@
          accept = "image/*"
          @change="handleUpdateImageChange"
         ></v-file-input>
-        <div v-if="updateData.image">目前圖片: {{ updateData.image }}</div>
+        <div v-if="updateData.image">
+          目前圖片：<img :src="updateData.image" height="60" /></div>
       ></v-col>
     </v-row>
   </v-form>
@@ -165,44 +165,21 @@ onMounted(() => {
 // 商品資料變數
 const Allproducts = ref([]);
 
-//新增商品表單相關
-const DEFAULT_FORM = ref({
-name: "",
-  desc: "",
+// 預設表單初始值
+const DEFAULT_FORM = {
+  name: '',
+  desc: '',
   needmiles: 0,
   quantity: 0,
-  image: "",// 後端返回的圖片路徑
-  category: {
-    categoryId: 1
-  },
-});
-
-
-const insertData = ref({ ...DEFAULT_FORM.value });
-const insertImageFile = ref(null);// 用於儲存選擇的圖片檔案
-
-const handleInsertImageChange = (files) => {
-  insertImageFile.value = files[0];// 取得選取的第一個檔案
-}
-
-//修改商品表單相關
-const DEFAULT_UPDATE = ref({
-    name: "",
-  desc: "",
-  needmiles: 0,
-  quantity: 0,
-  image: "",
-  category: {
-    categoryId: 1
-  },
-});
-const updateData = ref({ ...DEFAULT_UPDATE.value });
-const updateImageFile = ref(null); // 用於儲存選擇的圖片檔案 (用於更新)
-
-const updateId = ref(1);
-const handleUpdateImageChange = (files) => {
-  updateImageFile.value = files ? files[0] : null; // 取得選取的第一個檔案，如果取消選擇則為 null
+  category: { categoryId: 1 }
 };
+const DEFAULT_UPDATE = { ...DEFAULT_FORM, image: '' };
+
+
+
+
+
+
 
 //搜尋用輸入名稱
 const searchFilters = ref({
@@ -252,29 +229,34 @@ function searchOne() {
   });
 }
 //新增商品函式(包含圖片上傳)
-async function insert() {
+const insertData = ref({ ...DEFAULT_FORM });
+const insertImageFile = ref(null);// 用於儲存選擇的圖片檔案
+const handleInsertImageChange = (files) => {
+  insertImageFile.value = files[0] || null;
+};
+const insert = async () => {
   const formData = new FormData();
-  formData.append('name', insertData.value.name);
-  formData.append('desc', insertData.value.desc);
-  formData.append('needmiles', insertData.value.needmiles);
-  formData.append('quantity', insertData.value.quantity);
-  formData.append('category.categoryId', insertData.value.category.categoryId);
-  if (insertImageFile.value) {
+  // 動態 append 所有欄位
+  Object.entries(insertData.value).forEach(([key, val]) => {
+    if (key === 'category') {
+      formData.append('category.categoryId', val.categoryId);
+    } else {
+      formData.append(key, val);
+    }
+  });
+  // 圖片
+  if (insertImageFile.value) { 
     formData.append('image',insertImageFile.value)
   }
   try {
-  const response = await axios.post('/products/0/uploadImage', formData, {
-    headers: {
-      'Content-Type': 'multipart/form-data'
-    }
-  });
-  Swal.fire("新增成功", response.data, "success").then(() => {
+    const response = await ApiProducts.uploadImage(0,formData);
+  Swal.fire("新增成功",  JSON.stringify(response), 'success').then(() => {
     search();
     insertData.value = { ...DEFAULT_FORM.value }// 清空表單
     insertImageFile.value = null;// 清空圖片選擇
 
   });
-  console.log("新增商品成功:", response.data);
+  console.log("新增商品成功:", response);
   } catch (error) {
     console.error("新增商品失敗:", error);
     Swal.fire("新增失敗", error.response?.data || "上傳發生錯誤", "error");
@@ -306,33 +288,38 @@ console.log(found);
    
     };
 
-//修改商品函式 (包含圖片更新)
-async function update() {
+// 修改商品
+const updateData = ref({ ...DEFAULT_UPDATE });
+const updateImageFile = ref(null);
+const updateId = ref(1);
+const handleUpdateImageChange = (files) => {
+  updateImageFile.value = files[0] || null;
+};
+
+const update = async () => {
   const formData = new FormData();
-  formData.append('name', updateData.value.name);
-  formData.append('desc', updateData.value.desc);
-  formData.append('needmiles', updateData.value.needmiles);
-  formData.append('quantity', updateData.value.quantity);
-  formData.append('category.categoryId', updateData.value.category.categoryId);
+  Object.entries(updateData.value).forEach(([key, val]) => {
+    if (key === 'category') {
+      formData.append('category.categoryId', val.categoryId);
+    } else if (key !== 'image') {
+      formData.append(key, val);
+    }
+  });
   if (updateImageFile.value) {
     formData.append('image', updateImageFile.value);
   }
+
   try {
-    const response = await axios.post(`/products/${updateData.value.id}/uploadImage`, formData, {
-      headers: {
-        'Content-Type': 'multipart/form-data'
-      }
-    });
-    Swal.fire("修改成功", response.data, "success").then(() => {
+    const response = await ApiProducts.uploadImage(updateId.value, formData);
+    Swal.fire('修改成功', JSON.stringify(response), 'success').then(() => {
       search();
-      updateImageFile.value = null;
     });
-    console.log("編輯商品成功:", response.data);
+    console.log('修改商品成功:', response);
   } catch (error) {
-    console.error("編輯商品失敗:", error);
-    Swal.fire("編輯失敗", error.response?.data || "更新發生錯誤", "error");
+    console.error('修改商品失敗:', error);
+    Swal.fire('修改失敗', error.response?.data || '上傳發生錯誤', 'error');
   }
-}
+};
 
 </script>
 

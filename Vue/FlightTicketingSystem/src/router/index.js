@@ -82,8 +82,8 @@ const router = createRouter({
       component: () => import("@/page/auth/LoginPage.vue"),
     },
     {
-      path: "/testtt",
-      component: () => import("@/page/admin/TESTTT.vue"),
+      path: "/order",
+      component: () => import("@/page/admin/Order.vue"),
       meta: { requiresAuth: true }, // 需要登錄的頁面
     },
     {

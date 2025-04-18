@@ -149,10 +149,10 @@ const items = ref([
     path: "/admin/products",
   },
   {
-    title: "商品管理",
+    title: "訂單管理",
     prependIcon: "mdi mdi-gift-outline",
     link: true,
-    path: "/admin/testtt",
+    path: "/admin/order",
   },
 ]);
 </script>

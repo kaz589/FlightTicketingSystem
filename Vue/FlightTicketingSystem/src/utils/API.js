@@ -167,7 +167,12 @@ export const ApiProducts = {
   deleteProduct: (id) => instance.delete(`/products/${id}`),
   // 更新商品
   updateProduct: (id, products) => instance.put(`/products/${id}`, products),
-
+  // 上傳圖片並新增商品
+  uploadImage: (id, formData) => {
+    const url = id ? `/products/${id}/uploadImage` : '/products/0/uploadImage'; // 根據是否有 id 決定上傳的 URL
+    return instance.post(url, formData, {
+      headers: { 'Content-Type': 'multipart/form-data' }
+    });
+  }
 }
-
 
