@@ -22,7 +22,13 @@ export const useSeatStore = defineStore('seatStore', () => {
         return selectseats.value.reduce((sum, seat) => sum + seat.price, 0);
       
       });
-    return { selectseats, toggleSeat,totalPrice };
+
+      const selectedSeatNumbers = computed(() => {
+        return selectseats.value
+          .map(seat => `${seat.seatNumber}(${seat.seatclasname})`)
+          .join('#');
+      });
+    return { selectseats, toggleSeat,totalPrice,selectedSeatNumbers };
 }, {
     persist: true
   });

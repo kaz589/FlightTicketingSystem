@@ -69,7 +69,7 @@
         cols="4"
       >
       <p>總計： <span class="text-red-600 text-xl font-bold">${{seatStore.totalPrice}}</span></p>
-      <v-btn prepend-icon="$vuetify" @click="$router.push('SeatPayment?flightid='+flightId.value)" stacked> Button</v-btn>
+      <v-btn prepend-icon="mdi mdi-cash-sync" @click="$router.push('SeatPayment?flightid='+flightId.value)" stacked> Button</v-btn>
       </v-col>
     </v-row>
 </template>
@@ -139,6 +139,8 @@ function toggleSeat(columnIndex, seatIndex) {
 
   const seat = filteredSeatColumns.value[columnIndex][seatIndex];
   seatStore.toggleSeat(seat);
+  console.log(seatStore.selectseats);
+  
 }
 
 function getseat(id) {

@@ -29,7 +29,7 @@
     </v-row>
 
 
-    <form action="https://payment-stage.ecpay.com.tw/Cashier/AioCheckOut/V5" method="post">
+    <form ref="paymentForm" action="https://payment-stage.ecpay.com.tw/Cashier/AioCheckOut/V5" method="post">
     <!-- 特店id固定 -->
     <input type="hidden" name="MerchantID" v-model="formData.MerchantID" />
 
@@ -65,42 +65,29 @@
     <input type="hidden" name="CustomField3" v-model="formData.CustomField3" />
     <input type="hidden" name="CustomField4" v-model="formData.CustomField4" />
 
-    <input  name="CheckMacValue" v-model="formData.CheckMacValue" />
+    <input  type="hidden"  name="CheckMacValue" v-model="formData.CheckMacValue" />
 
-    <v-btn type="submit">確認</v-btn>
+    <v-btn type="button" @click="handleSubmit" >確認</v-btn>
   </form>
 </template>
 
 <script setup>
-import { ref, computed, onMounted,reactive } from "vue";
-import { ApiSeats } from "@/utils/API";
+import { ref, onMounted,reactive,nextTick } from "vue";
+
 import Seatscard from "@/components/seats/Seatscard.vue";
 import { useSeatStore } from '@/stores/useSeatStore';
 import {generateOrderId ,getCurrentDateTimeFormatted,generateOrderIdWithRandom}from'@/utils/pay';
-import axios from 'axios';
+
 import { ApiTicket}from "@/utils/API";
 
 onMounted(() => {
- 
-    formData.MerchantTradeDate=getCurrentDateTimeFormatted();
-    formData.MerchantTradeNo =generateOrderIdWithRandom();
-
-   // formData.checkMacValue= generateCheckMacValue(formData);
-   
-   //formData.CheckMacValue=  generateCheckMacValue(formData, hashKey, hashIV);
-  //formData.CheckMacValue=  generateCheckMacValue2(formData);
-  generateCheckMacValue2(formData)
-        .then(checkMacValue => {
-            formData.CheckMacValue = checkMacValue;
-            console.log(formData.CheckMacValue);
-            console.log(formData);
-        })
-        .catch(error => {
-            console.error("Error:", error);
-        });
-    
-    
+  const params = new URLSearchParams(window.location.search);
+  flightId.value = params.get("flightid");
 })
+const paymentForm = ref(null);
+
+
+
 const seatStore = useSeatStore(); // 獲取 Pinia store
 const selectseats = seatStore.selectseats; // 從 store 中獲取 selectseats
 
@@ -111,7 +98,7 @@ const formData = reactive({
       PaymentType: "aio",
       TotalAmount: "500",
       TradeDesc : '交易描述',
-      ItemName : '123,123',
+      ItemName : '商品ㄧ#商品二',
       ReturnURL: "http://localhost:8080/pay",
       ClientBackURL: "http://localhost:8080",
       OrderResultURL: "http://localhost:8080/pay",
@@ -121,40 +108,38 @@ const formData = reactive({
       CustomField2: '',
       CustomField3: '',
       CustomField4: '',
+      CheckMacValue:''
     });
-// 提取 seatNumber 列表
-function getSeatNumbers(selectseats) {
-    return selectseats.map(selectseats => selectseats.seatNumber);
-}
 
-// 使用範例
-const seatNumbers = getSeatNumbers(selectseats);
+    const handleSubmit = async () => {
+  try {
+    formData.ItemName=seatStore.selectedSeatNumbers
+    formData.TotalAmount = seatStore.totalPrice;
+    formData.MerchantTradeDate=getCurrentDateTimeFormatted();
+    formData.MerchantTradeNo =generateOrderIdWithRandom();
+    const checkMacValue = await generateCheckMacValue(formData);
+    if (checkMacValue) {
+      formData.CheckMacValue  = checkMacValue;
+      console.log("CheckMacValue:", checkMacValue);
+      await nextTick(); // 等待 DOM 更新
 
-const submitForm = () => {
-      const params = new URLSearchParams();
-      for (const key in formData) {
-        params.append(key, formData[key]);
+      if (paymentForm.value) {
+        console.log(paymentForm.value);
+        
+         paymentForm.value.submit();
       }
+    } else {
+      console.error("CheckMacValue is null");
+    }
+  } catch (error) {
+    console.error("Error:", error);
+  }
+};
 
-      axios.post('https://payment-stage.ecpay.com.tw/Cashier/AioCheckOut/V5', params, {
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded'
-        }
-      })
-      .then(response => {
-        console.log('Response:', response.data);
-        // 在這裡處理成功的響應
-      })
-      .catch(error => {
-        console.error('Error:', error);
-        // 在這裡處理錯誤
-      });
-    };
     async function generateCheckMacValue(params) {
     try {
       const { checkMacValue, ...restParams } = params; // 移除 checkMacValue
         const res = await ApiTicket.getCheckMacValue(restParams);
-        console.log(res.data);
         return res.data;
     } catch (error) {
         console.error("Error generating CheckMacValue:", error);

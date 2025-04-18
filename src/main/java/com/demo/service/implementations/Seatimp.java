@@ -41,4 +41,36 @@ public class Seatimp  implements SeatService{
 		return newSeatDTO;
 	}
 
+	@Override
+	public boolean lockSeat(List<Integer> seatIds, Long userId, int lockMinutes) {
+//		// 1. 查詢所有 seatId 是否有有效鎖定（一次查詢避免N+1）
+//	    List<SeatLock> existingLocks = seatRepository.findValidLocks(seatIds, LocalDateTime.now());
+//	    if (!existingLocks.isEmpty()) {
+//	        return false; // 有任何一個座位已被鎖定
+//	    }
+//
+//	    // 2. 全部可鎖定，批量建立 SeatLock
+//	    LocalDateTime now = LocalDateTime.now();
+//	    LocalDateTime expires = now.plusMinutes(lockMinutes);
+//
+//	    List<SeatLock> locks = seatIds.stream().map(seatId -> {
+//	        SeatLock lock = new SeatLock();
+//	        lock.setSeatId(seatId);
+//	        lock.setUserId(userId);
+//	        lock.setLockedAt(now);
+//	        lock.setExpiresAt(expires);
+//	        lock.setStatus("LOCKED");
+//	        return lock;
+//	    }).collect(Collectors.toList());
+//
+//	    seatLockRepository.saveAll(locks);
+	    return true;
+	}
+
+	@Override
+	public void releaseExpiredLocks() {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

@@ -1,5 +1,6 @@
 package com.demo.model;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
@@ -38,6 +39,8 @@ public class Seat {
     @JsonBackReference
     private Ticket ticket;
     private boolean isBooked;
+    private LocalDateTime locked_at;
+    private LocalDateTime  expires_at;
     
  // 構造函數
     public Seat(Flight flight, String seatNumber, String seatClass, boolean isBooked) {
