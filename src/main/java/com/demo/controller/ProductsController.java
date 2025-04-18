@@ -165,7 +165,7 @@ public class ProductsController {
     private ResourceLoader resourceLoader;
 
 	@PostMapping("/{productId}/uploadImage")
-	public ResponseEntity<String> uploadProductImage(@PathVariable Integer id,
+	public ResponseEntity<String> uploadProductImage(@PathVariable("productId") Integer id,
 			@RequestParam("image") MultipartFile image) {
 		System.out.println(id);
 		System.out.println(image);
@@ -183,7 +183,7 @@ public class ProductsController {
 		String uniqueFileName = UUID.randomUUID().toString()+fileExtension;
 
 		 // 建立儲存路徑到 static/ProductsImg/
-		URI staticUri = resourceLoader.getResource("classPath:static/ProductsImg").getURI();
+		URI staticUri = resourceLoader.getResource("classpath:static/ProductsImg").getURI();
 		Path uploadPath = Paths.get(staticUri);
 		
 		//確認儲存圖片的資料夾存在，若不存在就創建。

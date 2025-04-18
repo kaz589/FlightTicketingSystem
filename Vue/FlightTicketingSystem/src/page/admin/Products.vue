@@ -143,9 +143,9 @@
          accept = "image/*"
          @change="handleUpdateImageChange"
         ></v-file-input>
-        <div v-if="updateData.image">
+        <div v-show="updateData.image">
           目前圖片：<img :src="updateData.image" height="60" /></div>
-      ></v-col>
+      </v-col>
     </v-row>
   </v-form>
   <v-btn prepend-icon="mdi mdi-account-plus" @click="update"> 修改商品 </v-btn>
@@ -250,7 +250,7 @@ const insert = async () => {
   }
   try {
     const response = await ApiProducts.uploadImage(0,formData);
-  Swal.fire("新增成功",  JSON.stringify(response), 'success').then(() => {
+  Swal.fire("新增成功",  JSON.stringify(response.data), 'success').then(() => {
     search();
     insertData.value = { ...DEFAULT_FORM.value }// 清空表單
     insertImageFile.value = null;// 清空圖片選擇
@@ -259,7 +259,7 @@ const insert = async () => {
   console.log("新增商品成功:", response);
   } catch (error) {
     console.error("新增商品失敗:", error);
-    Swal.fire("新增失敗", error.response?.data || "上傳發生錯誤", "error");
+    Swal.fire("新增失敗", error.response?.data?.message || "上傳發生錯誤", "error");
   }
 }
 
@@ -293,7 +293,7 @@ const updateData = ref({ ...DEFAULT_UPDATE });
 const updateImageFile = ref(null);
 const updateId = ref(1);
 const handleUpdateImageChange = (files) => {
-  updateImageFile.value =files || null;
+  updateImageFile.value =files.target.files[0];
   console.log(updateImageFile.value);
   console.log(files);
   
@@ -301,21 +301,20 @@ const handleUpdateImageChange = (files) => {
 
 const update = async () => {
   const formData = new FormData();
-  Object.entries(updateData.value).forEach(([key, val]) => {
-    if (key === 'category') {
-      formData.append('category.categoryId', val.categoryId);
-    } else if (key !== 'image') {
-      formData.append(key, val);
-    }
-  });
+  // Object.entries(updateData.value).forEach(([key, val]) => {
+  //   if (key === 'category') {
+  //     formData.append('category.categoryId', val.categoryId);
+  //   } else if (key !== 'image') {
+  //     formData.append(key, val);
+  //   }
+  // });
   console.log(updateImageFile.value);
   
-  if (updateImageFile.value) {
+  if (updateImageFile) {
     formData.append('image', updateImageFile.value);
   }
 
   try {
-    
     
     const response = await ApiProducts.uploadImage(updateId.value, formData);
     Swal.fire('修改成功', JSON.stringify(response), 'success').then(() => {
