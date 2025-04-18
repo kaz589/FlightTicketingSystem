@@ -293,7 +293,10 @@ const updateData = ref({ ...DEFAULT_UPDATE });
 const updateImageFile = ref(null);
 const updateId = ref(1);
 const handleUpdateImageChange = (files) => {
-  updateImageFile.value = files[0] || null;
+  updateImageFile.value =files || null;
+  console.log(updateImageFile.value);
+  console.log(files);
+  
 };
 
 const update = async () => {
@@ -305,11 +308,15 @@ const update = async () => {
       formData.append(key, val);
     }
   });
+  console.log(updateImageFile.value);
+  
   if (updateImageFile.value) {
     formData.append('image', updateImageFile.value);
   }
 
   try {
+    
+    
     const response = await ApiProducts.uploadImage(updateId.value, formData);
     Swal.fire('修改成功', JSON.stringify(response), 'success').then(() => {
       search();

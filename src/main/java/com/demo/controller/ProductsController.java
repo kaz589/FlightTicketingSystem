@@ -167,7 +167,10 @@ public class ProductsController {
 	@PostMapping("/{productId}/uploadImage")
 	public ResponseEntity<String> uploadProductImage(@PathVariable Integer id,
 			@RequestParam("image") MultipartFile image) {
+		System.out.println(id);
+		System.out.println(image);
 		  if (image.isEmpty()) {
+			  
 	            return new ResponseEntity<>("請選擇要上傳的圖片", HttpStatus.BAD_REQUEST);
 	        }
 		  try {
