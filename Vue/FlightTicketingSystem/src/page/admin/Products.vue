@@ -1,334 +1,212 @@
 <template>
-    <v-container>
+  <v-container>
     <div>
-<h1>商品管理</h1>
+      <h1>商品管理</h1>
     </div>
 
-  <!-- 搜尋按鈕 -->
-  <v-btn prepend-icon="mdi-magnify" @click="search"> 搜尋全部 </v-btn>
-  <!-- 全部資料: {{Allproducts}} -->
- 
+    <!-- 搜尋按鈕 -->
+    <v-btn prepend-icon="mdi-magnify" @click="search"> 搜尋全部 </v-btn>
 
-   <!-- 關鍵字搜尋欄 -->
-   <v-text-field v-model="searchFilters.name" label="輸入商品名稱"></v-text-field>
-
-
-   <!-- 搜尋按鈕 -->
+    <!-- 關鍵字搜尋欄 -->
+    <v-text-field v-model="searchFilters.name" label="輸入商品名稱" />
     <v-btn prepend-icon="mdi-magnify" @click="searchByName"> 搜尋 </v-btn>
-    <!-- 新增按鈕 -->
-    <!-- <v-btn color="primary" @click="insert">新增商品</v-btn> -->
-<br />
-<br />
-   <!-- 顯示欄位 裡面有刪除和修改 -->
-<!-- v-if="Allproducts.length > 0" -->
-  <v-data-table
-    
-    :headers="headers"
-    :items="Allproducts"
-    item-key="id"
-  >
-    <template v-slot:item.actions="{ item }">
-      <div class="d-flex ga-2 justify-end">
-        <!-- 調用edit函數 -->
-        <v-icon
-          color="medium-emphasis"
-          icon="mdi-pencil"
-          size="small"
-          @click="edit(item.id)"
-        ></v-icon>
 
-        <!-- 調用deleteById函數 -->
-        <v-icon
-          color="medium-emphasis"
-          icon="mdi-delete"
-          size="small"
-           @click="remove(item.id)"
-        ></v-icon>
-      </div>
-    </template>
-  </v-data-table>
+    <br /><br />
 
- <br>
- <br>
+    <!-- 商品表格 -->
+    <v-data-table :headers="headers" :items="Allproducts" item-key="id">
+      <template v-slot:item.actions="{ item }">
+        <div class="d-flex ga-2 justify-end">
+          <v-icon icon="mdi-pencil" @click="edit(item.id)"></v-icon>
+          <v-icon icon="mdi-delete" @click="remove(item.id)"></v-icon>
+        </div>
+      </template>
+    </v-data-table>
 
- 取得資料
- <v-form>
-    <v-row>
-      <v-col
-        ><v-text-field
-          v-model="insertData.name"
-          :counter="10"
-          label="商品名稱"
-          required
-        ></v-text-field
-      ></v-col>
-      <v-col
-        ><v-text-field
-          v-model="insertData.desc"
-          :counter="10"
-          label="商品描述"
-          required
-        ></v-text-field
-      ></v-col>
-      <v-col
-        ><v-text-field
-          v-model="insertData.needmiles"
-          :counter="10"
-          label="商品兌換所需里程"
-          required
-        ></v-text-field
-      ></v-col>
-      <v-col
-        ><v-text-field
-          v-model="insertData.quantity"
-          :counter="10"
-          label="商品庫存"
-          required
-        ></v-text-field
-      ></v-col>
-      <v-col
-        ><v-file-input
-        v-model="insertImageFile"
-        label="商品照片"
-        accept="image/*"
-        @change="handleInsertImageChange"
-      ></v-file-input>
-    </v-col>
-    
-    </v-row>
-  </v-form>
-  <v-btn prepend-icon="mdi mdi-account-plus" @click="insert"> 新增商品 </v-btn>
-            
-<br>
-<br>
-<v-form>
-    <v-row>
-      <v-col
-        ><v-text-field
-          v-model="updateData.name"
-          :counter="10"
-          label="商品名稱"
-          required
-        ></v-text-field
-      ></v-col>
-      <v-col
-        ><v-text-field
-          v-model="updateData.desc"
-          :counter="10"
-          label="商品描述"
-          required
-        ></v-text-field
-      ></v-col>
-      <v-col
-        ><v-text-field
-          v-model="updateData.needmiles"
-          :counter="10"
-          label="商品兌換所需里程"
-          required
-        ></v-text-field
-      ></v-col>
-      <v-col
-        ><v-text-field
-          v-model="updateData.quantity"
-          :counter="10"
-          label="商品庫存"
-          required
-        ></v-text-field
-      ></v-col>
-      <v-col
-        ><v-file-input
-          v-model="updateImageFile"
-          :counter="10"
-          label="商品照片"
-         accept = "image/*"
-         @change="handleUpdateImageChange"
-        ></v-file-input>
-        <div v-show="updateData.image">
-          目前圖片：<img :src="updateData.image" height="60" /></div>
-      </v-col>
-    </v-row>
-  </v-form>
-  <v-btn prepend-icon="mdi mdi-account-plus" @click="update"> 修改商品 </v-btn>
-</v-container>
+    <br /><br />
+
+    <!-- 新增商品表單 -->
+    <v-form>
+      <v-row>
+        <v-col>
+          <v-text-field v-model="insertData.name" label="商品名稱" required />
+        </v-col>
+        <v-col>
+          <v-text-field v-model="insertData.desc" label="商品描述" required />
+        </v-col>
+        <v-col>
+          <v-text-field v-model="insertData.needmiles" label="所需里程" required />
+        </v-col>
+        <v-col>
+          <v-text-field v-model="insertData.quantity" label="庫存" required />
+        </v-col>
+        <v-col>
+          <v-file-input
+            v-model="insertImageFile"
+            label="商品照片"
+            accept="image/*"
+            @change="handleInsertImageChange"
+          />
+        </v-col>
+      </v-row>
+    </v-form>
+    <v-btn color="primary" @click="uploadImage">上傳圖片</v-btn>
+    <v-btn color="success" @click="insert">新增商品</v-btn>
+
+    <br /><br />
+
+    <!-- 修改商品表單 -->
+    <v-form>
+      <v-row>
+        <v-col>
+          <v-text-field v-model="updateData.name" label="商品名稱" required />
+        </v-col>
+        <v-col>
+          <v-text-field v-model="updateData.desc" label="商品描述" required />
+        </v-col>
+        <v-col>
+          <v-text-field v-model="updateData.needmiles" label="所需里程" required />
+        </v-col>
+        <v-col>
+          <v-text-field v-model="updateData.quantity" label="庫存" required />
+        </v-col>
+        <v-col>
+          <v-file-input
+            v-model="updateImageFile"
+            label="商品照片"
+            accept="image/*"
+            @change="handleUpdateImageChange"
+          />
+          <div v-if="updateData.image">
+            目前圖片：<img :src="updateData.image" height="100" />
+          </div>
+        </v-col>
+      </v-row>
+    </v-form>
+    <v-btn color="primary" @click="uploadImageForUpdate">上傳修改圖片</v-btn>
+    <v-btn color="success" @click="update">修改商品</v-btn>
+  </v-container>
 </template>
 
 <script setup>
-import { ref,onMounted} from "vue";
+import { ref, onMounted } from 'vue';
 import { ApiProducts } from '@/utils/API';
-import Swal from "sweetalert2";
-import "sweetalert2/dist/sweetalert2.min.css";
-//初始運行函式()
-onMounted(() => {
-  search();
-});
+import Swal from 'sweetalert2';
+import 'sweetalert2/dist/sweetalert2.min.css';
 
-// 商品資料變數
+// 商品列表
 const Allproducts = ref([]);
+// 搜尋關鍵字
+const searchFilters = ref({ name: '' });
 
-// 預設表單初始值
-const DEFAULT_FORM = {
-  name: '',
-  desc: '',
-  needmiles: 0,
-  quantity: 0,
-  category: { categoryId: 1 }
-};
-const DEFAULT_UPDATE = { ...DEFAULT_FORM, image: '' };
-
-
-
-
-
-
-
-//搜尋用輸入名稱
-const searchFilters = ref({
-  name: "" // 使用者輸入的商品名稱關鍵字
-});
-
-
-// 表格的欄位標題
+// 表格欄位
 const headers = ref([
-  { title: "商品 ID", value: "id", sortable: true, align: "start" }, // sortable: true 表示可排序
- 
-  { title: "商品名稱", value: "name", sortable: true },
-  { title: "商品描述", value: "desc", sortable: true },
-  { title: "商品兌換所需里程", value: "needmiles", sortable: true },
-  { title: "剩餘庫存", value: "quantity", sortable: true },
-  { title: "商品圖片", value: "image", sortable: false },
-  { title: "操作", key: "actions", align: "end", sortable: false }
+  { title: '商品 ID', value: 'id' },
+  { title: '名稱', value: 'name' },
+  { title: '描述', value: 'desc' },
+  { title: '所需里程', value: 'needmiles' },
+  { title: '庫存', value: 'quantity' },
+  { title: '圖片', value: 'image' },
+  { title: '操作', key: 'actions' }
 ]);
 
+// 預設表單
+const DEFAULT_FORM = { name: '', desc: '', needmiles: 0, quantity: 0, category: { categoryId: 1 }, image: '' };
+const DEFAULT_UPDATE = { ...DEFAULT_FORM };
 
-
-//查詢全部函式
-function search() {
- ApiProducts.getAllProduct().then((res) => {
-    Allproducts.value = res.data;
-    console.log(Allproducts.value);
-    
-  });
-}
-
-//根據商品名稱查詢函式
-function searchByName() {
-const name = searchFilters.value.name;
- ApiProducts.searchProByName(name).then((res) => {
-    Allproducts.value = res.data;
-    console.log("搜尋結果：",Allproducts.value);
-    
-  });
-}
-
-//根據商品id查詢函式 
-function searchOne() {
- ApiProducts.searchById(id).then((res) => {
-    Allproducts.value = res.data;
-    console.log("搜尋結果：",Allproducts.value);
-    
-  });
-}
-//新增商品函式(包含圖片上傳)
+// 新增
 const insertData = ref({ ...DEFAULT_FORM });
-const insertImageFile = ref(null);// 用於儲存選擇的圖片檔案
-const handleInsertImageChange = (files) => {
-  insertImageFile.value = files[0] || null;
-};
-const insert = async () => {
-  const formData = new FormData();
-  // 動態 append 所有欄位
-  Object.entries(insertData.value).forEach(([key, val]) => {
-    if (key === 'category') {
-      formData.append('category.categoryId', val.categoryId);
-    } else {
-      formData.append(key, val);
-    }
-  });
-  // 圖片
-  if (insertImageFile.value) { 
-    formData.append('image',insertImageFile.value)
-  }
-  try {
-    const response = await ApiProducts.uploadImage(0,formData);
-  Swal.fire("新增成功",  JSON.stringify(response.data), 'success').then(() => {
-    search();
-    insertData.value = { ...DEFAULT_FORM.value }// 清空表單
-    insertImageFile.value = null;// 清空圖片選擇
+const insertImageFile = ref(null);
 
-  });
-  console.log("新增商品成功:", response);
-  } catch (error) {
-    console.error("新增商品失敗:", error);
-    Swal.fire("新增失敗", error.response?.data?.message || "上傳發生錯誤", "error");
-  }
-}
-
-
-
-//刪除商品函式
-function remove(id) {
-    ApiProducts.deleteProduct(id).then(() => {
-        // alert("刪除成功!");
-        Swal.fire("成功刪除", "", "success");
-
-        console.log("刪除ID : " +id);
-        search();
-      }); 
-  };
-
-function edit(id) {
-    console.log(id);
-    const found = Allproducts.value.find((item) => item.id === id);
-    found.id = id;
-console.log(found);
-    updateData.value = { ...found }
-
-    console.log("XXXXXX"+updateData.value.id);
-    
-   
-    };
-
-// 修改商品
+// 修改
 const updateData = ref({ ...DEFAULT_UPDATE });
 const updateImageFile = ref(null);
-const updateId = ref(1);
-const handleUpdateImageChange = (files) => {
-  updateImageFile.value =files.target.files[0];
-  console.log(updateImageFile.value);
-  console.log(files);
-  
-};
+const updateId = ref(null);
 
-const update = async () => {
+// 初始化
+onMounted(() => search());
+
+// 查詢全部
+function search() {
+  ApiProducts.getAllProduct().then(res => Allproducts.value = res.data);
+}
+// 按名稱查詢
+function searchByName() {
+  ApiProducts.searchProByName(searchFilters.value.name).then(res => Allproducts.value = res.data);
+}
+
+// 檔案改變
+const handleInsertImageChange = e => insertImageFile.value = e.target.files[0] || null;
+const handleUpdateImageChange = e => updateImageFile.value = e.target.files[0] || null;
+
+// 上傳新增圖片
+async function uploadImage() {
+  if (!insertImageFile.value) return Swal.fire('請選擇圖片', '', 'warning');
   const formData = new FormData();
-  // Object.entries(updateData.value).forEach(([key, val]) => {
-  //   if (key === 'category') {
-  //     formData.append('category.categoryId', val.categoryId);
-  //   } else if (key !== 'image') {
-  //     formData.append(key, val);
-  //   }
-  // });
-  console.log(updateImageFile.value);
-  
-  if (updateImageFile) {
-    formData.append('image', updateImageFile.value);
-  }
-
+  formData.append('image', insertImageFile.value);
   try {
-    
-    const response = await ApiProducts.uploadImage(updateId.value, formData);
-    Swal.fire('修改成功', JSON.stringify(response), 'success').then(() => {
-      search();
-    });
-    console.log('修改商品成功:', response);
-  } catch (error) {
-    console.error('修改商品失敗:', error);
-    Swal.fire('修改失敗', error.response?.data || '上傳發生錯誤', 'error');
+    const res = await ApiProducts.uploadProductImage(0, formData);
+    insertData.value.image = res.data.url;
+    Swal.fire('圖片上傳成功', '', 'success');
+  } catch (e) {
+    Swal.fire('上傳失敗', '', 'error');
   }
-};
+}
+// 上傳修改圖片
+async function uploadImageForUpdate() {
+  if (!updateImageFile.value) return Swal.fire('請選擇圖片', '', 'warning');
+  const formData = new FormData();
+  formData.append('image', updateImageFile.value);
+  try {
+    const res = await ApiProducts.uploadProductImage(updateId.value, formData);
+    updateData.value.image = res.data.url;
+    Swal.fire('圖片上傳成功', '', 'success');
+  } catch (e) {
+    Swal.fire('上傳失敗', '', 'error');
+  }
+}
 
+// 新增商品
+async function insert() {
+  if (!insertData.value.image) return Swal.fire('請先上傳圖片', '', 'warning');
+  try {
+    await ApiProducts.addProduct(insertData.value);
+    Swal.fire('新增成功', '', 'success').then(() => {
+      searchByName();
+      insertData.value = { ...DEFAULT_FORM };
+      insertImageFile.value = null;
+    });
+  } catch (e) {
+    Swal.fire('新增失敗', '', 'error');
+  }
+}
+
+// 刪除
+function remove(id) {
+  ApiProducts.deleteProduct(id).then(() => {
+    Swal.fire('刪除成功', '', 'success');
+    search();
+  });
+}
+// 編輯
+function edit(id) {
+  const item = Allproducts.value.find(p => p.id === id);
+  updateId.value = id;
+  updateData.value = { ...item };
+}
+
+// 修改商品
+async function update() {
+  if (!updateData.value.image) return Swal.fire('請先上傳圖片', '', 'warning');
+  try {
+    await ApiProducts.updateProduct(updateId.value, updateData.value);
+    Swal.fire('修改成功', '', 'success').then(search);
+  } catch (e) {
+    Swal.fire('修改失敗', '', 'error');
+  }
+}
 </script>
 
-<style  scoped>
-
+<style scoped>
+/* 自訂樣式 */
 </style>

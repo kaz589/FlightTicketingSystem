@@ -92,8 +92,7 @@ const router = createRouter({
       meta: { requiresAuth: true }, // 需要登錄的頁面
     },
     {
-      path: '/productDetail',
-      name: 'ProductDetail',
+      path: '/productdetail',
       component: () => import('@/page/member/ProductDetail.vue')
     }
     // {

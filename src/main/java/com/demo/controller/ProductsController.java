@@ -1,5 +1,6 @@
 package com.demo.controller;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.nio.file.Files;
@@ -7,6 +8,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -161,59 +163,27 @@ public class ProductsController {
 		return list;
 	}
 
-	@Autowired
-    private ResourceLoader resourceLoader;
 
 	@PostMapping("/{productId}/uploadImage")
-	public ResponseEntity<String> uploadProductImage(@PathVariable("productId") Integer id,
-			@RequestParam("image") MultipartFile image) {
-		System.out.println(id);
-		System.out.println(image);
-		  if (image.isEmpty()) {
-			  
-	            return new ResponseEntity<>("請選擇要上傳的圖片", HttpStatus.BAD_REQUEST);
+	public ResponseEntity<Map<String, String>>  uploadProductImage(@PathVariable("productId") Integer id,
+			@RequestParam("image") MultipartFile file)
+	            throws IOException {
+	        if (file.isEmpty()) {
+	            return ResponseEntity.badRequest().body(Map.of("error", "Empty file"));
 	        }
-		  try {
-		  //產生唯一的文件名
-		String originalFileName = image.getOriginalFilename();
-		String fileExtension = "";
-		if(originalFileName !=null && originalFileName.contains(".")) {
-			fileExtension = originalFileName.substring(originalFileName.lastIndexOf("."));
-		}
-		String uniqueFileName = UUID.randomUUID().toString()+fileExtension;
 
-		 // 建立儲存路徑到 static/ProductsImg/
-		URI staticUri = resourceLoader.getResource("classpath:static/ProductsImg").getURI();
-		Path uploadPath = Paths.get(staticUri);
-		
-		//確認儲存圖片的資料夾存在，若不存在就創建。
-		if(!Files.exists(uploadPath)) {
-				Files.createDirectories(uploadPath);
-		}
-		//生成儲存圖片的完整路徑
-		Path targetPath = uploadPath.resolve(uniqueFileName);
-		 // 儲存圖片到伺服器
-		Files.copy(image.getInputStream(),targetPath,StandardCopyOption.REPLACE_EXISTING);
-		  
-		// 產生可訪問的圖片路徑 (這裡使用相對路徑)
-		String imageUrl = "/ProductsImg/"+uniqueFileName;//靜態資源路徑配置為 /ProductsImg/
-		
-		// 更新商品表的圖片路徑
-		Products product = productsService.getProductById(id);  
-		if(product !=null) {
-			product.setImage(imageUrl);
-			productsService.saveProduct(product);
-			return new ResponseEntity<>("圖片上傳成功，路徑已儲存：" + imageUrl, HttpStatus.OK);
-		}else {
-            return new ResponseEntity<>("找不到指定的商品", HttpStatus.NOT_FOUND);
-		}
-		  } catch (IOException e) {
-			  e.printStackTrace();
-			   return new ResponseEntity<>("圖片上傳失敗", HttpStatus.INTERNAL_SERVER_ERROR);
-		  } catch (Exception e) {
-	            e.printStackTrace();
-	            return new ResponseEntity<>("處理靜態資源路徑時發生錯誤", HttpStatus.INTERNAL_SERVER_ERROR);
+	        File dir = new File("uploads/ProductsImage/");
+	        if (!dir.exists()) {
+	            dir.mkdirs();
 	        }
-	}
+
+	        String filename = file.getOriginalFilename();
+	        Path filepath = Paths.get("uploads/ProductsImage/", filename);
+	        Files.copy(file.getInputStream(), filepath, StandardCopyOption.REPLACE_EXISTING);
+
+	        String imageUrl = "/ProductsImage/" + filename;
+
+	        return ResponseEntity.ok(Map.of("url", imageUrl));
+	    }
 
 }

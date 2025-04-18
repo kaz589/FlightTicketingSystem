@@ -149,8 +149,8 @@ const items = ref([
     path: "/admin/products",
   },
   {
-    title: "訂單管理",
-    prependIcon: "mdi mdi-gift-outline",
+    title: "里程兌換訂單管理",
+    prependIcon: "mdi mdi-clipboard-list",
     link: true,
     path: "/admin/order",
   },
