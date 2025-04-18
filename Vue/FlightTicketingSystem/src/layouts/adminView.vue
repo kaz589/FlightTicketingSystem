@@ -152,7 +152,7 @@ const items = ref([
     title: "里程兌換訂單管理",
     prependIcon: "mdi mdi-clipboard-list",
     link: true,
-    path: "/admin/order",
+    path: "/admin/redeemmanage",
   },
 ]);
 </script>

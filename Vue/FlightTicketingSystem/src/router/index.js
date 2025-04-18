@@ -58,7 +58,11 @@ const router = createRouter({
           component: () => import("@/page/admin/Products.vue"),
           meta: { requiresAuth: true }, // 需要登錄的頁面
         },
-
+        {
+          path: "redeemmanage",
+          component: () => import("@/page/admin/RedeemManage.vue"),
+          meta: { requiresAuth: true }, // 需要登錄的頁面
+        },
         {
           path: "flight",
           component: () => import("@/page/admin/Flight.vue"),
@@ -81,11 +85,7 @@ const router = createRouter({
       path: "/login",
       component: () => import("@/page/auth/LoginPage.vue"),
     },
-    {
-      path: "/order",
-      component: () => import("@/page/admin/Order.vue"),
-      meta: { requiresAuth: true }, // 需要登錄的頁面
-    },
+
     {
       path: "/ss",
       component: () => import("@/layouts/memberLayout.vue"),
