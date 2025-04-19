@@ -109,6 +109,14 @@ const showUserBtn = computed(() => {
   return 0;
 });
 
+
+onMounted(() => {
+  authStore.checkLoginStatus();
+  console.log("isAuthenticated:", authStore.isAuthenticated);
+});
+
+
+
 //計算是什麼角色
 const roleLabel = computed(() => {
   if (showUserBtn.value === 2) return "管理員";

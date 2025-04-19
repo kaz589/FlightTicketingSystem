@@ -138,29 +138,47 @@ function authentication() {
   ApiMember.login(rawData.value)
     .then((res) => {
       console.log(res.data.token);
-      if (res.data) {
+      if (res.data.token) {
         //如果有res.data
         const token = res.data.token; //接住token
 
         const payload = jwtDecode(token); // 解碼 JWT
         console.log("JWT Payload:", payload.roles); //確認角色有哪些
-        const testUser = {
+        const testUser = ref({
           username: payload.sub,
-        }; //使用者名稱
+        }); //使用者名稱
 
-        const clean = cleanRole(payload); //取得乾淨角色
-        console.log(clean);
 
-        //登入成功(無論是甚麼角色都更改成login狀態)，放角色進入pinia
-        authStore.login(testUser, token, clean); // 更新 Pinia 狀態為已登入，並儲存用戶資料  並放入token以及乾淨角色
-        console.log("儲存角色為" + localStorage.getItem("roles")); //可以透過localStorage.getItem("roles")取出角色
+        //透過使用者名稱找會員
+        ApiMember.getMemberByUserName(payload.sub).then((res)=>{
+          console.log("查詢結果為 : "+res.data.memberId);
+          
+          //將查詢結果傳遞給testUser
+          testUser.value = res.data
+          console.log("傳遞結果為 : "+testUser.value.memberId);
+          const clean = cleanRole(payload); //取得乾淨角色
+          console.log("一般登入:"+ testUser.username);
 
+          //登入成功(無論是甚麼角色都更改成login狀態)，放角色進入pinia
+          authStore.login(testUser.value, token, clean); // 更新 Pinia 狀態為已登入，並儲存用戶資料  並放入token以及乾淨角色
+          console.log("儲存角色為" + localStorage.getItem("roles")); //可以透過localStorage.getItem("roles")取出角色
+        })
+
+
+
+       
         //登錄後跳轉到指定頁面;
         router.push("/");
         Swal.fire({
           title: "登入成功!",
           icon: "success",
           draggable: true,
+        });
+      }else{
+        Swal.fire({
+          icon: "error",
+          title: "登入失敗",
+          text: "請確認密碼是否輸入正確",
         });
       }
     })

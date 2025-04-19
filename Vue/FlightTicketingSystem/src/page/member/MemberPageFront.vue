@@ -5,7 +5,8 @@
       <v-card class="mx-auto pa-2 no-shadow">
         <v-list>
           <h2>您好! 歡迎回來</h2>
-          <v-list-subheader>{{ a }}</v-list-subheader>
+          <br>
+
 
           <!-- click變換pageControl的值  -->
           <v-list-item
@@ -297,22 +298,11 @@ onMounted(() => {
 
 function enter() {
   // 先抓取使用者資料
-  a.value = authStore.user.username;
+  a.value = authStore.user.memberId;
 
-  if (a.value.includes("@")) {
-    // 如果是郵箱地址，根據郵箱查找會員
-    const email = encodeURIComponent(a.value);
-    ApiMember.getMemberByEmail(email).then((res) => {
-      if (res.status === 200) {
-        searchUser.value = res.data;
-        console.log(searchUser.value); // 確認是否正確返回資料
-      } else {
-        console.error("API 返回錯誤狀態碼:", res.status);
-      }
-    });
-  } else {
+  
     // 如果是用戶名，根據用戶名查找會員
-    ApiMember.getMemberByUserName(a.value)
+    ApiMember.getMember(a.value)
       .then((res) => {
         if (res.status === 200) {
           searchUser.value = res.data;
@@ -325,7 +315,7 @@ function enter() {
         console.error("API 請求錯誤:", error);
       });
   }
-}
+
 
 // 預設欄位資料
 const fields = computed(() => [

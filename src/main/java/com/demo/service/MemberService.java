@@ -55,6 +55,7 @@ public class MemberService {
 	//判斷username是否存在
 		public boolean usernameExist(String username) {
 			
+			
 			//透過username查admin
 			Optional<Member> op = memberRepository.findByUsername(username);
 			if (op.isEmpty()) {
@@ -78,8 +79,12 @@ public class MemberService {
 		}		
 		//密碼需要加密
 		String password = member.getPassword();
+		
+		
 		String password_Hashing = passwordEncoder.encode(password);  // 使用 BCrypt 進行加密
 		member.setPassword(password_Hashing);
+		member.setTotalMiles(0); //初始值0
+		member.setRemainingMiles(0); //初始值0
 		
 		memberRepository.save(member);
 		return member;
