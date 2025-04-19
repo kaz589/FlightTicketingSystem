@@ -62,7 +62,7 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
             newMember.setAuthority("USER");
             newMember.setTotalMiles(0);
             newMember.setRemainingMiles(0);
-//            newMember.setPicture(picture);
+            newMember.setPicture(picture);
 //            newMember.setProvider(registrationId.toUpperCase()); // GOOGLE / FACEBOOK
             memberRepository.save(newMember);
         }

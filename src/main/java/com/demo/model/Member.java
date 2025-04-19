@@ -62,6 +62,9 @@ public class Member {
 	@Column(name = "authority")
 	String authority;
 	
+	@Column(length = 512) // URL 有可能會比較長
+    private String picture;
+	
 
 	public Member() {
 		super();
@@ -84,6 +87,26 @@ public class Member {
 		this.phoneVerified = phoneVerified;
 		this.membershipLevel = membershipLevel;
 		this.authority = authority;
+	}
+	
+	
+	public Member(String fullName, String username, String password, String email, Integer totalMiles,
+			Integer remainingMiles, String phoneNumber, Date registrationDate, boolean emailVerified,
+			boolean phoneVerified, String membershipLevel, String authority,String picture) {
+		super();
+		this.fullName = fullName;
+		this.username = username;
+		this.password = password;
+		this.email = email;
+		this.totalMiles = totalMiles;
+		this.remainingMiles = remainingMiles;
+		this.phoneNumber = phoneNumber;
+		this.registrationDate = registrationDate;
+		this.emailVerified = emailVerified;
+		this.phoneVerified = phoneVerified;
+		this.membershipLevel = membershipLevel;
+		this.authority = authority;
+		this.picture = picture;
 	}
 
 

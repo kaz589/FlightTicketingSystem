@@ -46,11 +46,11 @@ public class MemberService {
 		public boolean usernameExist(String username) {
 			
 			//透過username查admin
-			Member member = memberRepository.findByUsername(username);
-			if (member != null) {
-				return true;
-			}
-			return false;
+			Optional<Member> op = memberRepository.findByUsername(username);
+			if (op.isEmpty()) {
+	            return false;
+	       }
+		 return true;
 		}
 	
 	
@@ -157,11 +157,11 @@ public class MemberService {
 	// 透過username找會員
 		public Member getOneByUsername(String username) {
 			
-			 Member member = memberRepository.findByUsername(username);
-			 if (member == null) {
-		            throw new UsernameNotFoundException("使用者不存在: " + username);
-		       }
-			 return member;
+			Optional<Member> op = memberRepository.findByUsername(username);
+			if (op.isEmpty()) {
+	            throw new UsernameNotFoundException("使用者不存在: " + username);
+	       }
+		 return op.get();
 		}
 		// 透過email找會員
 		public Member getOneByEmail(String email) {

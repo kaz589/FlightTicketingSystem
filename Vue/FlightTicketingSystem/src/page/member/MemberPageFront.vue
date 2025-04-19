@@ -81,24 +81,59 @@
         <v-expand-transition>
           <v-card
             v-if="reveal"
-            class="position-absolute w-100"
+            class="position-absolute w-100 pa-4"
             height="100%"
             style="bottom: 0"
           >
-            <v-card-text class="pb-0">
-              <p class="text-h4">可能放大頭照或自我介紹</p>
+            <v-row align="center">
+              <v-avatar size="64" class="mr-4">
+                <img
+                  :src="searchUser.picture || '/images/default.png'"
+                  alt="圖片未顯示"
+                />
+              </v-avatar>
+              <div>
+                <h3 class="mb-1">{{ searchUser.fullName }}</h3>
+              </div>
+            </v-row>
 
-              <p class="text-medium-emphasis">
-                late 16th century (as a noun denoting a place where alms were
-                distributed): from medieval Latin eleemosynarius, from late
-                Latin eleemosyna ‘alms’, from Greek eleēmosunē ‘compassion’
-              </p>
-            </v-card-text>
+            <v-divider class="my-4"></v-divider>
+
+            <v-row>
+              <v-col cols="6">
+                <div class="text-subtitle-1 font-weight-medium">剩餘里程</div>
+                <div class="text-h6 text-primary">
+                  {{ searchUser.remainingMiles }} 公里
+                </div>
+              </v-col>
+              <v-col cols="6">
+                <div class="text-subtitle-1 font-weight-medium">累積里程</div>
+                <div class="text-h6 text-success">
+                  {{ searchUser.totalMiles }} 公里
+                </div>
+              </v-col>
+            </v-row>
+            <v-row justify="end">
+              <v-btn>里程兌換</v-btn>
+            </v-row>
+
+            <v-divider class="my-4"></v-divider>
+
+            <!-- 現在訂購區塊 -->
+            <div class="mb-4">
+              <div class="text-subtitle-1 font-weight-medium mb-2">
+                現在馬上訂購機票
+              </div>
+            </div>
 
             <v-card-actions class="pt-0">
+              <v-row>
+                <v-btn>前往</v-btn>
+              </v-row>
+
               <v-btn
                 color="#003366"
-                text="關閉"
+                text="關閉資訊"
                 variant="text"
                 @click="hide"
               ></v-btn>

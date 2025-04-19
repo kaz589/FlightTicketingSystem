@@ -123,6 +123,14 @@ const rawData = ref({ ...DEFAULT_SEARCH.value });
 function authentication() {
   event.preventDefault(); // ⛔ 阻止 submit
 
+  if (rawData.value.username === "" || rawData.value.password === "") {
+    Swal.fire({
+      icon: "error",
+      title: "帳號密碼不能為空",
+    });
+    return;
+  }
+
   console.log(rawData.value.username);
   console.log(rawData.value.password);
   //登入取得JWT

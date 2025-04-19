@@ -90,7 +90,7 @@ public class SecurityConfig {
 
         return source;
     }
-    
+    //使用 AuthenticationManager 驗證 email + password
     @Bean
     public AuthenticationManager authManager(HttpSecurity http, AuthenticationConfiguration authConfig) throws Exception {
     	return new ProviderManager(List.of(daoAuthenticationProvider()));
@@ -99,12 +99,14 @@ public class SecurityConfig {
     @Autowired
     private MyUserDetailsService myUserDetailsService;
 
+    
+    //用來產出 Spring Security 預設的密碼驗證器： (daoAuthenticationProvider()	驗證「帳號 + 密碼」的邏輯封裝器)
     @Bean
     public DaoAuthenticationProvider daoAuthenticationProvider() {
         DaoAuthenticationProvider authenticationProvider 
                                   = new DaoAuthenticationProvider();
-        authenticationProvider.setUserDetailsService(myUserDetailsService);
-        authenticationProvider.setPasswordEncoder(new BCryptPasswordEncoder());
+        authenticationProvider.setUserDetailsService(myUserDetailsService); 		// 你自己的 UserDetailsService 
+        authenticationProvider.setPasswordEncoder(new BCryptPasswordEncoder());		// 通常是 BCryptPasswordEncoder
         return authenticationProvider;
     }
     
