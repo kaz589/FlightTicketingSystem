@@ -114,6 +114,19 @@ const router = createRouter({
       name: "OAuthSuccess",
       component: () => import("@/page/oauth/OAuthSuccess.vue"),
     },
+    //忘記密碼
+    {
+      path: "/forgetPassword",
+      name: "forgetPassword",
+      component: () => import("@/page/member/ForgetPassword.vue"),
+    },
+    // 重設密碼
+    {
+      path: "/reset-password", // 匹配 URL 中的 /reset-password
+      name: "reset-password",
+      component: () => import("@/page/member/ResetPassword.vue"), // 你的 ResetPassword.vue 組件
+      props: (route) => ({ token: route.query.token }), // 透過 query 參數將 token 傳給 ResetPassword 組件
+    },
 
     // {
     //   path: '/about',

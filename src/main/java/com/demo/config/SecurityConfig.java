@@ -14,6 +14,7 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
@@ -108,6 +109,12 @@ public class SecurityConfig {
         authenticationProvider.setUserDetailsService(myUserDetailsService); 		// 你自己的 UserDetailsService 
         authenticationProvider.setPasswordEncoder(new BCryptPasswordEncoder());		// 通常是 BCryptPasswordEncoder
         return authenticationProvider;
+    }
+    
+    //加密
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
     }
     
     

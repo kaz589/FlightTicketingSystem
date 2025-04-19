@@ -188,3 +188,32 @@ export const ApiProducts = {
   // 更新商品
   updateProduct: (id, products) => instance.put(`/products/${id}`, products),
 };
+
+export const ApiEmail = {
+  //要求更新密碼
+  requestReset: (email) =>
+    instance.post(
+      `/request-reset`,
+      { email },
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    ),
+
+  //token是否有效
+  tokenIsValid: (token) =>
+    instance.get(`/reset-password`, {
+      params: { token },
+    }),
+
+  //重設密碼
+  resetPassword: (token, newPassword) =>
+    instance.post(`/reset-password`, null, {
+      params: {
+        token,
+        newPassword,
+      },
+    }),
+};

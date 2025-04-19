@@ -1,7 +1,9 @@
 package com.demo.service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -10,13 +12,21 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import com.demo.controller.PasswordHashing;
 import com.demo.model.Member;
+import com.demo.model.PasswordResetToken;
 import com.demo.repository.MemberRepository;
+import com.demo.repository.PasswordResetTokenRepository;
 
 @Service
 public class MemberService {
 	
 	@Autowired
 	private MemberRepository memberRepository;
+	@Autowired
+	private PasswordResetTokenRepository passwordResetTokenRepository;
+	
+	@Autowired
+	private EmailService emailService;
+	
 	
 	 // 引入 BCryptPasswordEncoder 用於密碼加密
     private final PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
@@ -171,6 +181,23 @@ public class MemberService {
 		            throw new UsernameNotFoundException("使用者不存在: " + email);
 		       }
 			 return op.get();
+		}
+		
+		
+		
+		//密碼變更
+		public void createPasswordResetTokenForMember(Member member) {
+		    String token = UUID.randomUUID().toString();
+		    
+		    PasswordResetToken resetToken = new PasswordResetToken();
+		    resetToken.setToken(token);	  //設定token
+		    resetToken.setMember(member); // 
+		    resetToken.setExpiryDate(LocalDateTime.now().plusMinutes(30));
+
+		    passwordResetTokenRepository.save(resetToken);
+
+		    // 👉 你可以在這裡加寄信邏輯，把 token 組成連結寄出去
+		    emailService.sendResetPasswordEmail(member.getEmail(), token);
 		}
 		
 		

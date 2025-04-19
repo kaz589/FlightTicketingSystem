@@ -47,7 +47,8 @@
                   記住帳號
                 </label>
               </div>
-              <a href="#!">忘記密碼?</a>
+              <!-- Simple link -->
+              <router-link to="/forgetPassword">忘記密碼?</router-link>
             </div>
 
             <!-- Submit button -->
@@ -140,6 +141,7 @@ function authentication() {
       if (res.data) {
         //如果有res.data
         const token = res.data.token; //接住token
+
         const payload = jwtDecode(token); // 解碼 JWT
         console.log("JWT Payload:", payload.roles); //確認角色有哪些
         const testUser = {
@@ -163,12 +165,15 @@ function authentication() {
       }
     })
     .catch((error) => {
-      if (error.response.status === 403) {
+      if (error.response && error.response.status === 403) {
         Swal.fire({
           icon: "error",
           title: "密碼不符合",
           text: "請確認密碼是否輸入正確",
         });
+      } else {
+        // 如果不是 403 或者沒有 response，處理其他錯誤
+        console.error(error);
       }
     });
 }
