@@ -1,9 +1,16 @@
 package com.demo.repository;
 
+import java.util.List;
+
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
 
-import com.demo.model.Redeem_item;
+import com.demo.model.RedeemItem;
 
-public interface RedeemItemRepository extends JpaRepository<Redeem_item, Integer> {
+@Repository
+public interface RedeemItemRepository extends JpaRepository<RedeemItem,Integer> {
+//查看訂單明細
+	List<RedeemItem> findRedeemItemByRedeemId(@Param("redeem_id") Integer redeemId);
 
 }

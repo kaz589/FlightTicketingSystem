@@ -23,7 +23,6 @@ import lombok.Setter;
 @Setter
 @Entity
 @Table(name = "Products")
-
 public class Products {
 
 	// 物件屬性
@@ -51,8 +50,6 @@ public class Products {
 	//這是圖片儲存路徑
 	@Column(name = "product_image")
 	private String image;
-	
-	
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JsonBackReference

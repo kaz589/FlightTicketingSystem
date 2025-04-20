@@ -3,10 +3,10 @@ package com.demo.service;
 import java.util.List;
 import java.util.Optional;
 
-import com.demo.model.Category;
 import com.demo.model.Products;
-import com.demo.model.Redeem_item;
+import com.demo.model.RedeemItem;
 
+//商品管理
 public interface IProductsService {
 
 	/**
@@ -85,7 +85,7 @@ public interface IProductsService {
 	 * @param product
 	 * @return 更新後的商品
 	 */
-	Products updateStockAfterOrder(Integer id, Redeem_item redeem_item);
+	Products updateStockAfterOrder(Integer id, RedeemItem redeem_item);
 
 
 

@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 
 import com.demo.model.Category;
 import com.demo.model.Products;
-import com.demo.model.Redeem_item;
+import com.demo.model.RedeemItem;
 import com.demo.repository.ProductsRepository;
 import com.demo.service.IProductsService;
 
@@ -54,7 +54,8 @@ public class ProductsImp implements IProductsService {
 		productsRepo.deleteById(Id);
 		return true;
 	}
-
+	
+///更新商品XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 	@Override
 	public Products updateProductById(Integer id, @Valid Products product) {
 		if (!productsRepo.existsById(id)) {
@@ -71,7 +72,7 @@ public class ProductsImp implements IProductsService {
 	}
 
 	@Override
-	public Products updateStockAfterOrder(Integer id, Redeem_item redeem_item) {
+	public Products updateStockAfterOrder(Integer id, RedeemItem redeem_item) {
 		Products product = productsRepo.findById(id)
 				.orElseThrow(() -> new RuntimeException("無法更新，找不到 ID 為 " + id + " 的商品"));
 
