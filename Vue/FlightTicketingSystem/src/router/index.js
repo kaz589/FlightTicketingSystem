@@ -1,15 +1,14 @@
 import { createRouter, createWebHistory } from "vue-router";
 import { useAuthStore } from "@/stores/auth"; // 引入 Pinia store
 
-
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
       path: "/",
       // component: () => import("@/layouts/mainlayout.vue"),
-       component: () => import("@/layouts/memberLayout.vue"),
-       children: [
+      component: () => import("@/layouts/memberLayout.vue"),
+      children: [
         {
           path: "",
           component: () => import("@/page/member/test1.vue"),
@@ -23,11 +22,16 @@ const router = createRouter({
           component: () => import("@/page/member/Test.vue"),
         },
         {
+          //座位選擇
           path: "seatSelection",
           component: () => import("@/page/member/seatSelection.vue"),
         },
-
-      ] 
+        {
+          //會員專區
+          path: "memberFront",
+          component: () => import("@/page/member/MemberPageFront.vue"),
+        },
+      ],
 
       // component: () => import("@/layouts/userView.vue"),
     },
@@ -62,18 +66,22 @@ const router = createRouter({
         {
           path: "flight",
           component: () => import("@/page/admin/Flight.vue"),
+          meta: { requiresAuth: true }, // 需要登錄的頁面
         },
         {
           path: "Seats",
           component: () => import("@/page/admin/Seats.vue"),
+          meta: { requiresAuth: true }, // 需要登錄的頁面
         },
         {
           path: "Ticket",
           component: () => import("@/page/admin/Ticket.vue"),
+          meta: { requiresAuth: true }, // 需要登錄的頁面
         },
         {
           path: "travel",
           component: () => import("@/components/TravelPage.vue"),
+          meta: { requiresAuth: true }, // 需要登錄的頁面
         },
       ],
     },
@@ -91,6 +99,35 @@ const router = createRouter({
       component: () => import("@/layouts/memberLayout.vue"),
       meta: { requiresAuth: true }, // 需要登錄的頁面
     },
+    {
+      //會員登入
+      path: "/loginUser",
+      component: () => import("@/page/member/LoginMember.vue"),
+    },
+    {
+      path: "/SignUp",
+      component: () => import("@/page/member/SignUp.vue"),
+    },
+    //google 第三方登入(GOOGLE , FACEBOOK)
+    {
+      path: "/oauth2/success",
+      name: "OAuthSuccess",
+      component: () => import("@/page/oauth/OAuthSuccess.vue"),
+    },
+    //忘記密碼
+    {
+      path: "/forgetPassword",
+      name: "forgetPassword",
+      component: () => import("@/page/member/ForgetPassword.vue"),
+    },
+    // 重設密碼
+    {
+      path: "/reset-password", // 匹配 URL 中的 /reset-password
+      name: "reset-password",
+      component: () => import("@/page/member/ResetPassword.vue"), // 你的 ResetPassword.vue 組件
+      props: (route) => ({ token: route.query.token }), // 透過 query 參數將 token 傳給 ResetPassword 組件
+    },
+
     // {
     //   path: '/about',
     //   name: 'about',

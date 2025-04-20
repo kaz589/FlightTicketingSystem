@@ -1,20 +1,35 @@
 package com.demo.service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import com.demo.controller.PasswordHashing;
 import com.demo.model.Member;
+import com.demo.model.PasswordResetToken;
 import com.demo.repository.MemberRepository;
+import com.demo.repository.PasswordResetTokenRepository;
 
 @Service
 public class MemberService {
 	
 	@Autowired
 	private MemberRepository memberRepository;
+	@Autowired
+	private PasswordResetTokenRepository passwordResetTokenRepository;
+	
+	@Autowired
+	private EmailService emailService;
+	
+	
+	 // 引入 BCryptPasswordEncoder 用於密碼加密
+    private final PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
 	public Member getOne(Integer id) {
 		
@@ -36,12 +51,40 @@ public class MemberService {
 		return memberRepository.findAll();		
 	}
 	
+	
+	//判斷username是否存在
+		public boolean usernameExist(String username) {
+			
+			
+			//透過username查admin
+			Optional<Member> op = memberRepository.findByUsername(username);
+			if (op.isEmpty()) {
+	            return false;
+	       }
+		 return true;
+		}
+	
+	
+	
 	public Member insertMember(Member member) {
 		
+		
+		// 要確認username是否重複
+		// 先透過username查有沒有密碼
+		boolean result = usernameExist(member.getUsername());
+		if (result) {
+			//username存在，不能新增
+			return null;
+			
+		}		
 		//密碼需要加密
 		String password = member.getPassword();
-		String password_Hashing = PasswordHashing.hashPassword(password);
+		
+		
+		String password_Hashing = passwordEncoder.encode(password);  // 使用 BCrypt 進行加密
 		member.setPassword(password_Hashing);
+		member.setTotalMiles(0); //初始值0
+		member.setRemainingMiles(0); //初始值0
 		
 		memberRepository.save(member);
 		return member;
@@ -56,9 +99,10 @@ public class MemberService {
 			
 			//密碼需要加密
 			String password = member.getPassword();
-			String password_Hashing = PasswordHashing.hashPassword(password);
-			dbMember.setPassword(password_Hashing);
-			
+			if (member.getPassword() != null) {
+			    String encodedPassword = passwordEncoder.encode(member.getPassword());// 使用 BCrypt 進行加密
+			    dbMember.setPassword(encodedPassword);
+			}			
 			dbMember.setEmail(member.getEmail());
 			dbMember.setTotalMiles(member.getTotalMiles());
 			dbMember.setRemainingMiles(member.getRemainingMiles());
@@ -123,6 +167,42 @@ public class MemberService {
 				return member;
 			}
 			return null;		
+		}
+		
+	// 透過username找會員
+		public Member getOneByUsername(String username) {
+			
+			Optional<Member> op = memberRepository.findByUsername(username);
+			if (op.isEmpty()) {
+	            throw new UsernameNotFoundException("使用者不存在: " + username);
+	       }
+		 return op.get();
+		}
+		// 透過email找會員
+		public Member getOneByEmail(String email) {
+			
+			  Optional<Member> op = memberRepository.findByEmail(email);
+			 if (op.isEmpty()) {
+		            throw new UsernameNotFoundException("使用者不存在: " + email);
+		       }
+			 return op.get();
+		}
+		
+		
+		
+		//密碼變更
+		public void createPasswordResetTokenForMember(Member member) {
+		    String token = UUID.randomUUID().toString();
+		    
+		    PasswordResetToken resetToken = new PasswordResetToken();
+		    resetToken.setToken(token);	  //設定token
+		    resetToken.setMember(member); // 
+		    resetToken.setExpiryDate(LocalDateTime.now().plusMinutes(30));
+
+		    passwordResetTokenRepository.save(resetToken);
+
+		    // 👉 你可以在這裡加寄信邏輯，把 token 組成連結寄出去
+		    emailService.sendResetPasswordEmail(member.getEmail(), token);
 		}
 		
 		
