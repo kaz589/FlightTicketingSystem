@@ -13,6 +13,7 @@ import com.demo.repository.RedeemItemRepository;
 import com.demo.repository.RedeemRepository;
 import com.demo.service.IRedeemItemService;
 
+
 @Service
 public class RedeemItemImpl implements IRedeemItemService {
 
@@ -49,19 +50,26 @@ public class RedeemItemImpl implements IRedeemItemService {
 		return redeemItemRepo.save(redeemItem);
 	}
 
-//刪除訂單
-	@Override
-	public boolean deletedRedeem_item(Integer redeemItemId) {
-		redeemItemRepo.deleteById(redeemItemId);
-		return true;
-
-	}
+	// 刪除訂單項目
+    @Override
+    public boolean deletedRedeemItem(Integer redeemItemId) {
+        try {
+            redeemItemRepo.deleteById(redeemItemId);
+            return true;
+        } catch (Exception e) {
+            throw new RuntimeException("無法刪除，找不到 ID 為 " + redeemItemId + " 的訂單項目");
+        }
+    }
 
 //查看訂單明細
 	@Override
 	public List<RedeemItem> findRedeemItemByRedeemId(Integer redeemId) {
-		return redeemItemRepo.findRedeemItemByRedeemId(redeemId);
-	}
+		List<RedeemItem> redeemItems = redeemItemRepo.findRedeemItemByRedeemId(redeemId);
+        if (redeemItems.isEmpty()) {
+            throw new RuntimeException("找不到訂單編號為 " + redeemId + " 的訂單項目");
+        }
+        return redeemItems;
+    }
 //更新訂單項目數量
 	@Override
 	public RedeemItem updateQuantity(Integer redeemItemId, Integer newQuantity) {

@@ -26,7 +26,7 @@ public interface IRedeemService {
 	 * @param redeem 新增的Redeem物件
 	 * @return 返回新增的Redeem物件
 	 */
-	Redeem addRedeem(Redeem redeem);
+	Redeem addRedeem(Integer memberId);
 	
 	
 	/**
@@ -53,6 +53,6 @@ public interface IRedeemService {
 	
 	List<Redeem> findByTime(Date date);
 	
-	List<Redeem> findByMemberId(Integer memberid);
+	List<Redeem> findByMemberId(Integer memberId);
 	
 }

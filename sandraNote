@@ -10,7 +10,7 @@ findProductsByCategoryId
 2. 檢查會員是否有足夠里程
 3. 扣減會員里程與商品庫存（事務處理）
 查看個人總里程數	✅ Member 表有 mileage_balance
-	j
+	
 查看訂單狀態	✅ findRedeemById（要回傳訂單＋明細）
 ✅ findAllRedeem（依會員查）	✔ 建議加：findRedeemByMemberId
 	----------------------------------------------------------------------------
@@ -26,7 +26,7 @@ category
 	findProductsByCategoryId
 	
 redeem 訂單管理
-	 addRedeem
+	v addRedeem
 	 deleteRedeem
 	 findRedeemById
 	 findAllRedeem
@@ -50,11 +50,11 @@ member
 	
 
 	
-redeem_item	成立訂單
-addRedeemItem
-deleteRedeemItem
-findRedeemItemByRedeemId查看訂單明細
-updateQuantity更新數量
+✅redeem_item	成立訂單
+✅addRedeemItem(檢查商品存在、訂單存在、檢查會員存在、里程數是否足夠)
+✅deleteRedeemItem
+✅findRedeemItemByRedeemId查看訂單明細
+✅updateQuantity更新數量
 
 	
 Cart_item 購物項目

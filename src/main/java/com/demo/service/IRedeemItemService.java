@@ -9,7 +9,7 @@ public interface IRedeemItemService {
 //	新增訂單項目
 	RedeemItem addRedeemItem(Integer redeemId,Integer productId,Integer quantity);
 //	刪除訂單項目
-	boolean deletedRedeem_item(Integer redeemItemId);
+	boolean deletedRedeemItem(Integer redeemItemId);
 //	修改訂單項目數量
 	RedeemItem updateQuantity(Integer redeemItemId,Integer quantity);
 //	查看訂單明細

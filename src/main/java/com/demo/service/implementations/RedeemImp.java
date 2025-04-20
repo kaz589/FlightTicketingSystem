@@ -9,7 +9,9 @@ import org.antlr.v4.runtime.atn.EpsilonTransition;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.demo.model.Member;
 import com.demo.model.Redeem;
+import com.demo.repository.MemberRepository;
 import com.demo.repository.RedeemRepository;
 import com.demo.service.IRedeemService;
 
@@ -20,7 +22,9 @@ public class RedeemImp implements IRedeemService {
 
 	@Autowired
 	private RedeemRepository redeemRepo;
-
+	
+	@Autowired
+	private MemberRepository memberRepo;
 //	訂單預設狀態
 	 private static final String INITIAL_STATUS = "處理中";
 	   
@@ -60,12 +64,14 @@ public class RedeemImp implements IRedeemService {
 
 //	新增訂單
 	@Override
-	public Redeem addRedeem(Redeem redeem) {
+	public Redeem addRedeem(Integer memberId) {
+			Redeem redeem = new Redeem();
+			redeem.setRedeemStatus(INITIAL_STATUS); // 設定初始狀態
+//檢查會員存在		
+		Member member =memberRepo.findById(memberId)
+				.orElseThrow(() -> new RuntimeException("找不到 ID 為 " + memberId + " 的會員"));
 		
-
-
-		 // 設定初始狀態
-		redeem.setRedeemStatus(INITIAL_STATUS);
+		redeem.setMember(member);
 		return redeemRepo.save(redeem);
 
 	}
