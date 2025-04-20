@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.antlr.v4.runtime.atn.EpsilonTransition;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,8 +18,9 @@ import com.demo.repository.MemberRepository;
 import com.demo.repository.ProductsRepository;
 import com.demo.repository.RedeemItemRepository;
 import com.demo.repository.RedeemRepository;
-import com.demo.service.IRedeemItemService;
+import com.demo.service.IProductsService;
 import com.demo.service.IRedeemService;
+import com.demo.service.MemberService;
 
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
@@ -39,6 +39,13 @@ public class RedeemImp implements IRedeemService {
 
 	@Autowired
 	private ProductsRepository productsRepo;
+	
+	@Autowired
+	private ProductsImp productsService;
+	
+	@Autowired
+	private MemberService memberService;
+	
 //	訂單預設狀態
 	private static final String INITIAL_STATUS = "處理中";
 
@@ -80,12 +87,14 @@ public class RedeemImp implements IRedeemService {
 		Integer memberId = createRedeemRequest.getMemberId();
 		List<RedeemItemDTO> redeemItemsDTO = createRedeemRequest.getRedeemItems();
 
-//檢查會員存在	
+		//檢查會員存在	
 		Member member = memberRepo.findById(memberId)
 				.orElseThrow(() -> new RuntimeException("找不到 ID 為 " + memberId + " 的會員"));
 
 		redeem.setMember(member);
 		Redeem savedRedeem = redeemRepo.save(redeem);
+
+		int totalMilesNeeded = 0; //計算總里程
 
 		for (RedeemItemDTO itemDTO : redeemItemsDTO) {
 			// 檢查商品存在
@@ -96,14 +105,19 @@ public class RedeemImp implements IRedeemService {
 				throw new IllegalArgumentException(String.format("商品 ID %d '%s' 庫存不足：需要 %d，目前庫存 %d",
 						itemDTO.getProductId(), product.getName(), itemDTO.getQuantity(), product.getQuantity()));
 			}
-			// 檢查里程足夠
 			int needmiles = product.getNeedmiles();
-			int required = needmiles * itemDTO.getQuantity();
-			int available = member.getRemainingMiles();
-
-			if (available < required) {
-				throw new IllegalArgumentException(String.format("里程不足：需要 %d，剩餘 %d", required, available));
-			}
+			int requiredForThisItem = needmiles * itemDTO.getQuantity();
+			totalMilesNeeded += requiredForThisItem;
+			
+			
+			// 檢查里程足夠(待與孟儒討論後決定)
+//			int needmiles = product.getNeedmiles();
+//			int required = needmiles * itemDTO.getQuantity();
+//			int available = member.getRemainingMiles();
+//
+//			if (available < required) {
+//				throw new IllegalArgumentException(String.format("里程不足：共需要 %d里程，目前帳號剩餘 %d里程", required, available));
+//			}
 
 			// 創建redeem_item物件，設定關聯的redeem product needmiles quantity
 			RedeemItem redeemItem = new RedeemItem();
@@ -116,12 +130,12 @@ public class RedeemImp implements IRedeemService {
 			redeemItemRepo.save(redeemItem);
 
 			// 扣減庫存
-			product.setQuantity(product.getQuantity() - itemDTO.getQuantity());
-			productsRepo.save(product);
+			productsService.updateStockAfterOrder(itemDTO.getProductId(), itemDTO.getQuantity());
 
 			// 扣除會員里程
-			member.setRemainingMiles(available - required);
-			memberRepo.save(member);
+			memberService.decreaseMilesById(memberId, needmiles);
+//			member.setRemainingMiles(available - required);
+//			memberRepo.save(member);
 		}
 		  return savedRedeem;
 	}

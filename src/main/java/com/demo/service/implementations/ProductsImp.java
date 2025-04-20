@@ -72,19 +72,19 @@ public class ProductsImp implements IProductsService {
 	}
 
 	@Override
-	public Products updateStockAfterOrder(Integer id, RedeemItem redeem_item) {
-		Products product = productsRepo.findById(id)
-				.orElseThrow(() -> new RuntimeException("無法更新，找不到 ID 為 " + id + " 的商品"));
+	public Products updateStockAfterOrder(Integer productId,Integer decreaseQuantity) {
+		Products product = productsRepo.findById(productId)
+				.orElseThrow(() -> new RuntimeException("無法更新，找不到 ID 為 " + productId + " 的商品"));
 
 		int currentStock = product.getQuantity();
-		int redeemQuantity = redeem_item.getQuantity();
-		if (redeemQuantity <= 0) {
+		
+		if (decreaseQuantity <= 0) {
 			throw new IllegalArgumentException("兌換數量必須大於 0。");
 		}
-		if (currentStock < redeemQuantity) {
+		if (currentStock < decreaseQuantity) {
 			throw new RuntimeException("庫存不足，無法兌換。");
 		}
-		product.setQuantity(currentStock - redeemQuantity);
+		product.setQuantity(currentStock - decreaseQuantity);
 		return productsRepo.save(product);
 	}
 

@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import com.demo.model.Products;
+import com.demo.model.Redeem;
 import com.demo.model.RedeemItem;
 
 //商品管理
@@ -81,11 +82,11 @@ public interface IProductsService {
 	/**
 	 * 根據訂單扣除某商品數量
 	 * 
-	 * @param id
-	 * @param product
+	 * @param productId
+	 * @param decreaseQuantity
 	 * @return 更新後的商品
 	 */
-	Products updateStockAfterOrder(Integer id, RedeemItem redeem_item);
+	Products updateStockAfterOrder(Integer productId, Integer decreaseQuantity);
 
 
 
