@@ -21,9 +21,9 @@ public interface RedeemRepository extends JpaRepository<Redeem, Integer> {
 	 */
 	List<Redeem> findByCreateAt(Date date);
 	
-	List<Redeem> findByMemberId(Integer member_id);
+	List<Redeem> findByMember_MemberId(Integer memberId);
 
-	List<Redeem> findByStatus(String redeem_status);
+	List<Redeem> findByRedeemStatus(String redeemStatus);
 
 
 	

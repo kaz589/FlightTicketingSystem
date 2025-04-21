@@ -45,7 +45,7 @@ public class RedeemItemImpl implements IRedeemItemService {
 //查看訂單明細
 	@Override
 	public List<RedeemItem> findRedeemItemByRedeemId(Integer redeemId) {
-		List<RedeemItem> redeemItems = redeemItemRepo.findRedeemItemByRedeemId(redeemId);
+		List<RedeemItem> redeemItems = redeemItemRepo.findRedeemItemByRedeem_RedeemId(redeemId);
         if (redeemItems.isEmpty()) {
             throw new RuntimeException("找不到訂單編號為 " + redeemId + " 的訂單項目");
         }

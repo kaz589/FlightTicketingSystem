@@ -111,20 +111,8 @@ public class MemberService {
 		return null;		
 	}
 
-	// 透過id找會員，並減少某會員里程數
-//		public Member decreaseMilesById(Integer id, Integer decreaseMiles) {
-//			Optional<Member> op = memberRepository.findById(id);
-//			
-//			if (op.isPresent()) {
-//				Member member = op.get();
-//				Integer resultRemainingMiles = member.getRemainingMiles() - decreaseMiles;
-//				member.setRemainingMiles(resultRemainingMiles);
-//				memberRepository.save(member);
-//				return member;
-//			}
-//			return null;		
-//		}
-	// 透過memberId找會員，並減少某會員里程數
+
+	// 透過memberId找會員，並減少某會員里程數(改寫版)
 			public Member decreaseMilesById(Integer memberId, Integer decreaseMiles) {
 				Optional<Member> op = memberRepository.findById(memberId);
 				

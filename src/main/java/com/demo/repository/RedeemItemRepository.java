@@ -11,6 +11,6 @@ import com.demo.model.RedeemItem;
 @Repository
 public interface RedeemItemRepository extends JpaRepository<RedeemItem,Integer> {
 //查看訂單明細
-	List<RedeemItem> findRedeemItemByRedeemId(@Param("redeem_id") Integer redeemId);
+	  List<RedeemItem> findRedeemItemByRedeem_RedeemId(Integer redeemId);
 
 }

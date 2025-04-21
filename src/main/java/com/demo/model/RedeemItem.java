@@ -1,6 +1,5 @@
 package com.demo.model;
 
-import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 

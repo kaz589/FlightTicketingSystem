@@ -6,7 +6,9 @@ import java.util.Map;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import com.demo.model.Member;
 import com.demo.model.Products;
@@ -18,7 +20,6 @@ import com.demo.repository.MemberRepository;
 import com.demo.repository.ProductsRepository;
 import com.demo.repository.RedeemItemRepository;
 import com.demo.repository.RedeemRepository;
-import com.demo.service.IProductsService;
 import com.demo.service.IRedeemService;
 import com.demo.service.MemberService;
 
@@ -53,6 +54,13 @@ public class RedeemImp implements IRedeemService {
 			"處理中", Set.of("已完成", "已取消", "待出貨"), "待出貨", Set.of("已出貨", "已取消"), "已出貨", Set.of("已送達"), "已送達", Set.of("已完成"),
 			"已取消", Set.of(), "已完成", Set.of());
 
+//存在性驗證
+	private <T> List<T> checkNotEmpty(List<T> list, String errorMessage) {
+		if (list.isEmpty()) {
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND, errorMessage);
+		}
+		return list;
+	}
 //查詢全部訂單訂單
 	@Override
 	public List<Redeem> getAllRedeem() {
@@ -62,19 +70,22 @@ public class RedeemImp implements IRedeemService {
 //根據會員ID查詢訂單
 	@Override
 	public List<Redeem> findByMemberId(Integer memberId) {
-		return redeemRepo.findByMemberId(memberId);
+		List<Redeem> redeems = redeemRepo.findByMember_MemberId(memberId);
+		 return checkNotEmpty(redeems, "此會員尚無兌換紀錄");
 	}
 
 //根據RedeemId查詢訂單
 	@Override
 	public Redeem getRedeemById(Integer redeemId) {
-		return redeemRepo.findById(redeemId).orElse(null);
+		 return redeemRepo.findById(redeemId)
+			        .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "找不到此筆兌換紀錄"));
 	}
 
 //根據時間查詢訂單
 	@Override
 	public List<Redeem> findByTime(Date date) {
-		return redeemRepo.findByCreateAt(date);
+		List<Redeem> redeems =	redeemRepo.findByCreateAt(date);
+		 return checkNotEmpty(redeems, "此時間尚無兌換紀錄");
 	}
 
 //	新增訂單
@@ -96,6 +107,7 @@ public class RedeemImp implements IRedeemService {
 
 		int totalMilesNeeded = 0; //計算總里程
 
+		//遍歷本訂單的商品項目
 		for (RedeemItemDTO itemDTO : redeemItemsDTO) {
 			// 檢查商品存在
 			Products product = productsRepo.findById(itemDTO.getProductId())
@@ -108,16 +120,6 @@ public class RedeemImp implements IRedeemService {
 			int needmiles = product.getNeedmiles();
 			int requiredForThisItem = needmiles * itemDTO.getQuantity();
 			totalMilesNeeded += requiredForThisItem;
-			
-			
-			// 檢查里程足夠(待與孟儒討論後決定)
-//			int needmiles = product.getNeedmiles();
-//			int required = needmiles * itemDTO.getQuantity();
-//			int available = member.getRemainingMiles();
-//
-//			if (available < required) {
-//				throw new IllegalArgumentException(String.format("里程不足：共需要 %d里程，目前帳號剩餘 %d里程", required, available));
-//			}
 
 			// 創建redeem_item物件，設定關聯的redeem product needmiles quantity
 			RedeemItem redeemItem = new RedeemItem();
@@ -133,27 +135,25 @@ public class RedeemImp implements IRedeemService {
 			productsService.updateStockAfterOrder(itemDTO.getProductId(), itemDTO.getQuantity());
 
 			// 扣除會員里程
-			memberService.decreaseMilesById(memberId, needmiles);
-//			member.setRemainingMiles(available - required);
-//			memberRepo.save(member);
+			memberService.decreaseMilesById(memberId, totalMilesNeeded);
 		}
 		  return savedRedeem;
 	}
 
 //根據RedeemId軟刪除訂單
 	@Override
-	public void deleteRedeem(Integer redeemId) {
+	public Redeem softDeleteRedeem(Integer redeemId) {
 		Redeem redeem = redeemRepo.findById(redeemId)
 				.orElseThrow(() -> new RuntimeException("無法刪除，找不到 ID 為 " + redeemId + " 的兌換訂單"));
 		redeem.setDeleted(true);
-		redeemRepo.save(redeem);
+		return redeem;
 
 	}
 
 //根據訂單狀態查詢訂單
 	@Override
-	public List<Redeem> findByStatus(String redeem_status) {
-		return redeemRepo.findByStatus(redeem_status);
+	public List<Redeem> findByRedeemStatus(String redeemStatus) {
+		return redeemRepo.findByRedeemStatus(redeemStatus);
 	}
 
 //	更新訂單
