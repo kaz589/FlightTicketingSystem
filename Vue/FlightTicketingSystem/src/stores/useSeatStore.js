@@ -4,11 +4,18 @@ export const useSeatStore = defineStore('seatStore', () => {
     const selectseats = ref([]);
   
     function toggleSeat(seat) {
-      seat.booked = !seat.booked;
-      
-      if (seat.booked) {
-        selectseats.value.push(seat);
+      // 禁止選擇已被預訂的座位
+      if (seat.booked) return;
+  
+      seat.selected = !seat.selected;
+  
+      if (seat.selected) {
+        // 避免重複加入
+        if (!selectseats.value.some(s => s.seatNumber === seat.seatNumber)) {
+          selectseats.value.push(seat);
+        }
       } else {
+        // 取消選取
         const index = selectseats.value.findIndex(
           (s) => s.seatNumber === seat.seatNumber
         );
@@ -28,7 +35,10 @@ export const useSeatStore = defineStore('seatStore', () => {
           .map(seat => `${seat.seatNumber}(${seat.seatclasname})`)
           .join('#');
       });
-    return { selectseats, toggleSeat,totalPrice,selectedSeatNumbers };
+      const selectedSeatIds = computed(() => {
+        return selectseats.value.map(seat => seat.seatId); // 確保 seat.id 是數字
+      });
+    return { selectseats, toggleSeat,totalPrice,selectedSeatNumbers,selectedSeatIds };
 }, {
     persist: true
   });

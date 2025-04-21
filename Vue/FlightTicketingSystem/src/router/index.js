@@ -8,11 +8,13 @@ const router = createRouter({
     {
       path: "/",
       // component: () => import("@/layouts/mainlayout.vue"),
-       component: () => import("@/layouts/memberLayout.vue"),
+      //  component: () => import("@/layouts/memberLayout.vue"),
+      component: () => import("@/layouts/Header.vue"),
+      
        children: [
         {
           path: "",
-          component: () => import("@/page/member/test1.vue"),
+          component: () => import("@/page/member/flightseach.vue"),
         },
         {
           path: "test2",
@@ -32,7 +34,16 @@ const router = createRouter({
           path: "SeatPayment",
           component: () => import("@/page/member/SeatPayment.vue"),
         },
-
+        {
+          //支付頁面
+          path: "123",
+          component: () => import("@/layouts/123.vue"),
+        },
+        {
+          //支付頁面
+          path: "456",
+          component: () => import("@/page/member/TicketOrderList.vue"),
+        },
       ] 
 
       // component: () => import("@/layouts/userView.vue"),

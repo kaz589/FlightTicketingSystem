@@ -38,7 +38,7 @@ public class Seat {
     @JoinColumn(name = "ticket_id", referencedColumnName = "ticketId") // 外鍵 ticket_id
     @JsonBackReference
     private Ticket ticket;
-    private boolean isBooked;
+    private boolean booked;
     private LocalDateTime locked_at;
     private LocalDateTime  expires_at;
     
@@ -47,6 +47,6 @@ public class Seat {
         this.flight = flight;
         this.seatNumber = seatNumber;
         this.seatClass = seatClass;
-        this.isBooked = isBooked;
+        this.booked = isBooked;
     }
 }

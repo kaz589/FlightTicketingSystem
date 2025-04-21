@@ -7,52 +7,60 @@
   <!-- Search Bar -->
   <div class="flex flex-wrap justify-center items-center gap-4">
     <!-- From -->
-    <div
-      class="flex items-center bg-gray-100 px-4 py-3 rounded-full text-sm w-52"
-    >
-      <span class="mr-2 mdi mdi-airplane-takeoff"></span><strong>From:</strong>
-      <input
-        type="text"
+    <v-col cols="auto">
+      <v-autocomplete
+        v-model="from"
+        :items="airports"
+        label="From"
         placeholder="Origin"
-        class="bg-transparent outline-none ml-2 w-full"
-      />
-    </div>
+        prepend-inner-icon="mdi-airplane-takeoff"
+        variant="solo"
+        density="comfortable"
+        rounded
+        class="w-52"
+        hide-details
+        clearable
+      ></v-autocomplete>
+    </v-col>
 
     <!-- To -->
-    <div
-      class="flex items-center bg-gray-100 px-4 py-3 rounded-full text-sm w-52"
-    >
-      <span class="mr-2 mdi mdi-airplane-landing"></span><strong>To:</strong>
-      <input
-        type="text"
+    <v-col cols="auto">
+      <v-autocomplete
+        v-model="to"
+        :items="airports"
+        label="To"
         placeholder="Destination"
-        class="bg-transparent outline-none ml-2 w-full"
-      />
-    </div>
+        prepend-inner-icon="mdi-airplane-landing"
+        variant="solo"
+        density="comfortable"
+        rounded
+        class="w-52"
+        hide-details
+        clearable
+      ></v-autocomplete>
+    </v-col>
 
     <!-- Date range (one input, two pickers) -->
     <div
       class="flex items-center bg-gray-100 px-4 py-3 rounded-full text-sm w-64"
     >
-      <span class="mr-2 mdi mdi-calendar-range"></span>
-      <input
-        type="text"
-        ref="dateInput"
+      <FlatPickr
+        v-model="range"
+        :config="config"
         placeholder="Start → End"
-        class="bg-transparent outline-none w-full"
-        readonly
+        class="w-52 my-flatpickr"
       />
     </div>
-
     <!-- Search Button -->
     <button
       class="bg-green-400 hover:bg-green-500 text-white font-bold px-6 py-3 rounded-full"
+      @click="console.log(range)"
     >
       Search
     </button>
   </div>
-  <v-container   >  
-    <v-row align="start" justify="center"  cols="1" md="1">
+  <v-container>
+    <v-row align="start" justify="center" cols="1" md="1">
       <v-col
         v-for="flight in flights"
         :key="flight.id"
@@ -69,9 +77,16 @@
 <script setup>
 import { ref, onMounted } from "vue";
 import { ApiAirport } from "@/utils/API";
-import flatpickr from "flatpickr";
-import "flatpickr/dist/flatpickr.min.css";
+import FlatPickr from "vue-flatpickr-component";
+import "flatpickr/dist/flatpickr.css";
 import FlightCard from "@/components/flight/flightcard.vue";
+const range = ref([]);
+const config = {
+  mode: "range",
+  dateFormat: "Y-m-d",
+  time_24hr: true,
+};
+
 onMounted(() => {
   //getdisinairport();
 });
@@ -127,8 +142,27 @@ function getdisinairport() {
     flights.value = response.data;
   });
 }
-
-
 </script>
 
-<style scoped></style>
+<style scoped>
+.my-flatpickr .flatpickr-input {
+  border-radius: 0.75rem;
+  box-shadow: 0 1px 4px rgb(0 0 0 / 6%);
+  padding: 0.5rem 1rem;
+  background: #7e2222;
+  border: 1px solid #0f4392;
+  font-size: 1rem;
+  transition: border 0.2s, box-shadow 0.2s;
+}
+.my-flatpickr .flatpickr-input:focus {
+  border-color: #4ade80;
+  box-shadow: 0 0 0 2px #bbf7d0;
+  outline: none;
+}
+
+/* 讓 placeholder 顏色和 Vuetify 一致 */
+.my-flatpickr .flatpickr-input::placeholder {
+  color: #990909; /* Tailwind gray-400 */
+  opacity: 1;
+}
+</style>

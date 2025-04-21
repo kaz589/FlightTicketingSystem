@@ -32,12 +32,15 @@ public class Flight {
 	@ManyToOne
     @JoinColumn(name = "origin_iata", referencedColumnName = "iataCode") // 關聯到機場表的 IATA 代碼
     private Airports originAirport; // 起點機場
-    @ManyToOne
+    
+	@ManyToOne
     @JoinColumn(name = "destination_iata", referencedColumnName = "iataCode") // 關聯到機場表的 IATA 代碼
     private Airports destinationAirport; // 終點機場
+    
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss") // 用於 JSON 請求的日期格式
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") // 用於表單數據的日期格式
     private Date departureTime;
+   
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss") // 用於 JSON 請求的日期格式
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") // 用於表單數據的日期格式
     private Date arrivalTime;
