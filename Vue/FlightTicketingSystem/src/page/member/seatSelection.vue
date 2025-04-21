@@ -2,27 +2,38 @@
   <h1>這是座位選擇</h1>
   <div class="legend">
     <div class="legend-item"><span class="seat first-class"></span> 頭等艙</div>
-    <div class="legend-item"><span class="seat business-class"></span> 商務艙</div>
-    <div class="legend-item"><span class="seat economy-class"></span> 經濟艙</div>
+
+    <div class="legend-item">
+      <span class="seat business-class"></span> 商務艙
+    </div>
+    <div class="legend-item">
+      <span class="seat economy-class"></span> 經濟艙
+    </div> 
     <div class="legend-item"><span class="seat occupied"></span> 已預訂</div>
+    <div class="legend-item"><span class="seat selected"></span> 已選擇</div>
+    
   </div>
   <v-container class="d-flex justify-center">
     <div class="custom-width">
-    <v-select
-      v-model="selectedSection"
-      @change="arrangeSeats"
-      label="選擇艙等"
-      :items="sections"
-      item-title="name"
-      item-value="id"
-    ></v-select>
-  </div>
+      <v-select
+        v-model="selectedSection"
+        @change="arrangeSeats"
+        label="選擇艙等"
+        :items="sections"
+        item-title="name"
+        item-value="id"
+      ></v-select>
+    </div>
+
   </v-container>
   <br />
   <v-container class="d-flex justify-center">
     <div class="seat-map-container">
       <div class="seat-map">
         <div
+
+   
+
           v-for="(column, columnIndex) in filteredSeatColumns"
           :key="columnIndex"
           class="seat-column"
@@ -34,12 +45,19 @@
               'seat',
               {
                 occupied: seat.booked,
+
+                selected: seat.selected,
+
                 'first-class': seat.seatClass === 'FIR',
                 'business-class': seat.seatClass === 'BUS',
                 'economy-class': seat.seatClass === 'ECO',
               },
             ]"
-            :style="{ marginTop: seatIndex === aisleIndex - 1 ? aisleWidth : '0' }"
+
+            :style="{
+              marginTop: seatIndex === aisleIndex - 1 ? aisleWidth : '0',
+            }"
+
             @click="toggleSeat(columnIndex, seatIndex)"
           >
             {{ seat.seatNumber }}
@@ -48,9 +66,11 @@
       </div>
     </div>
   </v-container>
-  <hr>
-  <v-container   >  
-    <v-row align="start" justify="center"  cols="1" md="1">
+
+  <hr />
+  <v-container>
+    <v-row align="start" justify="center" cols="1" md="1">
+
       <v-col
         v-for="selectseat in selectseats"
         :key="selectseat.id"
@@ -58,27 +78,39 @@
         cols="7"
         md="7"
       >
-      <Seatscard :selectseat="selectseat"/>
+
+        <Seatscard :selectseat="selectseat" />
       </v-col>
     </v-row>
   </v-container>
-  <hr>
+  <hr />
   <v-row justify="center">
-    <v-col
-       
-        cols="4"
+    <v-col cols="4">
+      <p>
+        總計：
+        <span class="text-red-600 text-xl font-bold"
+          >${{ seatStore.totalPrice }}</span
+        >
+      </p>
+      <v-btn
+        prepend-icon="mdi mdi-cash-sync"
+        @click="$router.push('SeatPayment')"
+        stacked
       >
-      <p>總計： <span class="text-red-600 text-xl font-bold">${{totalPrice}}</span></p>
-      <v-btn prepend-icon="$vuetify" stacked> Button</v-btn>
-      </v-col>
-    </v-row>
+        結帳</v-btn
+      >
+    </v-col>
+  </v-row>
+
 </template>
 
 <script setup>
 import { ref, computed, onMounted } from "vue";
 import { ApiSeats } from "@/utils/API";
 import Seatscard from "@/components/seats/Seatscard.vue";
-import { useSeatStore } from '@/stores/useSeatStore';
+
+import { useSeatStore } from "@/stores/useSeatStore";
+
 
 onMounted(() => {
   const params = new URLSearchParams(window.location.search);
@@ -88,13 +120,13 @@ onMounted(() => {
 
 const flightId = ref(null);
 const seats = ref([]);
- const seatColumns = ref([]);
-let seatsPerColumn =0; // 每列座位數
+
+const seatColumns = ref([]);
+let seatsPerColumn = 0; // 每列座位數
 const aisleIndex = ref(0); // 初始走道位置
-const aisleWidth = '18px';
+const aisleWidth = "18px";
 const seatStore = useSeatStore(); // 獲取 Pinia store
 const selectseats = seatStore.selectseats; // 從 store 中獲取 selectseats
-const totalPrice = ref(0);
 
 
 const sections = ref([
@@ -107,59 +139,47 @@ const selectedSection = ref(sections.value[0].id);
 
 //篩選艙等內的座位
 const filteredSeatColumns = computed(() => {
-  const filteredSeats = seats.value.filter(
-    (seat) => seat.seatClass === selectedSection.value
-  );
- // 同步 booked 狀態
- filteredSeats.forEach(seat => {
-    seat.booked = seatStore.selectseats.some(
-      selectedSeat => selectedSeat.seatNumber === seat.seatNumber
-    );
-  });
- console.log(filteredSeats);
 
- 
+  // 用 map 產生新物件，避免直接修改原 seats
+  const filteredSeats = seats.value
+    .filter(seat => seat.seatClass === selectedSection.value)
+    .map(seat => ({
+      ...seat,
+      selected: seatStore.selectseats.some(
+        selectedSeat => selectedSeat.seatNumber === seat.seatNumber
+      )
+    }));
+
+
   const columns = [];
   for (let i = 0; i < filteredSeats.length; i += seatsPerColumn) {
     columns.push(filteredSeats.slice(i, i + seatsPerColumn));
   }
-  console.log(columns);
-  
+
   return columns;
 });
 
-
- function arrangeSeats() {
-   seatColumns.value = filteredSeatColumns.value;
-   filteredSeatColumns.value
-   }
+function arrangeSeats() {
+  //seatColumns.value = filteredSeatColumns.value;
+}
 
 function toggleSeat(columnIndex, seatIndex) {
-
   const seat = filteredSeatColumns.value[columnIndex][seatIndex];
   seatStore.toggleSeat(seat);
-  totalPrice.value=seatStore.totalPrice;
-    
-  
-  
 }
 
 function getseat(id) {
+  console.log(id);
+
   ApiSeats.getSeatsByFlightId(id).then((response) => {
-    
     seats.value = response.data;
-    const airplaneModel=seats.value[0].flight.airplaneModel;
 
-
-     seatsPerColumn = airplaneModel.seatRowCount; // 每列座位數
-     aisleIndex.value = airplaneModel.aisleStartPosition; // 初始走道位置
-    
-     
-     
+    const airplaneModel = seats.value[0].flight.airplaneModel;
+    seatsPerColumn = airplaneModel.seatRowCount; // 每列座位數
+    aisleIndex.value = airplaneModel.aisleStartPosition; // 初始走道位置
     arrangeSeats();
   });
 }
-
 
 </script>
 
@@ -209,19 +229,27 @@ function getseat(id) {
 }
 
 .seat.occupied {
-    
+
+
   background-color: #e57373;
   cursor: not-allowed;
 }
 
 .controls {
-    width: 40%;
-    display: flex;
+
+  width: 40%;
+  display: flex;
   justify-content: center; /* 置中元素 */
- 
+
   margin: 20px 0;
   text-align: center;
 }
+.seat.selected {
+  background: #43a047; /* 明亮的綠色 */
+  color: #fff;
+  border: 2px solid black; /* 可選，加強辨識度 */
+}
+
 
 .legend {
   margin-top: 20px;

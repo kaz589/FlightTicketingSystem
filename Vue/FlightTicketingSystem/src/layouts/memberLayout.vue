@@ -1,5 +1,6 @@
 <template>
   <v-app>
+
     <v-app-bar>
       <header class="grid grid-cols-3 items-center py-6">
         <!-- Left: Logo -->
@@ -84,6 +85,7 @@
       </header>
     </v-app-bar>
     <br />
+
     <v-main>
       <div class="pa-4">
         <router-view></router-view>
@@ -95,8 +97,10 @@
 <script setup>
 import { ref, onMounted, computed } from "vue";
 import { useRouter } from "vue-router"; // 引入 vue-router
+
 import { useAuthStore } from "@/stores/auth"; // 引入 Pinia store
 import { logout } from "@/utils/logout"; // 導入登出函數
+
 
 const router = useRouter(); // 使用 vue-router
 const authStore = useAuthStore();
@@ -169,6 +173,7 @@ function userPage() {
 </script>
 
 <style scoped>
+
 .login-btn {
   padding: 8px 16px;
   border: 1px solid transparent;
@@ -181,5 +186,6 @@ function userPage() {
 .login-btn:hover {
   border-color: #ccc; /* 灰色邊框 */
   box-shadow: 0 0 5px #ccc; /* 灰色陰影 */
+
 }
 </style>

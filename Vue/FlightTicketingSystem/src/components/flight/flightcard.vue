@@ -1,65 +1,70 @@
 <template>
-     <v-card  class="border-xl">
-          
-          <v-card-text>
-            <div class="flight-info">
-              <div class="departure">
-                <label>{{ flight.departureCity }}</label>
-                <br />
-                <label> {{ flight.departureTime }}</label>
-              </div>
-              <div class="line"></div>
-              <div class="arrival">
-                <label> {{ flight.arrivalCity }}</label>
-                <br />
-                <label> {{ flight.arrivalTime }}</label>
-              </div>
-            </div>
-          </v-card-text>
-          <v-card-actions style="display: flex; justify-content: flex-end">
-            <v-btn
-              color="#2196F3"
-              text="選擇座位"
-              @click="$router.push('seatSelection?flightid='+flight.flightid)"
-            ></v-btn>
-          </v-card-actions>
-        </v-card>
+
+  <v-card border="opacity-50 sm" class="border-xl font-weight-bold big-text">
+    <v-card-text>
+      <v-row
+        justify="space-between"
+        align="center"
+        class="font-weight-bold text-h6"
+      >
+        <v-col class="text-center">
+          <div>{{ flight.originAirport }}</div>
+          <div>{{ flight.departureTime }}</div>
+        </v-col>
+        <v-col class="text-center">
+          <div>預估里程:{{ flight.estimatedDistance }}</div>
+          <div class="line-arrow-wrap">
+            <div class="line"></div>
+            <span class="mdi mdi-arrow-right-thin"></span>
+          </div>
+        </v-col>
+        <v-col class="text-center">
+          <div>{{ flight.destinationAirport }}</div>
+          <div>{{ flight.arrivalTime }}</div>
+        </v-col>
+      </v-row>
+    </v-card-text>
+    <v-card-actions style="display: flex; justify-content: flex-end">
+      <v-btn
+        color="#2196F3"
+        text="選擇座位"
+        @click="$router.push('seatSelection?flightid=' + flight.id)"
+      ></v-btn>
+    </v-card-actions>
+  </v-card>
+
 </template>
 
 <script setup>
 // import { defineProps } from "vue";
 import { useRouter } from "vue-router"; // 引入 vue-router
-const router = useRouter(); // 使用 vue-router
+
 defineProps(["flight"]);
 </script>
 
-<style  scoped>
 
-.flight-info {
+<style scoped>
+.line-arrow-wrap {
+  position: relative;
+  width: 100%;         /* 線條+箭頭總寬，依需求調整 */
+  margin: 0 auto;     /* 置中於父容器 */
+  height: 40px;       /* 至少大於箭頭高度 */
+
   display: flex;
-  flex-direction: row-reverse;
-  justify-content: space-between;
   align-items: center;
 }
 
-.departure,
-.arrival {
-  text-align: center;
+.line {
+  flex: 1;                    /* 占滿剩餘空間 */
+  height: 5px;
+  background-color: black;
 }
 
-.line {
-  width: 40%; /* Full width line */
-  height: 1px;
-  background-color: black; /* Line color */
-  margin: 10px 0; /* Adjust spacing as needed */
-  position: relative; /* 確保可以定位箭頭 */
-}
-.line::after {
-  content: '→'; /* 使用箭頭符號 */
-  position: absolute;
-  right: -15px; /* 調整箭頭位置 */
-  top: -14px; /* 調整箭頭垂直位置 */
-  font-size: 20px; /* 調整箭頭大小 */
-  color: black; /* 箭頭顏色 */
+.mdi-arrow-right-thin {
+  font-size: 40px;
+  color: black;
+  margin-left: 1px;           /* 緊貼線條，可調整間距 */
+  display: inline-block;
+  transform: scaleX(2);       /* 如果想讓箭頭變長 */
 }
 </style>

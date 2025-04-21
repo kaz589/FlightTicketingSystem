@@ -1,5 +1,6 @@
 package com.demo.model;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
@@ -37,13 +38,15 @@ public class Seat {
     @JoinColumn(name = "ticket_id", referencedColumnName = "ticketId") // 外鍵 ticket_id
     @JsonBackReference
     private Ticket ticket;
-    private boolean isBooked;
+    private boolean booked;
+    private LocalDateTime locked_at;
+    private LocalDateTime  expires_at;
     
  // 構造函數
     public Seat(Flight flight, String seatNumber, String seatClass, boolean isBooked) {
         this.flight = flight;
         this.seatNumber = seatNumber;
         this.seatClass = seatClass;
-        this.isBooked = isBooked;
+        this.booked = isBooked;
     }
 }

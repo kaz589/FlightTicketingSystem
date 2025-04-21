@@ -7,11 +7,13 @@ const router = createRouter({
     {
       path: "/",
       // component: () => import("@/layouts/mainlayout.vue"),
+
+//   component: () => import("@/layouts/Header.vue"),
       component: () => import("@/layouts/memberLayout.vue"),
       children: [
         {
           path: "",
-          component: () => import("@/page/member/test1.vue"),
+          component: () => import("@/page/member/homepage.vue"),
         },
         {
           path: "test2",
@@ -27,11 +29,24 @@ const router = createRouter({
           component: () => import("@/page/member/seatSelection.vue"),
         },
         {
+
+          //支付頁面
+          path: "SeatPayment",
+          component: () => import("@/page/member/SeatPayment.vue"),
+        },
+        {
+          //票務訂單
+          path: "456",
+          component: () => import("@/page/member/TicketOrderList.vue"),
+        },
+      ] 
+
           //會員專區
           path: "memberFront",
           component: () => import("@/page/member/MemberPageFront.vue"),
         },
       ],
+
 
       // component: () => import("@/layouts/userView.vue"),
     },

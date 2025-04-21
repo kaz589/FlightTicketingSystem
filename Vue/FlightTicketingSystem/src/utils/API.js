@@ -121,6 +121,11 @@ export const ApiMember = {
 export const ApiSeats = {
   getAllSeats: () => instance.get("/seat/getAll"),
   getSeatsByFlightId: (flightId) => instance.get(`/seat/flights/${flightId}`),
+
+  getSeatsByTicketId: (ticketId) => instance.get(`/seat/tickets/${ticketId}`),
+
+  
+
 };
 
 // 票務相關 API
@@ -128,12 +133,18 @@ export const ApiTicket = {
   // 查詢所有票務
   getAllTickets: () => instance.get("/Ticket/getAll"),
   // 創建新票務
-  createTicket: (ticketDTO) => instance.post("/Ticket", ticketDTO),
+  createTicket: (data) => instance.post("/Ticket", data),
   // 更新票務
   updateTicket: (id, ticketDetails) =>
     instance.put(`/Ticket/${id}`, ticketDetails),
-  // 刪除票務
-  deleteTicket: (id) => instance.delete(`/Ticket/${id}`),
+
+   // 刪除票務
+   deleteTicket: (id) => instance.delete(`/Ticket/${id}`),
+
+   getCheckMacValue:(params)=>instance.post("/Ticket/calculate-mac",params),
+   getTicketsByCustomerId: (customerId) => instance.get(`/Ticket/member/${customerId}`),
+
+
 };
 
 //管理員相關API

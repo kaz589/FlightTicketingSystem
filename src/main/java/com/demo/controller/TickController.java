@@ -1,7 +1,9 @@
 package com.demo.controller;
 
 import java.time.LocalDateTime;
+import java.util.Hashtable;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +26,7 @@ import com.demo.model.Seat;
 import com.demo.model.Ticket;
 import com.demo.model.DTO.TicketDTO;
 import com.demo.service.TicketService;
+import com.demo.utils.CheckMacValueCalculator;
 
 @RestController
 @RequestMapping("/api/Ticket")
@@ -31,6 +34,8 @@ public class TickController {
 	
 	@Autowired
 	private TicketService ticketService;
+	
+	
 	
 	 // 查詢所有訂票
     @GetMapping("/getAll")
@@ -49,8 +54,12 @@ public class TickController {
 
     // 創建新訂票
     @PostMapping
-    public ResponseEntity<Ticket> createTicket(@RequestBody TicketDTO ticketDTO) {
-        return ticketService.createTicket(ticketDTO);
+    public ResponseEntity<Ticket> createTicket( @RequestBody Map<String, Object> body) {
+    	String orderId = (String) body.get("orderId");
+        Integer customerId = (Integer) body.get("customerId");
+        List<Integer> seatIds = (List<Integer>) body.get("seatIds");
+    	
+        return ticketService.createTicket(orderId,customerId,seatIds);
     }
 
     // 更新訂票
@@ -92,5 +101,22 @@ public class TickController {
         List<Seat> seats = ticketService.findSeatsByTicketId(ticketId);
         return ResponseEntity.ok(seats);
     }
+    
+    //訂單加密
+    @PostMapping("/calculate-mac")
+    public String calculateMac(@RequestBody Hashtable <String, String> params) {
+        try {
+            return CheckMacValueCalculator.genCheckMacValue(params);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "Error calculating MAC";
+        }
+    }
+    // 查詢指定顧客的所有票券
+    @GetMapping("/member/{customerId}")
+    public List<TicketDTO> getTicketsByCustomerId(@PathVariable Integer customerId) {
+        return ticketService.findTicketsByCustomerId(customerId);
+    }
+    
 
 }

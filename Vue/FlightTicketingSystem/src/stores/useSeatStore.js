@@ -4,11 +4,20 @@ export const useSeatStore = defineStore('seatStore', () => {
     const selectseats = ref([]);
   
     function toggleSeat(seat) {
-      seat.booked = !seat.booked;
-      console.log(`Toggling seat: ${seat.seatNumber}, booked: ${seat.booked}`);
-      if (seat.booked) {
-        selectseats.value.push(seat);
+
+      // 禁止選擇已被預訂的座位
+      if (seat.booked) return;
+  
+      seat.selected = !seat.selected;
+  
+      if (seat.selected) {
+        // 避免重複加入
+        if (!selectseats.value.some(s => s.seatNumber === seat.seatNumber)) {
+          selectseats.value.push(seat);
+        }
       } else {
+        // 取消選取
+
         const index = selectseats.value.findIndex(
           (s) => s.seatNumber === seat.seatNumber
         );
@@ -18,11 +27,21 @@ export const useSeatStore = defineStore('seatStore', () => {
       }
     }
     const totalPrice = computed(() => {
-        // console.log(selectseats.value.reduce((sum, seat) => sum + seat.price, 0));
+
         return selectseats.value.reduce((sum, seat) => sum + seat.price, 0);
-        console.log('Total price calculated:', price);
+      
       });
-    return { selectseats, toggleSeat,totalPrice };
+
+      const selectedSeatNumbers = computed(() => {
+        return selectseats.value
+          .map(seat => `${seat.seatNumber}(${seat.seatclasname})`)
+          .join('#');
+      });
+      const selectedSeatIds = computed(() => {
+        return selectseats.value.map(seat => seat.seatId); // 確保 seat.id 是數字
+      });
+    return { selectseats, toggleSeat,totalPrice,selectedSeatNumbers,selectedSeatIds };
+
 }, {
     persist: true
   });

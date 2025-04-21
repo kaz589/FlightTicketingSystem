@@ -31,7 +31,14 @@ public class SeatController {
 	
 	@GetMapping("/flights/{flightId}")
 	public List<SeatDTO> getSeatsByFlightId(@PathVariable Integer flightId) {
+		
+		
 		return seatService.findSeatsByFlightId(flightId);
+	}
+	
+	@GetMapping("/tickets/{ticketId}")
+	public List<SeatDTO> getSeatsByTicketId(@PathVariable Integer ticketId) {
+	    return seatService.findSeatsByTicketId(ticketId);
 	}
 
 }
