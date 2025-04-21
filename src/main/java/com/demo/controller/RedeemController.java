@@ -14,7 +14,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import com.demo.model.Redeem;
 import com.demo.model.RedeemItem;
-import com.demo.model.DTO.CreateRedeemRequest;
+import com.demo.model.DTO.RedeemDTO;
 import com.demo.service.IRedeemService;
 import com.demo.service.IRedeemItemService;
 
@@ -59,7 +59,7 @@ public class RedeemController {
 	 * @return
 	 */
 	@PostMapping
-	Redeem addRedeem(@RequestBody @Valid CreateRedeemRequest createRedeemRequest) {
+	Redeem addRedeem(@RequestBody @Valid RedeemDTO createRedeemRequest) {
 		return redeemService.addRedeem(createRedeemRequest);
 		
 	};
@@ -123,7 +123,10 @@ public class RedeemController {
 		return redeemService.findByMemberId(memberId);
 	};
 	
-	
+	@PutMapping("/{redeemId}/cancelRedeem")
+	Redeem cancelRedeem(Integer redeemId) {
+		return redeemService.cancelRedeem(redeemId);
+	}
 	
 	
 	

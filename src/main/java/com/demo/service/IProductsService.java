@@ -86,8 +86,15 @@ public interface IProductsService {
 	 * @param decreaseQuantity
 	 * @return 更新後的商品
 	 */
-	Products updateStockAfterOrder(Integer productId, Integer decreaseQuantity);
-
+	Products decreaseStock(Integer productId, Integer decreaseQuantity);
+	
+	/**
+	 * 增加某商品數量
+	 * @param productId
+	 * @param increaseQuantity
+	 * @return 更新後的商品
+	 */
+	Products increaseStock(Integer productId, Integer increaseQuantity);
 
 
 	 Products getProductById(Integer id) ;

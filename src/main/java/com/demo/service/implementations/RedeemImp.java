@@ -14,7 +14,7 @@ import com.demo.model.Member;
 import com.demo.model.Products;
 import com.demo.model.Redeem;
 import com.demo.model.RedeemItem;
-import com.demo.model.DTO.CreateRedeemRequest;
+import com.demo.model.DTO.RedeemDTO;
 import com.demo.model.DTO.RedeemItemDTO;
 import com.demo.repository.MemberRepository;
 import com.demo.repository.ProductsRepository;
@@ -49,10 +49,18 @@ public class RedeemImp implements IRedeemService {
 	
 //	訂單預設狀態
 	private static final String INITIAL_STATUS = "處理中";
+	private static final String SHIPPED = "已出貨";
+	private static final String CANCELLED="已取消";
+	private static final String FINESHED="已完成";
 
-	private static final Map<String, Set<String>> ALLOWED_STATUS_TRANSITIONS = Map.of("待處理", Set.of("處理中", "已取消"),
-			"處理中", Set.of("已完成", "已取消", "待出貨"), "待出貨", Set.of("已出貨", "已取消"), "已出貨", Set.of("已送達"), "已送達", Set.of("已完成"),
-			"已取消", Set.of(), "已完成", Set.of());
+	private static final Map<String, Set<String>> ALLOWED_STATUS_TRANSITIONS = Map.of(
+			"待處理", Set.of("處理中", "已取消"),
+			"處理中", Set.of("已完成", "已取消", "待出貨"),
+			"待出貨", Set.of("已出貨", "已取消"),
+			"已出貨", Set.of("已送達"),
+			"已送達", Set.of("已完成"),
+			"已取消", Set.of(),
+			"已完成", Set.of());
 
 //存在性驗證
 	private <T> List<T> checkNotEmpty(List<T> list, String errorMessage) {
@@ -91,7 +99,7 @@ public class RedeemImp implements IRedeemService {
 //	新增訂單
 	@Override
 	@Transactional
-	public Redeem addRedeem(CreateRedeemRequest createRedeemRequest) {
+	public Redeem addRedeem(RedeemDTO createRedeemRequest) {
 		Redeem redeem = new Redeem();
 		redeem.setRedeemStatus(INITIAL_STATUS); // 設定初始狀態
 
@@ -132,11 +140,11 @@ public class RedeemImp implements IRedeemService {
 			redeemItemRepo.save(redeemItem);
 
 			// 扣減庫存
-			productsService.updateStockAfterOrder(itemDTO.getProductId(), itemDTO.getQuantity());
+			productsService.decreaseStock(itemDTO.getProductId(), itemDTO.getQuantity());
 
-			// 扣除會員里程
-			memberService.decreaseMilesById(memberId, totalMilesNeeded);
 		}
+		// 扣除會員里程
+		memberService.decreaseMilesById(memberId, totalMilesNeeded);
 		  return savedRedeem;
 	}
 
@@ -161,9 +169,8 @@ public class RedeemImp implements IRedeemService {
 	public Redeem updateRedeem(Integer redeemId, @Valid Redeem redeem) {
 		Redeem existingRedeem = redeemRepo.findById(redeemId)
 				.orElseThrow(() -> new RuntimeException("無法更新，找不到 ID 為 " + redeemId + " 的訂單"));
-
 		if ("完成".equals(existingRedeem.getRedeemStatus())) {
-			throw new RuntimeException("訂單已完成，無法修改");
+			throw new IllegalStateException("訂單已完成，無法修改");
 		}
 		redeem.setRedeemId(redeemId);
 		return redeemRepo.save(redeem);
@@ -181,12 +188,51 @@ public class RedeemImp implements IRedeemService {
 			// 把目前狀態可以轉換的目標狀態找出來
 			Set<String> allowedTransitioins = ALLOWED_STATUS_TRANSITIONS.getOrDefault(currentStatus, Set.of());
 			if (!allowedTransitioins.contains(newStatus)) {
-				throw new RuntimeException(String.format("訂單狀態從 '%s' 無法轉換到 '%s'", currentStatus, newStatus));
+				throw new IllegalStateException(String.format("訂單狀態從 '%s' 無法轉換到 '%s'", currentStatus, newStatus));
 			}
 			existingRedeem.setRedeemStatus(newStatus);
 			return redeemRepo.save(existingRedeem);
 		}
 		return existingRedeem;
 	}
+	
+	/**
+	 * 取消訂單
+	 * @param redeemId
+	 * @return Redeem
+	 */
+	public	Redeem cancelRedeem(Integer redeemId) {
+		Redeem cancelRedeem  = redeemRepo.findById(redeemId)
+				.orElseThrow(() -> new RuntimeException("找不到 ID 為 " + redeemId + " 的訂單"));
+				if (SHIPPED.equals(cancelRedeem.getRedeemStatus())) {
+					 throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "訂單已出貨，無法取消");
+				}
+				//設訂單狀態為已取消
+				cancelRedeem.setRedeemStatus(CANCELLED);
+				//軟刪除訂單
+				cancelRedeem.setDeleted(true);
+				redeemRepo.save(cancelRedeem); // 保存狀態更新
 
+				int totalIncreaseMiles = 0;
+				List<RedeemItem> redeemItems = cancelRedeem.getRedeemItems(); // 需要您在 Redeem 實體中建立 RedeemItem 的關聯
+				
+				int memberid = cancelRedeem.getMember().getMemberId();
+				
+				//	拿到商品項目
+				for(RedeemItem redeemItem : redeemItems) {
+					Products product = productsRepo.findById(redeemItem.getProduct().getId())
+							.orElseThrow(() -> new RuntimeException("找不到 ID 為 " + redeemItem.getProduct().getId() + " 的商品"));
+					
+					int needmiles = product.getNeedmiles();
+					int requiredForThisItem = needmiles * redeemItem.getQuantity();
+					totalIncreaseMiles += requiredForThisItem;
+					// 商品增加庫存
+					productsService.increaseStock(product.getId(), redeemItem.getQuantity());
+				}
+				
+				// 會員增加里程
+				memberService.increaseMilesById(memberid, totalIncreaseMiles);
+				return cancelRedeem;
+	}
+	
 }

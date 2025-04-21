@@ -113,11 +113,11 @@ public class MemberService {
 
 
 	// 透過memberId找會員，並減少某會員里程數(改寫版)
-			public Member decreaseMilesById(Integer memberId, Integer decreaseMiles) {
-				Optional<Member> op = memberRepository.findById(memberId);
+			public Member decreaseMilesById(Integer id, Integer decreaseMiles) {
+				Optional<Member> op = memberRepository.findById(id);
 				
 				if (op.isEmpty()) {
-					new RuntimeException("找不到 ID 為 " + memberId + " 的會員");
+					new RuntimeException("找不到 ID 為 " + id + " 的會員");
 				}	
 				Member member = op.get();
 				if (decreaseMiles <= 0) {

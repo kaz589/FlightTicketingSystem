@@ -6,7 +6,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 @Getter@Setter
-public class CreateRedeemRequest {
+public class RedeemDTO {
 	 private Integer memberId;
 	 private List<RedeemItemDTO> redeemItems;
 

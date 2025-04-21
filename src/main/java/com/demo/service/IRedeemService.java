@@ -6,7 +6,7 @@ import java.util.List;
 
 import com.demo.model.Redeem;
 import com.demo.model.RedeemItem;
-import com.demo.model.DTO.CreateRedeemRequest;
+import com.demo.model.DTO.RedeemDTO;
 
 //訂單管理
 public interface IRedeemService {
@@ -28,7 +28,7 @@ public interface IRedeemService {
 	 * @param createRedeemRequest
 	 * @return redeem 
 	 */
-	Redeem addRedeem(CreateRedeemRequest createRedeemRequest);
+	Redeem addRedeem(RedeemDTO createRedeemRequest);
 	
 	
 	/**
@@ -66,5 +66,11 @@ public interface IRedeemService {
 //	根據會員ID查詢會員訂單
 	List<Redeem> findByMemberId(Integer memberId);
 	
+	/**
+	 * 取消訂單
+	 * @param redeemId
+	 * @return Redeem
+	 */
+	Redeem cancelRedeem(Integer redeemId);
 	
 }
