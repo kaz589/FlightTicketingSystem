@@ -4,6 +4,7 @@ export const useSeatStore = defineStore('seatStore', () => {
     const selectseats = ref([]);
   
     function toggleSeat(seat) {
+
       // 禁止選擇已被預訂的座位
       if (seat.booked) return;
   
@@ -16,6 +17,7 @@ export const useSeatStore = defineStore('seatStore', () => {
         }
       } else {
         // 取消選取
+
         const index = selectseats.value.findIndex(
           (s) => s.seatNumber === seat.seatNumber
         );
@@ -25,7 +27,7 @@ export const useSeatStore = defineStore('seatStore', () => {
       }
     }
     const totalPrice = computed(() => {
-    
+
         return selectseats.value.reduce((sum, seat) => sum + seat.price, 0);
       
       });
@@ -39,6 +41,7 @@ export const useSeatStore = defineStore('seatStore', () => {
         return selectseats.value.map(seat => seat.seatId); // 確保 seat.id 是數字
       });
     return { selectseats, toggleSeat,totalPrice,selectedSeatNumbers,selectedSeatIds };
+
 }, {
     persist: true
   });

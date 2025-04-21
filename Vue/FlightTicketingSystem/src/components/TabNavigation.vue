@@ -8,27 +8,32 @@
       </div>
       <div
         :class="tabClass('attractions')"
-        @click="$emit('select-tab', 'attractions')">
+        @click="$emit('select-tab', 'attractions')"
+      >
         查詢景點
       </div>
       <div
         :class="tabClass('allCities')"
-        @click="$emit('select-tab', 'allCities')">
+        @click="$emit('select-tab', 'allCities')"
+      >
         全部城市
       </div>
       <div
         :class="tabClass('allAttractions')"
-        @click="$emit('select-tab', 'allAttractions')">
+        @click="$emit('select-tab', 'allAttractions')"
+      >
         全部景點
       </div>
       <div
         :class="tabClass('addCities')"
-        @click="$emit('select-tab', 'addCities')">
+        @click="$emit('select-tab', 'addCities')"
+      >
         增加城市
       </div>
       <div
-        :class="tabClass('add')"
-        @click="$emit('select-tab', 'addAttractions')">
+        :class="tabClass('addAttractions')"
+        @click="$emit('select-tab', 'addAttractions')"
+      >
         增加景點
       </div>
     </div>

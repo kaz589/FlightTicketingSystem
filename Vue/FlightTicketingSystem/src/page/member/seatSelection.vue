@@ -2,6 +2,7 @@
   <h1>這是座位選擇</h1>
   <div class="legend">
     <div class="legend-item"><span class="seat first-class"></span> 頭等艙</div>
+
     <div class="legend-item">
       <span class="seat business-class"></span> 商務艙
     </div>
@@ -23,13 +24,16 @@
         item-value="id"
       ></v-select>
     </div>
+
   </v-container>
   <br />
   <v-container class="d-flex justify-center">
     <div class="seat-map-container">
       <div class="seat-map">
         <div
+
    
+
           v-for="(column, columnIndex) in filteredSeatColumns"
           :key="columnIndex"
           class="seat-column"
@@ -41,15 +45,19 @@
               'seat',
               {
                 occupied: seat.booked,
+
                 selected: seat.selected,
+
                 'first-class': seat.seatClass === 'FIR',
                 'business-class': seat.seatClass === 'BUS',
                 'economy-class': seat.seatClass === 'ECO',
               },
             ]"
+
             :style="{
               marginTop: seatIndex === aisleIndex - 1 ? aisleWidth : '0',
             }"
+
             @click="toggleSeat(columnIndex, seatIndex)"
           >
             {{ seat.seatNumber }}
@@ -58,9 +66,11 @@
       </div>
     </div>
   </v-container>
+
   <hr />
   <v-container>
     <v-row align="start" justify="center" cols="1" md="1">
+
       <v-col
         v-for="selectseat in selectseats"
         :key="selectseat.id"
@@ -68,6 +78,7 @@
         cols="7"
         md="7"
       >
+
         <Seatscard :selectseat="selectseat" />
       </v-col>
     </v-row>
@@ -90,13 +101,16 @@
       >
     </v-col>
   </v-row>
+
 </template>
 
 <script setup>
 import { ref, computed, onMounted } from "vue";
 import { ApiSeats } from "@/utils/API";
 import Seatscard from "@/components/seats/Seatscard.vue";
+
 import { useSeatStore } from "@/stores/useSeatStore";
+
 
 onMounted(() => {
   const params = new URLSearchParams(window.location.search);
@@ -106,12 +120,14 @@ onMounted(() => {
 
 const flightId = ref(null);
 const seats = ref([]);
+
 const seatColumns = ref([]);
 let seatsPerColumn = 0; // 每列座位數
 const aisleIndex = ref(0); // 初始走道位置
 const aisleWidth = "18px";
 const seatStore = useSeatStore(); // 獲取 Pinia store
 const selectseats = seatStore.selectseats; // 從 store 中獲取 selectseats
+
 
 const sections = ref([
   { id: "FIR", name: "頭等艙" },
@@ -123,6 +139,7 @@ const selectedSection = ref(sections.value[0].id);
 
 //篩選艙等內的座位
 const filteredSeatColumns = computed(() => {
+
   // 用 map 產生新物件，避免直接修改原 seats
   const filteredSeats = seats.value
     .filter(seat => seat.seatClass === selectedSection.value)
@@ -133,10 +150,12 @@ const filteredSeatColumns = computed(() => {
       )
     }));
 
+
   const columns = [];
   for (let i = 0; i < filteredSeats.length; i += seatsPerColumn) {
     columns.push(filteredSeats.slice(i, i + seatsPerColumn));
   }
+
   return columns;
 });
 
@@ -161,6 +180,7 @@ function getseat(id) {
     arrangeSeats();
   });
 }
+
 </script>
 
 <style scoped>
@@ -209,11 +229,14 @@ function getseat(id) {
 }
 
 .seat.occupied {
+
+
   background-color: #e57373;
   cursor: not-allowed;
 }
 
 .controls {
+
   width: 40%;
   display: flex;
   justify-content: center; /* 置中元素 */
@@ -226,6 +249,7 @@ function getseat(id) {
   color: #fff;
   border: 2px solid black; /* 可選，加強辨識度 */
 }
+
 
 .legend {
   margin-top: 20px;

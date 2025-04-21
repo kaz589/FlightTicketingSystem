@@ -15,33 +15,35 @@
     <v-btn prepend-icon="mdi mdi-account-search" @click="searchOne">
       搜尋
     </v-btn>
+    <br />
+    <br />
+    <br />
+
+    <div>
+      姓名 : {{ targetId.fullName }} <br />
+      累積里程 : {{ targetId.totalMiles }} <br />
+      剩餘里程 : {{ targetId.remainingMiles }}
+    </div>
+    <v-row>
+      <v-col cols="6">
+        <v-text-field
+          v-model="cost"
+          label="里程數"
+          type="number"
+          outlined
+          style="width: 100%"
+        />
+      </v-col>
+      <v-col cols="6">
+        <v-btn prepend-icon="mdi mdi-airplane-plus" @click="plusMiles">
+          累積里程
+        </v-btn>
+        <v-btn prepend-icon="mdi mdi-airplane-minus" @click="minusMiles">
+          扣除里程
+        </v-btn>
+      </v-col>
+    </v-row>
   </v-container>
-
-  <div>
-    姓名 : {{ targetId.fullName }} <br />
-    累積里程 : {{ targetId.totalMiles }} <br />
-    剩餘里程 : {{ targetId.remainingMiles }}
-  </div>
-  <v-row>
-    <v-col cols="6">
-      <v-text-field
-        v-model="cost"
-        label="里程數"
-        type="number"
-        outlined
-        style="width: 100%"
-      />
-    </v-col>
-    <v-col cols="6">
-      <v-btn prepend-icon="mdi mdi-airplane-plus" @click="plusMiles">
-        累積里程
-      </v-btn>
-      <v-btn prepend-icon="mdi mdi-airplane-minus" @click="minusMiles">
-        扣除里程
-      </v-btn>
-    </v-col>
-  </v-row>
-
   <br />
   <br />
   <hr />
@@ -56,6 +58,20 @@
     :items="targetAll"
     item-key="memberId"
   >
+    <template v-slot:item.authority="{ item }">
+      <div class="d-flex flex-wrap ga-2">
+        <v-chip
+          v-for="role in parseRoles(item.authority)"
+          :key="role"
+          :color="getRoleColor(role)"
+          text-color="white"
+          size="small"
+          label
+        >
+          {{ role }}
+        </v-chip>
+      </div>
+    </template>
     <template v-slot:item.actions="{ item }">
       <div class="d-flex ga-2 justify-end">
         <!-- 調用edit函數 -->
@@ -333,13 +349,13 @@ function minusMiles() {
   console.log(cost.value);
 
   ApiMember.decreaseMiles(target.value, cost.value).then(() => {
-    ApiMember.getMember(target.value).then((res) => {
-      //查詢目標
-      targetId.value = res.data;
-    }).then(search()) //重新搜尋全部);
+    ApiMember.getMember(target.value)
+      .then((res) => {
+        //查詢目標
+        targetId.value = res.data;
+      })
+      .then(search()); //重新搜尋全部);
   });
-
-  
 }
 
 //查詢全部的表頭
@@ -354,6 +370,7 @@ const headers = [
   { title: "信箱驗證", value: "emailVerified" },
   { title: "電話驗證", value: "phoneVerified" },
   { title: "會員等級", value: "membershipLevel" },
+  { title: "角色", value: "authority" },
   { title: "操作", value: "actions" },
 ];
 
@@ -363,6 +380,30 @@ function search() {
     targetAll.value = res.data;
     // console.log(targetAll.value);
   });
+}
+
+// 解析角色 以及上色
+function parseRoles(authorityString) {
+  if (!authorityString) return [];
+
+  // 清掉 [ ]，再用 , 拆開，去空白
+  return authorityString
+    .replace(/\[|\]/g, "")
+    .split(",")
+    .map((role) => role.trim());
+}
+
+function getRoleColor(role) {
+  switch (role) {
+    case "ADMIN":
+      return "red";
+    case "USER":
+      return "green";
+    case "MANAGER":
+      return "blue";
+    default:
+      return "grey";
+  }
 }
 
 //新增會員

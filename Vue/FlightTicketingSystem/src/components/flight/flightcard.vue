@@ -1,4 +1,5 @@
 <template>
+
   <v-card border="opacity-50 sm" class="border-xl font-weight-bold big-text">
     <v-card-text>
       <v-row
@@ -31,6 +32,7 @@
       ></v-btn>
     </v-card-actions>
   </v-card>
+
 </template>
 
 <script setup>
@@ -40,12 +42,14 @@ import { useRouter } from "vue-router"; // 引入 vue-router
 defineProps(["flight"]);
 </script>
 
+
 <style scoped>
 .line-arrow-wrap {
   position: relative;
   width: 100%;         /* 線條+箭頭總寬，依需求調整 */
   margin: 0 auto;     /* 置中於父容器 */
   height: 40px;       /* 至少大於箭頭高度 */
+
   display: flex;
   align-items: center;
 }
