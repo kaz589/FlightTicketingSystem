@@ -1,59 +1,47 @@
 package com.demo.controller;
 
-import java.util.Map;
+import java.util.Optional;
 
-import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.view.RedirectView;
 
-import jakarta.servlet.http.HttpServletRequest;
+import com.demo.model.Ticket;
+import com.demo.service.MailService;
+import com.demo.service.TicketService;
+
 
 @RestController
-@CrossOrigin(origins = "*")
+
 public class payController {
 
-	@CrossOrigin
-	@PostMapping("/pay")
-    public RedirectView  receivePaymentResult(@RequestParam Map<String, String> allParams,HttpServletRequest request) {
-        System.out.println("Received payment result: " + allParams);
-        System.out.println(request);
-        
-        // 取得請求的域名
-        String domain = request.getHeader("Host");
-        System.out.println("Request domain: " + domain);
-        // 驗證檢查碼
-       // boolean isValid = verifyCheckMacValue(paymentResult.getCheckMacValue());
-        boolean isValid =true;
-        if (isValid) {
-        	return new RedirectView("http://localhost:5173/");
-        } else {
-        	RedirectView redirectView = new RedirectView();
-            redirectView.setUrl("http://localhost:5173/error"); // 可以設置一個錯誤頁面
-            return redirectView;
-        }
-    }
+	@Autowired	
+	private TicketService ticketService;
+	@Autowired
+	private MailService  mailService;
 
-    private boolean verifyCheckMacValue(String checkMacValue) {
-        // 檢查碼驗證邏輯
-        return true; // 假設驗證通過
-    }
-}
+	@GetMapping("/pay")
+	public RedirectView receivePaymentResult(@RequestParam String orderid) {
+	    
+	    Optional<Ticket> findTicket=ticketService.findTicketByOrderId(orderid);
+	    
+	    if (findTicket.isPresent()) {
+	    	 Ticket ticket = findTicket.get();
+	    	// 更新訂單付款狀態
+		    ticketService.markTicketPaidByOrderId(orderid);
+		    String subject = "訂單 " + orderid + " 付款成功";
+	        String content = "訂單 " + orderid + " 付款成功";
+		    mailService.sendPlainText("965302@gmail.com", subject, content);
+		    // 付款成功後導向結果頁（可依需求更改）
+		    return new RedirectView("http://localhost:5173/");
+	    }
+	    return new RedirectView("http://localhost:5173/");
+	}
 
-class PaymentResult {
-    private String checkMacValue;
-    // 其他屬性和 getter/setter 方法
-
-    public String getCheckMacValue() {
-        return checkMacValue;
-    }
-
-    public void setCheckMacValue(String checkMacValue) {
-        this.checkMacValue = checkMacValue;
-    }
-	
 	
 }
+
+

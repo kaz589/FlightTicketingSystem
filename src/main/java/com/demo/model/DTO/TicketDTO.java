@@ -30,10 +30,21 @@ public class TicketDTO {
 	@DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") // 用於表單數據的日期格式
 	private LocalDateTime bookingTime;
 	private int totalAmount;
+	private boolean isPaid;
 	
 	public TicketDTO(Ticket entity) {
 		
+		
 		BeanUtils.copyProperties(entity, this);
+		// 用 SeatDTO 計算總價
+	    if (entity.getSeats() != null) {
+	        this.totalAmount = entity.getSeats().stream()
+	            .map(seat -> new SeatDTO(seat)) // 轉 SeatDTO，計算票價
+	            .mapToInt(seatDTO -> seatDTO.getPrice() != null ? seatDTO.getPrice() : 0)
+	            .sum();
+	    } else {
+	        this.totalAmount = 0;
+	    }
 		this.memberName=entity.getMember().getUsername();
 		this.memberId=entity.getMember().getMemberId();
 	}

@@ -23,9 +23,11 @@ public interface TicketService {
     
     // 根據 ID 查詢票
     Optional<TicketDTO> findTicketById(int id);
+    // 根據顧客ID查詢票
+    List<TicketDTO> findTicketsByCustomerId(Integer customerId);
     
     // 新增票
-    ResponseEntity<Ticket> createTicket(TicketDTO ticketDTO);
+    ResponseEntity<Ticket> createTicket(String orderId, Integer customerId, List<Integer> seatIds);
     
     // 更新票
     Ticket updateTicket(int id, TicketDTO ticketDetails);
@@ -39,4 +41,10 @@ public interface TicketService {
     
     // 查詢票的座位
     List<Seat> findSeatsByTicketId(int ticketId);
+    // 根據 orderId 設定訂單為已付款
+    Ticket markTicketPaidByOrderId(String orderId);
+    
+    Optional<Ticket> findTicketByOrderId(String orderId);
+
+	
 }
