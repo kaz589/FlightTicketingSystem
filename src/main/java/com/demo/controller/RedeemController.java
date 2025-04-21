@@ -49,7 +49,7 @@ public class RedeemController {
 	 * @return
 	 */
 	@GetMapping("/{redeemId}")
-	public Redeem getRedeemById(Integer redeemId) {
+	public Redeem getRedeemById(@PathVariable Integer redeemId) {
 		return redeemService.getRedeemById(redeemId);
 	};
 	
@@ -72,7 +72,7 @@ public class RedeemController {
 	 * @return redeem
 	 */
 	@PutMapping("/{redeemId}")
-	Redeem updateRedeem(Integer redeemId,Redeem Redeem) {
+	Redeem updateRedeem(@PathVariable Integer redeemId,@RequestBody @Valid Redeem Redeem) {
 		return redeemService.updateRedeem(redeemId, Redeem);
 	}
 	
@@ -81,8 +81,8 @@ public class RedeemController {
 	 * @param newStatus
 	 * @return redeem
 	 */
-	@PutMapping("/{redeemId}")
-	public Redeem updateRedeemStatus(Integer redeemId, String newStatus) {
+	@PutMapping("/{redeemId}/status")
+	public Redeem updateRedeemStatus(@PathVariable Integer redeemId,@RequestParam String newStatus) {
 		return redeemService.updateRedeemStatus(redeemId, newStatus);
 	}
 	/**
@@ -101,7 +101,7 @@ public class RedeemController {
 	 * @return 返回符合狀態條件的Redeem紀錄列表
 	 */
 	@GetMapping("/redeemStatus")
-	List<Redeem> findByRedeemStatus(String redeemStatus){
+	List<Redeem> findByRedeemStatus(@RequestParam String redeemStatus){
 		return redeemService.findByRedeemStatus(redeemStatus);
 	};
 	/**
@@ -110,7 +110,7 @@ public class RedeemController {
 	 * @return redeems
 	 */
 	@GetMapping("/redeemDate")
-	List<Redeem> findByTime(Date redeemDate){
+	List<Redeem> findByTime(@RequestParam Date redeemDate){
 		return redeemService.findByTime(redeemDate);
 	};
 	/**
@@ -119,7 +119,7 @@ public class RedeemController {
 	 * @return redeems
 	 */
 	@GetMapping("/memberId")
-	List<Redeem> findByMemberId(Integer memberId){
+	List<Redeem> findByMemberId(@RequestParam Integer memberId){
 		return redeemService.findByMemberId(memberId);
 	};
 	
