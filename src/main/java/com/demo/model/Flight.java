@@ -47,6 +47,7 @@ public class Flight {
     private int economyPrice;
     private int businessPrice;
     private int firstClassPrice;
+    private int estimatedDistance;
     @ManyToOne
     @JoinColumn(name = "airplane_id", referencedColumnName = "airplaneId") // 關聯到飛機型號表的 ID
     private AirplaneModel airplaneModel; // 飛機型號

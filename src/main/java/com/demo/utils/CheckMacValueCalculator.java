@@ -35,8 +35,6 @@ public class CheckMacValueCalculator {
 
     /**
 	 * 產生檢查碼
-	 * @param key
-	 * @param iv
 	 * @param Hashtable<String, String> params
 	 * @return
 	 */
