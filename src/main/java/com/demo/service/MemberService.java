@@ -2,6 +2,7 @@ package com.demo.service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -92,36 +93,41 @@ public class MemberService {
 // 先找再更改
 	public Member updateMemberById(Member member) {
 		Optional<Member> op = memberRepository.findById(member.getMemberId());
-		if (op.isPresent()) {
-			Member dbMember = op.get();
-			dbMember.setFullName(member.getFullName());
-			dbMember.setUsername(member.getUsername());
-			
-			//密碼需要加密
-			String password = member.getPassword();
-			if (member.getPassword() != null) {
-			    String encodedPassword = passwordEncoder.encode(member.getPassword());// 使用 BCrypt 進行加密
-			    dbMember.setPassword(encodedPassword);
-			}			
-			dbMember.setEmail(member.getEmail());
-			dbMember.setTotalMiles(member.getTotalMiles());
-			dbMember.setRemainingMiles(member.getRemainingMiles());
-			dbMember.setPhoneNumber(member.getPhoneNumber());
-			dbMember.setRegistrationDate(member.getRegistrationDate());
-			dbMember.setEmailVerified(member.isEmailVerified());
-			dbMember.setPhoneVerified(member.isPhoneVerified());
-			dbMember.setMembershipLevel(member.getMembershipLevel());
-			memberRepository.save(dbMember);
-			return dbMember;
-		}else {
-			//密碼需要加密
-			String password = member.getPassword();
-			String password_Hashing = PasswordHashing.hashPassword(password);
-			member.setPassword(password_Hashing);
-			
-			memberRepository.save(member);
-			return member;
-		}
+		
+		 if (op.isEmpty()) {
+		        throw new NoSuchElementException("找不到該會員 ID：" + member.getMemberId());
+		    }else {
+		    	
+		    	//如果找得到
+				Member dbMember = op.get();
+				dbMember.setFullName(member.getFullName());
+				dbMember.setUsername(member.getUsername());
+				
+				//密碼需要加密
+				String password = member.getPassword();
+				if (member.getPassword() != null) {
+				    String encodedPassword = passwordEncoder.encode(member.getPassword());// 使用 BCrypt 進行加密
+				    dbMember.setPassword(encodedPassword);
+				}			
+				dbMember.setEmail(member.getEmail());
+				dbMember.setTotalMiles(member.getTotalMiles());
+				dbMember.setRemainingMiles(member.getRemainingMiles());
+				dbMember.setPhoneNumber(member.getPhoneNumber());
+				dbMember.setRegistrationDate(member.getRegistrationDate());
+				dbMember.setEmailVerified(member.isEmailVerified());
+				dbMember.setPhoneVerified(member.isPhoneVerified());
+				
+				// 抽出方法處理會員等級(升等邏輯)
+			    dbMember.setMembershipLevel(determineMembershipLevel(member.getTotalMiles()));
+							
+				memberRepository.save(dbMember);
+				return dbMember;
+		    	
+		    }
+		
+		
+		
+		
 	}	
 	
 // 刪除
@@ -203,6 +209,15 @@ public class MemberService {
 
 		    // 👉 你可以在這裡加寄信邏輯，把 token 組成連結寄出去
 		    emailService.sendResetPasswordEmail(member.getEmail(), token);
+		}
+		
+		
+		
+		private String determineMembershipLevel(int miles) {
+		    if (miles >= 100000) return "鑽石會員";
+		    if (miles >= 50000) return "金卡會員";
+		    if (miles >= 25000) return "銀卡會員";
+		    return "普通會員";
 		}
 		
 		

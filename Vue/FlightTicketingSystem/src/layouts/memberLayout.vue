@@ -50,7 +50,9 @@
             slim
             v-if="showUserBtn > 0"
           >
-            <v-avatar color="surface-light" class="mdi mdi-account" size="32" />
+            <v-avatar color="surface-light"  size="32" >
+              <v-img :src="userPicture ||'/images/default1.png'"></v-img>
+            </v-avatar>
 
             <v-menu v-model="menuVisible" activator="parent" persistent>
               <v-list density="compact" nav>
@@ -98,6 +100,16 @@ import { logout } from "@/utils/logout"; // 導入登出函數
 
 const router = useRouter(); // 使用 vue-router
 const authStore = useAuthStore();
+
+const userPicture = ref('');
+//找到大頭貼
+if (authStore.user && authStore.user.picture) {
+  userPicture.value = authStore.user.picture;
+} else {
+  userPicture.value = '/images/default1.png'; // 預設圖片
+}
+
+
 
 // 👉 根據 store 判斷是否顯示登入按鈕
 const showLoginBtn = computed(() => !authStore.isAuthenticated);
