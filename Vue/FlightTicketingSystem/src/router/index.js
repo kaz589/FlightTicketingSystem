@@ -6,10 +6,9 @@ const router = createRouter({
   routes: [
     {
       path: "/",
-      // component: () => import("@/layouts/mainlayout.vue"),
-
-//   component: () => import("@/layouts/Header.vue"),
-      component: () => import("@/layouts/memberLayout.vue"),
+  
+     
+      component: () => import("@/layouts/Header.vue"),
       children: [
         {
           path: "",
@@ -39,7 +38,7 @@ const router = createRouter({
           path: "456",
           component: () => import("@/page/member/TicketOrderList.vue"),
         },
-      ] 
+      {
 
           //會員專區
           path: "memberFront",
@@ -112,7 +111,7 @@ const router = createRouter({
     {
       path: "/ss",
       component: () => import("@/layouts/memberLayout.vue"),
-      meta: { requiresAuth: true }, // 需要登錄的頁面
+      
     },
     {
       //會員登入

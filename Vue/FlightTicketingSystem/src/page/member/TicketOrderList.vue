@@ -29,9 +29,11 @@ import TicketOrderListcard from '@/components/ticket/TicketOrderListcard.vue';
 import OrderDetailDialog from '@/components/ticket/OrderDetailDialog.vue';
 import { ref ,onMounted} from 'vue';
 import{ ApiTicket }from'@/utils/API';
-
+import { useAuthStore } from '@/stores/auth';
+// Pinia store 實例
+const authStore = useAuthStore();
 onMounted(() => {
-    ApiTicket.getTicketsByCustomerId(1).then((response)=>{
+    ApiTicket.getTicketsByCustomerId(authStore.user.memberId).then((response)=>{
       console.log(response.data);
       
         orders.value = response.data;

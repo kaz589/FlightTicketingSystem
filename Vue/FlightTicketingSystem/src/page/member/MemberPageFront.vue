@@ -149,7 +149,10 @@
         <v-list>
           <h2>另一個區域</h2>
           <v-list-item>
-            <v-list-item-title>這是右側區域2的內容</v-list-item-title>
+            <v-list-item-title>這是右側區域2的內容
+
+              <TicketOrderList/>
+            </v-list-item-title>
           </v-list-item>
         </v-list>
       </v-card>
@@ -254,6 +257,7 @@ import { ref, onMounted, watch, computed } from "vue";
 import { useAuthStore } from "@/stores/auth"; // 引入 Pinia store
 import { ApiMember } from "@/utils/API";
 import Swal from "sweetalert2";
+import TicketOrderList from "./TicketOrderList.vue";
 
 //#region  第一區塊(勿更動)
 // Pinia store 實例
