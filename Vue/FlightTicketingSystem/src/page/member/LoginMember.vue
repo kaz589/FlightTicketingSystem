@@ -42,6 +42,7 @@
                   value=""
                   id="form1Example3"
                   checked
+                  v-model="rememberAccount"
                 />
                 <label class="form-check-label" for="form1Example3">
                   記住帳號
@@ -101,7 +102,7 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { ref,onMounted } from "vue";
 import { useRouter } from "vue-router";
 import { useAuthStore } from "@/stores/auth"; // 引入 Pinia store
 import { ApiMember } from "@/utils/API";
@@ -124,12 +125,19 @@ const rawData = ref({ ...DEFAULT_SEARCH.value });
 function authentication() {
   event.preventDefault(); // ⛔ 阻止 submit
 
+
   if (rawData.value.username === "" || rawData.value.password === "") {
     Swal.fire({
       icon: "error",
       title: "帳號密碼不能為空",
     });
     return;
+  }
+  //記住帳號(如果勾選就記住帳號)
+  if(rememberAccount.value){
+    localStorage.setItem('saveAccount',rawData.value.username);
+  }else {
+    localStorage.removeItem('saveAccount');
   }
 
   console.log(rawData.value.username);
@@ -201,6 +209,39 @@ const urlParams = new URLSearchParams(window.location.search);
 if (urlParams.get("error") === "oauth2_failed") {
   alert("Facebook 登入被取消或發生錯誤，請再試一次！");
 }
+
+
+//記住密碼邏輯
+const rememberAccount = ref(false);
+
+//頁面刷新的時候，從localstorage抓取資料
+
+onMounted(()=>{
+  
+  const saved = localStorage.getItem('saveAccount');
+
+  if(saved){
+    rawData.value.username = saved; //設定帳號為儲存值
+    rememberAccount.value = true;
+  }
+
+  
+
+})
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 </script>
 
 <style scoped>

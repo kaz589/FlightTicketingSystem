@@ -46,7 +46,9 @@
 
       <template #append>
         <v-btn class="text-none me-2" height="48" icon slim>
-          <v-avatar color="surface-light" class="mdi mdi-account" size="32" />
+          <v-avatar color="surface-light"  size="32" >
+              <v-img :src="userPicture ||'/images/default1.png'"></v-img>
+            </v-avatar>
 
           <v-menu activator="parent">
             <v-list density="compact" nav>
@@ -94,6 +96,15 @@ import { backToMainPage } from "@/utils/routerChange"; // 導入登出函數"
 const router = useRouter(); // 使用 vue-router
 
 const authStore = useAuthStore(); // 使用 store
+const userPicture = ref('');
+
+//找到大頭貼
+if (authStore.user && authStore.user.picture) {
+  userPicture.value = authStore.user.picture;
+} else {
+  userPicture.value = '/images/default1.png'; // 預設圖片
+}
+
 const drawer = ref(true);
 const isHovered = ref(false); // 追蹤懸停狀態
 // 使用 watch 監控 drawer 的狀態變化
