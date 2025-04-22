@@ -12,7 +12,7 @@
         v-if="actionType === 'cancel'"
         color="#F44336"
         text="取消座位"
-        @click="cancelSeat"
+        @click="useSeatStore().toggleSeat(selectseat)"
       ></v-btn>
       <!-- 顯示刪除座位 -->
       <v-btn

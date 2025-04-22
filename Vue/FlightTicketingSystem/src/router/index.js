@@ -1,13 +1,13 @@
 import { createRouter, createWebHistory } from "vue-router";
 import { useAuthStore } from "@/stores/auth"; // 引入 Pinia store
+import { useSeatStore } from "@/stores/useSeatStore";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
       path: "/",
-  
-     
+
       component: () => import("@/layouts/Header.vue"),
       children: [
         {
@@ -28,7 +28,6 @@ const router = createRouter({
           component: () => import("@/page/member/seatSelection.vue"),
         },
         {
-
           //支付頁面
           path: "SeatPayment",
           component: () => import("@/page/member/SeatPayment.vue"),
@@ -38,14 +37,12 @@ const router = createRouter({
           path: "456",
           component: () => import("@/page/member/TicketOrderList.vue"),
         },
-      {
-
+        {
           //會員專區
           path: "memberFront",
           component: () => import("@/page/member/MemberPageFront.vue"),
         },
       ],
-
 
       // component: () => import("@/layouts/userView.vue"),
     },
@@ -111,7 +108,6 @@ const router = createRouter({
     {
       path: "/ss",
       component: () => import("@/layouts/memberLayout.vue"),
-      
     },
     {
       //會員登入
@@ -156,8 +152,15 @@ const router = createRouter({
 // 路由守衛
 router.beforeEach((to, from, next) => {
   const authStore = useAuthStore();
+  const seatStore = useSeatStore();
   console.log("路由守衛觸發，當前登錄狀態：", authStore.isAuthenticated);
+  // 只在 seatSelection 或 SeatPayment 頁面保留選位
+  const keepSeatPaths = ["/seatSelection", "/SeatPayment"];
+  const isSeatPage = keepSeatPaths.includes(to.path);
 
+  if (!isSeatPage) {
+    seatStore.clearSelectedSeats && seatStore.clearSelectedSeats();
+  }
   // 如果目標頁面需要登錄並且用戶尚未登錄
   if (to.meta.requiresAuth && !authStore.isAuthenticated) {
     console.log("用戶未登錄，跳轉到登錄頁面");

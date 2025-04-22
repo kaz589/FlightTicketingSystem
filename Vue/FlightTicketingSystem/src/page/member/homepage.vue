@@ -41,8 +41,9 @@
   </div>
 </template>
 <script setup>
-const selectedTab = defineModel("selectedTab");
+import {ref}from 'vue'
 import flightseach from '@/page/member/flightseach.vue';
+const selectedTab = ref("航班");
 const tabs = [
   { name: "航班", icon: "mdi-airplane" },
   { name: "禮品", icon: "mdi-gift" },
