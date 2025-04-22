@@ -94,9 +94,11 @@ public class TicketImp implements TicketService {
 		Ticket newTicket = new Ticket();
 
 		Member member = new Member();
+		LocalDateTime now = LocalDateTime.now();
 		member.setMemberId(customerId);
 		newTicket.setMember(member);
 		newTicket.setOrderNo(orderId);
+		newTicket.setBookingTime(now);
 
 		newTicket = ticketRepository.save(newTicket);
 

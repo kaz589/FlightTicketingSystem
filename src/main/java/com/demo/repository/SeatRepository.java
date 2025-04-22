@@ -28,7 +28,7 @@ public interface SeatRepository extends JpaRepository<Seat, Integer> {
     		SELECT s FROM Seat s
     		LEFT JOIN s.ticket t
     		WHERE s.expires_at < :now
-    		  AND s.booked = false
+    		  AND s.booked = true
     		  AND (s.ticket IS NULL OR t.isPaid = false)
     		""")
     List<Seat> findExpiredAndUnbookedAndTicketIsNull(@Param("now") LocalDateTime now);
