@@ -84,8 +84,7 @@ public class MemberService {
 	public boolean deleteMemberById(Integer id) {
 		
 		Optional<Member> op = memberRepository.findById(id);
-		
-		if (op.isPresent()) {
+				if (op.isPresent()) {
 			memberRepository.deleteById(id);
 			return true;
 		}else {

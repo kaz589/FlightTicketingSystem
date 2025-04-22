@@ -4,19 +4,13 @@ import java.sql.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.repository.query.Param;
-import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.server.ResponseStatusException;
 
 import com.demo.model.Redeem;
-import com.demo.model.RedeemItem;
 import com.demo.model.DTO.RedeemDTO;
 import com.demo.service.IRedeemService;
-import com.demo.service.IRedeemItemService;
 
 import jakarta.validation.Valid;
 
@@ -28,7 +22,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
 
-@CrossOrigin(origins = "http://localhost:5173")
 @RestController
 @RequestMapping("/api/redeem")
 public class RedeemController {
@@ -59,7 +52,7 @@ public class RedeemController {
 	 * @return
 	 */
 	@PostMapping
-	Redeem addRedeem(@RequestBody @Valid RedeemDTO createRedeemRequest) {
+	public Redeem addRedeem(@RequestBody @Valid RedeemDTO createRedeemRequest) {
 		return redeemService.addRedeem(createRedeemRequest);
 		
 	};
@@ -72,7 +65,7 @@ public class RedeemController {
 	 * @return redeem
 	 */
 	@PutMapping("/{redeemId}")
-	Redeem updateRedeem(@PathVariable Integer redeemId,@RequestBody @Valid Redeem Redeem) {
+	public Redeem updateRedeem(@PathVariable Integer redeemId,@RequestBody @Valid Redeem Redeem) {
 		return redeemService.updateRedeem(redeemId, Redeem);
 	}
 	
@@ -90,7 +83,7 @@ public class RedeemController {
 	 * @param redeemId 要刪除的Redeem的ID
 	 */
 	@DeleteMapping("/{redeemId}")
-	Redeem softDeleteRedeem(@PathVariable Integer redeemId) {
+	public Redeem softDeleteRedeem(@PathVariable Integer redeemId) {
 		return redeemService.softDeleteRedeem(redeemId);
 		
 	};
@@ -101,7 +94,7 @@ public class RedeemController {
 	 * @return 返回符合狀態條件的Redeem紀錄列表
 	 */
 	@GetMapping("/redeemStatus")
-	List<Redeem> findByRedeemStatus(@RequestParam String redeemStatus){
+	public List<Redeem> findByRedeemStatus(@RequestParam String redeemStatus){
 		return redeemService.findByRedeemStatus(redeemStatus);
 	};
 	/**
@@ -110,7 +103,7 @@ public class RedeemController {
 	 * @return redeems
 	 */
 	@GetMapping("/redeemDate")
-	List<Redeem> findByTime(@RequestParam Date redeemDate){
+	public List<Redeem> findByTime(@RequestParam Date redeemDate){
 		return redeemService.findByTime(redeemDate);
 	};
 	/**
@@ -119,12 +112,12 @@ public class RedeemController {
 	 * @return redeems
 	 */
 	@GetMapping("/memberId")
-	List<Redeem> findByMemberId(@RequestParam Integer memberId){
+	public List<Redeem> findByMemberId(@RequestParam Integer memberId){
 		return redeemService.findByMemberId(memberId);
 	};
 	
 	@PutMapping("/{redeemId}/cancelRedeem")
-	Redeem cancelRedeem(Integer redeemId) {
+	public Redeem cancelRedeem(@PathVariable Integer redeemId) {
 		return redeemService.cancelRedeem(redeemId);
 	}
 	

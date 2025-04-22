@@ -18,7 +18,7 @@ import lombok.Setter;
 
 @Entity@NoArgsConstructor
 @Getter@Setter
-@Table(name = "redeem_item")
+@Table(name = "Redeem_Item")
 public class RedeemItem {
 
 	@Id

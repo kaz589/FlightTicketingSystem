@@ -1,6 +1,7 @@
 package com.demo.service.implementations;
 
 import java.sql.Date;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -27,6 +28,7 @@ import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 
 @Service
+@Transactional
 public class RedeemImp implements IRedeemService {
 
 	@Autowired
@@ -111,10 +113,10 @@ public class RedeemImp implements IRedeemService {
 				.orElseThrow(() -> new RuntimeException("找不到 ID 為 " + memberId + " 的會員"));
 
 		redeem.setMember(member);
-		Redeem savedRedeem = redeemRepo.save(redeem);
+		redeemRepo.save(redeem);
 
 		int totalMilesNeeded = 0; //計算總里程
-
+		List<RedeemItem> newRedeemItems= new ArrayList<>();
 		//遍歷本訂單的商品項目
 		for (RedeemItemDTO itemDTO : redeemItemsDTO) {
 			// 檢查商品存在
@@ -131,21 +133,23 @@ public class RedeemImp implements IRedeemService {
 
 			// 創建redeem_item物件，設定關聯的redeem product needmiles quantity
 			RedeemItem redeemItem = new RedeemItem();
-			redeemItem.setRedeem(savedRedeem);
+			redeemItem.setRedeem(redeem);
 			redeemItem.setProduct(product);
 			redeemItem.setUsedMiles(needmiles);
 			redeemItem.setQuantity(itemDTO.getQuantity());
-
+			
+			newRedeemItems.add(redeemItem);
 			// 保存 Redeem_item
-			redeemItemRepo.save(redeemItem);
+			
 
 			// 扣減庫存
 			productsService.decreaseStock(itemDTO.getProductId(), itemDTO.getQuantity());
 
 		}
+		redeemItemRepo.saveAll(newRedeemItems);
 		// 扣除會員里程
 		memberService.decreaseMilesById(memberId, totalMilesNeeded);
-		  return savedRedeem;
+		  return redeem;
 	}
 
 //根據RedeemId軟刪除訂單
@@ -154,8 +158,7 @@ public class RedeemImp implements IRedeemService {
 		Redeem redeem = redeemRepo.findById(redeemId)
 				.orElseThrow(() -> new RuntimeException("無法刪除，找不到 ID 為 " + redeemId + " 的兌換訂單"));
 		redeem.setDeleted(true);
-		return redeem;
-
+		 return redeemRepo.save(redeem);
 	}
 
 //根據訂單狀態查詢訂單
@@ -169,8 +172,8 @@ public class RedeemImp implements IRedeemService {
 	public Redeem updateRedeem(Integer redeemId, @Valid Redeem redeem) {
 		Redeem existingRedeem = redeemRepo.findById(redeemId)
 				.orElseThrow(() -> new RuntimeException("無法更新，找不到 ID 為 " + redeemId + " 的訂單"));
-		if ("完成".equals(existingRedeem.getRedeemStatus())) {
-			throw new IllegalStateException("訂單已完成，無法修改");
+		if ("已出貨".equals(existingRedeem.getRedeemStatus())) {
+			throw new IllegalStateException("訂單已出貨，無法修改");
 		}
 		redeem.setRedeemId(redeemId);
 		return redeemRepo.save(redeem);
@@ -229,7 +232,6 @@ public class RedeemImp implements IRedeemService {
 					// 商品增加庫存
 					productsService.increaseStock(product.getId(), redeemItem.getQuantity());
 				}
-				
 				// 會員增加里程
 				memberService.increaseMilesById(memberid, totalIncreaseMiles);
 				return cancelRedeem;

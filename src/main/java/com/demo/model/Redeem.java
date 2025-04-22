@@ -29,7 +29,7 @@ import lombok.Setter;
 
 @NoArgsConstructor
 @Getter@Setter
-@Entity@Table(name = "redeem")
+@Entity@Table(name = "Redeem")
 public class Redeem {
 
 	@Id@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -49,18 +49,16 @@ public class Redeem {
 	private boolean deleted;
 	
 	//訂單總金額
-	@Column(name = "totalMiles")
+	@Column(name = "redeem_total_miles")
 	@Min(value = 0, message = "金額不能小於 0")
-	private Integer totalMiles;
-	
-	
+	private Integer redeemTotalMiles;
 	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "member_id", referencedColumnName = "member_id")
 	@JsonBackReference
 	private Member member;
 	
-	@OneToMany(mappedBy = "redeem")
+	@OneToMany(fetch = FetchType.LAZY,mappedBy = "redeem")
 	@JsonManagedReference
 	private List<RedeemItem> redeemItems;
 }

@@ -3,7 +3,6 @@ package com.demo.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -15,7 +14,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.demo.model.RedeemItem;
 import com.demo.service.IRedeemItemService;
 
-@CrossOrigin(origins = "http://localhost:5173")
 @RestController
 @RequestMapping("/api/redeemItem")
 public class RedeemItemController {
@@ -29,7 +27,7 @@ public class RedeemItemController {
 	 * @return boolean
 	 */
 	@DeleteMapping("{redeemItemId}")
-	boolean deletedRedeemItem(@PathVariable Integer redeemItemId) {
+	public boolean deletedRedeemItem(@PathVariable Integer redeemItemId) {
 		return redeemItemService.deletedRedeemItem(redeemItemId);
 	};
 	
@@ -40,7 +38,7 @@ public class RedeemItemController {
 	 * @return redeemItem
 	 */
 	@PutMapping("{redeemItemId}/updateQuantity")
-	RedeemItem updateQuantity(@PathVariable Integer redeemItemId,@RequestParam Integer quantity) {
+	public RedeemItem updateQuantity(@PathVariable Integer redeemItemId,@RequestParam Integer quantity) {
 		return redeemItemService.updateQuantity(redeemItemId, quantity);
 	};
 	
@@ -50,7 +48,7 @@ public class RedeemItemController {
 	 * @return redeemItems
 	 */
 	@GetMapping("{RedeemId}")
-	List<RedeemItem> findRedeemItemByRedeemId(@PathVariable Integer RedeemId){
+	public List<RedeemItem> findRedeemItemByRedeemId(@PathVariable Integer RedeemId){
 		return  redeemItemService.findRedeemItemByRedeemId(RedeemId);
 	};
 }
