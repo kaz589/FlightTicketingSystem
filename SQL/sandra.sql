@@ -46,7 +46,7 @@ INSERT Products(category_id,product_name,product_desc,needmiles,quantity	,produc
 	 
 select*from Products;
 
---delete from products
+delete from products
 --where product_name='高粱';
 
 
@@ -59,11 +59,12 @@ select*from Products;
   redeem_status NVARCHAR(20),
   create_at DATE,
   is_deleted BIT DEFAULT 0,  -- 軟刪除
+  redeem_total_miles int,
   FOREIGN KEY (member_id) REFERENCES Member(member_id) ON DELETE SET NULL
 );
 
 INSERT INTO Redeem (member_id, redeem_status, create_at) 
-VALUES (1, '申請中', GETDATE()
+VALUES (1, '處理中', GETDATE()
 );
 SELECT * FROM Redeem;
 
@@ -73,11 +74,12 @@ CREATE TABLE Redeem_Item (
   redeem_id INT,
   product_id INT,
   quantity INT NOT NULL,
+  used_miles INT NOT NULL,
   FOREIGN KEY (redeem_id) REFERENCES Redeem(redeem_id) ON DELETE CASCADE,
   FOREIGN KEY (product_id) REFERENCES Products(product_id) ON DELETE CASCADE
 );
 
-insert into Redeem_Item (redeem_id,product_id,quantity)values(1,3,10);
+Insert into Redeem_Item (redeem_id,product_id,quantity,used_miles)values(1,5,1,9000);
 SELECT * FROM Redeem_Item;
 
 
@@ -139,5 +141,12 @@ WHERE
 
 
 --讓identity從頭開始
---	DBCC CHECKIDENT ('Products', RESEED, 0);
+--DBCC CHECKIDENT ('Products', RESEED, 0);
+
+ALTER TABLE redeem
+ALTER COLUMN create_at DATETIME;
+
+
+
+
 
