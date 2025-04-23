@@ -19,6 +19,13 @@
             dense
           ></v-text-field>
 
+          <br />
+          <v-progress-linear
+            v-if="hide"
+            color="green"
+            indeterminate
+          ></v-progress-linear>
+
           <v-btn
             type="submit"
             color="primary"
@@ -38,8 +45,13 @@
 import { ref } from "vue";
 import { ApiEmail } from "@/utils/API";
 import Swal from "sweetalert2";
+import { useRouter } from "vue-router";
+
+const router = useRouter();
 
 const email = ref(""); // 儲存電子信箱
+const hide = ref(false); //讀條
+
 // const formRef = ref(null);
 const isValid = ref(false);
 
@@ -61,12 +73,18 @@ async function requestPasswordReset() {
         draggable: true,
       });
     }
-  });
 
+    console.log("送出重設密碼請求給：", email.value);
+
+    console.log(hide.value);
+
+    router.push("/loginUser");
+  });
+  //當尚未完成寄信的時候，顯示讀條(因為在then()外面，所以會先執行)
+  hide.value = true;
   //   console.log(await formRef.value.validate());
 
   // 呼叫後端 API 發送重設密碼信
-  console.log("送出重設密碼請求給：", email.value);
 }
 </script>
 

@@ -7,6 +7,7 @@
             src="@/assets/Easytrip_logo.png"
             class="img-fluid"
             alt="Phone image"
+            @click="router.push('/')"
           />
         </div>
         <div class="col-md-7 col-lg-5 col-xl-5 offset-xl-1">
@@ -16,7 +17,7 @@
               <input
                 type="text"
                 id="form1Example13"
-                class="form-control form-control-lg"
+                class="form-control form-control-lg active"
                 v-model="rawData.username"
               />
               <label class="form-label" for="form1Example13">帳號</label>
@@ -27,7 +28,7 @@
               <input
                 type="password"
                 id="form1Example23"
-                class="form-control form-control-lg"
+                class="form-control form-control-lg active"
                 v-model="rawData.password"
               />
               <label class="form-label" for="form1Example23">密碼</label>
@@ -102,7 +103,7 @@
 </template>
 
 <script setup>
-import { ref,onMounted } from "vue";
+import { ref, onMounted } from "vue";
 import { useRouter } from "vue-router";
 import { useAuthStore } from "@/stores/auth"; // 引入 Pinia store
 import { ApiMember } from "@/utils/API";
@@ -125,7 +126,6 @@ const rawData = ref({ ...DEFAULT_SEARCH.value });
 function authentication() {
   event.preventDefault(); // ⛔ 阻止 submit
 
-
   if (rawData.value.username === "" || rawData.value.password === "") {
     Swal.fire({
       icon: "error",
@@ -134,10 +134,10 @@ function authentication() {
     return;
   }
   //記住帳號(如果勾選就記住帳號)
-  if(rememberAccount.value){
-    localStorage.setItem('saveAccount',rawData.value.username);
-  }else {
-    localStorage.removeItem('saveAccount');
+  if (rememberAccount.value) {
+    localStorage.setItem("saveAccount", rawData.value.username);
+  } else {
+    localStorage.removeItem("saveAccount");
   }
 
   console.log(rawData.value.username);
@@ -145,6 +145,7 @@ function authentication() {
   //登入取得JWT
   ApiMember.login(rawData.value)
     .then((res) => {
+      console.log("完整登入 response:", res);
       console.log(res.data.token);
       if (res.data.token) {
         //如果有res.data
@@ -156,25 +157,21 @@ function authentication() {
           username: payload.sub,
         }); //使用者名稱
 
-
         //透過使用者名稱找會員
-        ApiMember.getMemberByUserName(payload.sub).then((res)=>{
-          console.log("查詢結果為 : "+res.data.memberId);
-          
+        ApiMember.getMemberByUserName(payload.sub).then((res) => {
+          console.log("查詢結果為 : " + res.data.memberId);
+
           //將查詢結果傳遞給testUser
-          testUser.value = res.data
-          console.log("傳遞結果為 : "+testUser.value.memberId);
+          testUser.value = res.data;
+          console.log("傳遞結果為 : " + testUser.value.memberId);
           const clean = cleanRole(payload); //取得乾淨角色
-          console.log("一般登入:"+ testUser.username);
+          console.log("一般登入:" + testUser.username);
 
           //登入成功(無論是甚麼角色都更改成login狀態)，放角色進入pinia
           authStore.login(testUser.value, token, clean); // 更新 Pinia 狀態為已登入，並儲存用戶資料  並放入token以及乾淨角色
           console.log("儲存角色為" + localStorage.getItem("roles")); //可以透過localStorage.getItem("roles")取出角色
-        })
+        });
 
-
-
-       
         //登錄後跳轉到指定頁面;
         router.push("/");
         Swal.fire({
@@ -182,7 +179,7 @@ function authentication() {
           icon: "success",
           draggable: true,
         });
-      }else{
+      } else {
         Swal.fire({
           icon: "error",
           title: "登入失敗",
@@ -197,8 +194,14 @@ function authentication() {
           title: "密碼不符合",
           text: "請確認密碼是否輸入正確",
         });
+      }
+      if (error.response && error.response.status === 401) {
+        Swal.fire({
+          icon: "error",
+          title: "登入失敗",
+          text: "請確認密碼是否輸入正確", // 顯示來自後端的錯誤訊息
+        });
       } else {
-        // 如果不是 403 或者沒有 response，處理其他錯誤
         console.error(error);
       }
     });
@@ -210,38 +213,19 @@ if (urlParams.get("error") === "oauth2_failed") {
   alert("Facebook 登入被取消或發生錯誤，請再試一次！");
 }
 
-
 //記住密碼邏輯
 const rememberAccount = ref(false);
 
 //頁面刷新的時候，從localstorage抓取資料
 
-onMounted(()=>{
-  
-  const saved = localStorage.getItem('saveAccount');
+onMounted(() => {
+  const saved = localStorage.getItem("saveAccount");
 
-  if(saved){
+  if (saved) {
     rawData.value.username = saved; //設定帳號為儲存值
     rememberAccount.value = true;
   }
-
-  
-
-})
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+});
 </script>
 
 <style scoped>

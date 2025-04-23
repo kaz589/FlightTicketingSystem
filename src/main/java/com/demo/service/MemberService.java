@@ -104,9 +104,10 @@ public class MemberService {
 				dbMember.setUsername(member.getUsername());
 				
 				//密碼需要加密
-				String password = member.getPassword();
-				if (member.getPassword() != null) {
-				    String encodedPassword = passwordEncoder.encode(member.getPassword());// 使用 BCrypt 進行加密
+				String newPassword = member.getPassword();
+				if (newPassword != null && !newPassword.equals(dbMember.getPassword())) {
+				    // 只有當新密碼和原本的不同時，才進行加密與更新
+				    String encodedPassword = passwordEncoder.encode(newPassword);
 				    dbMember.setPassword(encodedPassword);
 				}			
 				dbMember.setEmail(member.getEmail());
@@ -116,9 +117,13 @@ public class MemberService {
 				dbMember.setRegistrationDate(member.getRegistrationDate());
 				dbMember.setEmailVerified(member.isEmailVerified());
 				dbMember.setPhoneVerified(member.isPhoneVerified());
+				dbMember.setPicture(member.getPicture());
 				
 				// 抽出方法處理會員等級(升等邏輯)
-			    dbMember.setMembershipLevel(determineMembershipLevel(member.getTotalMiles()));
+				if (member.getTotalMiles() != null) {
+					
+					dbMember.setMembershipLevel(determineMembershipLevel(member.getTotalMiles()));
+				}
 							
 				memberRepository.save(dbMember);
 				return dbMember;
