@@ -7,6 +7,7 @@ export const useAuthStore = defineStore("auth", {
     user: null, // 存儲用戶信息
     roles: JSON.parse(localStorage.getItem("roles") || "[]"), // 改成陣列
   }),
+
   actions: {
     login(user, token, externalRoles = []) {
       this.isAuthenticated = true; // 設置為登入狀態
@@ -28,12 +29,6 @@ export const useAuthStore = defineStore("auth", {
       localStorage.removeItem("user");
       localStorage.removeItem("token");
       localStorage.removeItem("roles");
-    },
-
-    getters: {
-      //只要 token 有值，就回傳 true，否則回傳 false
-      //!! 是 JavaScript 裡的 雙重布林轉換技巧
-      isAuthenticated: (state) => !!state.token,
     },
 
     checkLoginStatus() {

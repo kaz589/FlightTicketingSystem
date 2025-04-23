@@ -46,9 +46,12 @@
 
       <template #append>
         <v-btn class="text-none me-2" height="48" icon slim>
-          <v-avatar color="surface-light"  size="32" >
-              <v-img :src="userPicture ||'/images/default1.png'"></v-img>
-            </v-avatar>
+          <v-avatar color="surface-light" size="32">
+            <v-img
+              :src="getPictureUrl(authStore.user?.picture)"
+              alt="圖片未顯示"
+            ></v-img>
+          </v-avatar>
 
           <v-menu activator="parent">
             <v-list density="compact" nav>
@@ -96,13 +99,13 @@ import { backToMainPage } from "@/utils/routerChange"; // 導入登出函數"
 const router = useRouter(); // 使用 vue-router
 
 const authStore = useAuthStore(); // 使用 store
-const userPicture = ref('');
+const userPicture = ref("");
 
 //找到大頭貼
 if (authStore.user && authStore.user.picture) {
   userPicture.value = authStore.user.picture;
 } else {
-  userPicture.value = '/images/default1.png'; // 預設圖片
+  userPicture.value = "/images/default1.png"; // 預設圖片
 }
 
 const drawer = ref(true);
@@ -119,9 +122,16 @@ watch(drawer, (newVal, oldVal) => {
 
 const logoutChange = () => {
   logout(); // 將 router 實例傳遞給 logout 函數
-  router.push("/login"); // 確保這行沒有問題，直接將用戶跳轉到登入頁(看需不需要回登入)
+  router.push("/"); // 確保這行沒有問題，直接將用戶跳轉到登入頁(看需不需要回登入)
   console.log("登出成功");
 };
+
+//區分第三方登入和一般登入的圖片取得
+function getPictureUrl(pic) {
+  if (!pic) return "/images/default.png";
+  if (pic.startsWith("http")) return pic;
+  return "http://localhost:8080" + pic;
+}
 
 const items = ref([
   {
