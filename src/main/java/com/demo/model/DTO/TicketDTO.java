@@ -12,7 +12,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 import com.demo.model.Ticket;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.demo.model.Member;
-
+import com.demo.model.Seat;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -30,7 +30,9 @@ public class TicketDTO {
 	@DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") // 用於表單數據的日期格式
 	private LocalDateTime bookingTime;
 	private int totalAmount;
+	private int totalDistance;
 	private boolean isPaid;
+	private String orderNo;
 	
 	public TicketDTO(Ticket entity) {
 		
@@ -42,8 +44,13 @@ public class TicketDTO {
 	            .map(seat -> new SeatDTO(seat)) // 轉 SeatDTO，計算票價
 	            .mapToInt(seatDTO -> seatDTO.getPrice() != null ? seatDTO.getPrice() : 0)
 	            .sum();
+	        this.totalDistance = entity.getSeats().stream()
+	        	    .map(Seat::getFlight) // 取得每個座位的航班
+	        	    .mapToInt(flight -> flight != null ? flight.getEstimatedDistance() : 0)
+	        	    .sum();
 	    } else {
 	        this.totalAmount = 0;
+	        this.totalDistance=0;
 	    }
 		this.memberName=entity.getMember().getUsername();
 		this.memberId=entity.getMember().getMemberId();

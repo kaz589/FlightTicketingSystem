@@ -98,6 +98,7 @@
   <v-main>
       <div class="pa-4">
         <router-view></router-view>
+        <Footer/>
       </div>
     </v-main>
 </v-app>
@@ -109,6 +110,7 @@ import { useRouter } from "vue-router"; // 引入 vue-router
 
 import { useAuthStore } from "@/stores/auth"; // 引入 Pinia store
 import { logout } from "@/utils/logout"; // 導入登出函數
+import Footer from "./Footer.vue";
 
 
 const router = useRouter(); // 使用 vue-router

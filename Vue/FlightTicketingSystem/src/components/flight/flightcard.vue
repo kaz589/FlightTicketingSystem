@@ -13,9 +13,8 @@
         </v-col>
         <v-col class="text-center">
           <div>預估里程:{{ flight.estimatedDistance }}</div>
-          <div class="line-arrow-wrap">
-            <div class="line"></div>
-          </div>
+          
+          <v-divider>{{ getFlightDuration(flight.departureTime, flight.arrivalTime) }}</v-divider>
         </v-col>
         <v-col class="text-center">
           <div>{{ flight.destinationAirport }}</div>
@@ -37,8 +36,11 @@
 <script setup>
 // import { defineProps } from "vue";
 import { useRouter } from "vue-router"; // 引入 vue-router
+import { getFlightDuration } from "@/utils/Date";
 
 defineProps(["flight"]);
+
+
 </script>
 
 

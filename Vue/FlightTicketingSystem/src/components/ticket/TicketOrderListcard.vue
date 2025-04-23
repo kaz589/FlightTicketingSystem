@@ -2,13 +2,16 @@
   <v-card class="border-xl">
     <v-card-text>
       <div>
-        <label>訂單編號：{{ order.orderId }}</label>
+        <label>訂單編號：{{ order.orderNo }}</label>
       </div>
       <div>
         <label>訂購時間日期：{{ order.bookingTime }}</label>
       </div>
       <div>
-        <label>總金額：{{ order.totalAmount }}</label>
+        <label>總金額：{{ order.totalAmount }}元</label>
+      </div>
+      <div>
+        <label>累計里程：{{ order.totalDistance }}Km</label>
       </div>
       <div>
         <label>狀態：{{ order.paid ? '已付款' : '未付款' }}</label>

@@ -1,8 +1,26 @@
 <template>
-
-  <div>
-    <h1>訂單確認</h1>
+  <div class="flight-header">
+    <div class="airport-row">
+      <div class="airport-col">
+        <div v-if="flight" class="city-name">
+          {{ flight?.originAirport?.city }}
+        </div>
+      </div>
+      <div class="plane-icon">→</div>
+      <div class="airport-col">
+        <div v-if="flight" class="city-name">
+          {{ flight?.destinationAirport?.city }}
+        </div>
+      </div>
+    </div>
+    <div class="flight-info">
+      <div v-if="flight" class="date">
+        {{ formatDepartureTime(flight.departureTime) }}
+      </div>
+    </div>
   </div>
+  <br />
+  <hr />
 
   <v-container>
     <v-row align="start" justify="center" cols="1" md="1">
@@ -13,19 +31,33 @@
         cols="7"
         md="7"
       >
-        <Seatscard :selectseat="selectseat" />
+        <Seatscard :selectseat="selectseat" :action-type="actionType" />
       </v-col>
     </v-row>
   </v-container>
   <v-row justify="center">
-    <v-col cols="4">
-      <p>
+    <v-col cols="4" class="text-right">
+      <p class="text-2xl">
         總計：
-        <span class="text-red-600 text-xl font-bold"
+        <span class="text-red-600 text-3xl font-bold"
           >${{ seatStore.totalPrice }}</span
         >
       </p>
-      <v-btn prepend-icon="$vuetify" @click="" stacked> Button</v-btn>
+      <p class="text-2xl">
+        預計累計里程：
+        <span class="text-red-600 text-3xl font-bold">
+          ${{ seatStore.totalDistance }}
+        </span>
+      </p>
+      <v-btn
+        prepend-icon="mdi mdi-cash-sync"
+        @click="handleSubmit"
+        stacked
+        size="large"
+        class="text-xl py-4 px-8"
+      >
+        結帳</v-btn
+      >
     </v-col>
   </v-row>
 
@@ -90,8 +122,6 @@
       name="CheckMacValue"
       v-model="formData.CheckMacValue"
     />
-
-    <v-btn type="button" @click="handleSubmit">確認</v-btn>
   </form>
 </template>
 
@@ -104,17 +134,19 @@ import {
   getCurrentDateTimeFormatted,
   generateOrderIdWithRandom,
 } from "@/utils/pay";
-
+import { formatDepartureTime } from "@/utils/Date";
 import { ApiTicket } from "@/utils/API";
-
+import { useAuthStore } from "@/stores/auth";
+const authStore = useAuthStore();
 onMounted(() => {
   // const params = new URLSearchParams(window.location.search);
   // flightId.value = params.get("flightid");
-  console.log(seatStore.selectseats);
+  console.log(seatStore.selectseats[0]);
+  getflight();
 });
 const paymentForm = ref(null);
-const memberid = ref(1);
-
+const memberid = ref(authStore.user.memberId);
+const actionType = ref("cancel");
 const seatStore = useSeatStore(); // 獲取 Pinia store
 const selectseats = seatStore.selectseats; // 從 store 中獲取 selectseats
 
@@ -142,16 +174,15 @@ const handleSubmit = async () => {
   try {
     const host = "http://localhost:8080/pay";
 
-
     formData.ItemName = seatStore.selectedSeatNumbers;
     formData.TotalAmount = seatStore.totalPrice;
     formData.MerchantTradeDate = getCurrentDateTimeFormatted();
     formData.MerchantTradeNo = generateOrderIdWithRandom();
     formData.ClientBackURL = `${host}?orderid=${formData.MerchantTradeNo}`;
-    
+
     const data = {
       orderId: formData.MerchantTradeNo, // 字串
-      customerId: 1, // 整數
+      customerId: memberid.value, // 整數
       seatIds: seatStore.selectedSeatIds, // 整數陣列
     };
     // 等待訂票 API 回應
@@ -186,6 +217,88 @@ async function generateCheckMacValue(params) {
     return null;
   }
 }
+const flight = ref([]);
+function getflight() {
+  flight.value = seatStore.selectseats[0].flight;
+}
 </script>
 
-<style scoped></style>
+<style scoped>
+/* 飛機圖示 */
+.plane-icon {
+  font-size: 2.2rem;
+  color: #1976d2;
+}
+
+/* 標頭區塊 */
+.flight-header {
+  margin: 20px 0;
+  text-align: center;
+}
+
+/* 城市名稱 */
+.city-name {
+  font-size: 2.5rem;
+  font-weight: bold;
+  letter-spacing: 2px;
+}
+
+/* 標籤文字 */
+.label {
+  font-size: 1rem;
+  color: #888;
+  margin-bottom: 4px;
+}
+
+/* 航班資訊 */
+.flight-info {
+  margin-top: 18px;
+}
+
+/* 日期文字 */
+.date {
+  font-size: 1.15rem;
+  font-weight: 600;
+}
+
+/* 城市行（如需用到） */
+.city-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+}
+
+/* 機場行 */
+.airport-row {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 40px;
+}
+
+/* 機場欄 */
+.airport-col {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* 分隔線與時間區塊 */
+.divider-center {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.divider-line {
+  width: 90px;
+  height: 2px;
+  background: #bdbdbd;
+  border-radius: 1px;
+}
+.divider-time {
+  font-size: 1.1rem;
+  color: #888;
+  padding: 0 4px;
+}
+</style>

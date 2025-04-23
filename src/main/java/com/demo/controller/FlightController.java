@@ -47,6 +47,7 @@ public class FlightController {
 	@PutMapping("/{id}")
 	public Flight updateFlight(@PathVariable Integer id, @RequestBody FlightDTO flightDetails) {
 		
+		System.out.println(flightDetails);
 		 // 確保 ID 一致，防止數據不匹配
         if (!id.equals(flightDetails.getId())) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "航班 ID 不一致");
@@ -76,7 +77,7 @@ public class FlightController {
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size) {
 
-       
+     
 
         Pageable  pageable = PageRequest.of(page-1, size);
         return flightService.searchFlights(originIata, destinationIata, startTime, endTime, airplaneModelName, pageable);
