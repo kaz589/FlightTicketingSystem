@@ -94,6 +94,11 @@ const router = createRouter({
           component: () => import("@/components/TravelPage.vue"),
           meta: { requiresAuth: true }, // 需要登錄的頁面
         },
+        {
+          path: "authority",
+          component: () => import("@/page/admin/Authority.vue"),
+          meta: { requiresAuth: true, roles: ["MANAGER"] },
+        },
       ],
     },
     {
@@ -173,8 +178,8 @@ router.beforeEach((to, from, next) => {
     console.log("用戶角色不符合，跳轉未授權頁面");
     Swal.fire({
       icon: "error",
-      title: "你沒有此權限",
-      text: "請以管理員帳號登入",
+      title: "用戶角色不符合",
+      text: "請以正確的帳號登入",
     });
 
     return next("/");

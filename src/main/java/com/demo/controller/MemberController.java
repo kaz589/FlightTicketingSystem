@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.demo.Security.annotation.RequireJwt;
+import com.demo.dto.MemberAuthorityDto;
 import com.demo.model.Member;
 import com.demo.service.MemberService;
 
@@ -39,6 +40,17 @@ public class MemberController {
 	public List<Member> GetAllMembers(){
 		return memberService.getAll();
 	}
+	
+//  查詢所有管理員
+	@GetMapping("/GetAllAdminList")
+	public List<Member> GetAllAdminList(){
+		return memberService.getAllWhereAuthorityIsAdmin();
+	}
+	
+	
+	
+	
+	
 //	新增會員
 	@PostMapping("/InsertMember")
 	public Member insertMember(@RequestBody Member member) {
@@ -49,6 +61,13 @@ public class MemberController {
 	public Member updateMemberById(@RequestBody Member member) {
 		return memberService.updateMemberById(member);
 	}
+	
+// 透過id更新權限(僅權限)	
+	@PutMapping("/UpdateMemberAuthorityDetail")
+	public boolean updateMemberAuthorityDetailById(@RequestBody MemberAuthorityDto memberDto) {
+		return memberService.updateJustAuthorityDetail(memberDto.getId(),memberDto.getAuthorityDetail());
+	}
+	
 	
 	
 //  透過id刪除會員

@@ -51,5 +51,11 @@ export const useAuthStore = defineStore("auth", {
     hasRole(role) {
       return this.roles.includes(role);
     },
+    // 加一個方法來即時更新角色權限
+    updateAuthorityDetail(newAuthorityDetail) {
+      if (this.user) {
+        this.user.authorityDetail = newAuthorityDetail;
+      }
+    },
   },
 });

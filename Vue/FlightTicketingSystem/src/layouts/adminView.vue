@@ -9,10 +9,16 @@
       @mouseleave="isHovered = false"
     >
       <v-list density="compact" item-props :items="items" nav>
-        <v-list-item v-for="item in items" @click="$router.push(item.path)">
-          <v-icon :icon="item.prependIcon"></v-icon>
-          <span v-if="isHovered">{{ item.title }}</span>
-        </v-list-item>
+        <template v-for="(item, index) in items">
+          <v-list-item
+            :key="index"
+            v-if="item.visible"
+            @click="$router.push(item.path)"
+          >
+            <v-icon :icon="item.prependIcon"></v-icon>
+            <span v-if="isHovered">{{ item.title }}</span>
+          </v-list-item>
+        </template>
       </v-list>
 
       <template #append>
@@ -90,13 +96,18 @@
 </template>
 
 <script setup>
-import { ref, watch } from "vue";
+import { onMounted, ref, watch, computed } from "vue";
 import { useAuthStore } from "@/stores/auth"; // 引入 Pinia store
 import { logout } from "@/utils/logout"; // 導入登出函數
 import { useRouter } from "vue-router"; // 引入 vue-router
 import { backToMainPage } from "@/utils/routerChange"; // 導入登出函數"
 
 const router = useRouter(); // 使用 vue-router
+
+onMounted(() => {
+  console.log(authStore.user.authorityDetail);
+  console.log("從後端回來的權限資料：", authStore.user.authorityDetail);
+});
 
 const authStore = useAuthStore(); // 使用 store
 const userPicture = ref("");
@@ -133,61 +144,75 @@ function getPictureUrl(pic) {
   return "http://localhost:8080" + pic;
 }
 
-const items = ref([
+//權限判斷
+const hasAuthority = (role) => {
+  if (!authStore.user?.authorityDetail) return false;
+  return authStore.user.authorityDetail.split(",").includes(role);
+};
+
+const items = computed(() => [
   {
     title: "登入畫面",
     prependIcon: "mdi-view-dashboard-outline",
     link: true,
     path: "/login",
+    visible: true,
   },
   {
     title: "會員管理",
     prependIcon: "mdi mdi-account-group",
     link: true,
     path: "/admin/members",
+    visible: hasAuthority("會員"),
   },
   {
     title: "機場管理",
     prependIcon: "mdi-airport",
     link: true,
     path: "/admin/airport",
+    visible: hasAuthority("航線"),
   },
   {
     title: "航線管理",
     prependIcon: "mdi mdi-airplane-takeoff",
     link: true,
     path: "/admin/flight",
+    visible: hasAuthority("航線"),
   },
   {
     title: "票務訂單管理",
     prependIcon: "mdi mdi-ticket",
     link: false,
     path: "/admin/Ticket",
+    visible: hasAuthority("航線"),
   },
   {
     title: "座位管理",
     prependIcon: "mdi mdi-seat",
     link: false,
     path: "/admin/Seats",
+    visible: hasAuthority("航線"),
   },
   {
     title: "旅行管理",
     prependIcon: "mdi mdi-island",
     link: false,
     path: "/admin/travel",
+    visible: hasAuthority("旅遊"),
   },
-
   {
     title: "商品管理",
     prependIcon: "mdi mdi-gift-outline",
     link: true,
     path: "/admin/products",
+    visible: hasAuthority("產品"),
   },
   {
-    title: "商品管理",
-    prependIcon: "mdi mdi-gift-outline",
+    title: "權限管理",
+    prependIcon: "mdi mdi-shield-lock-outline",
     link: true,
-    path: "/admin/testtt",
+    path: "/admin/authority",
+    visible: true,
   },
 ]);
 </script>
