@@ -2,6 +2,7 @@ package com.demo.controller;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -24,6 +25,7 @@ import org.springframework.data.domain.Pageable;
 import com.demo.model.Airports;
 import com.demo.model.Flight;
 import com.demo.model.DTO.FlightDTO;
+import com.demo.model.DTO.TicketDTO;
 import com.demo.repository.AirportsRepository;
 import com.demo.service.AirportsService;
 import com.demo.service.FlightService;
@@ -82,4 +84,12 @@ public class FlightController {
         Pageable  pageable = PageRequest.of(page-1, size);
         return flightService.searchFlights(originIata, destinationIata, startTime, endTime, airplaneModelName, pageable);
 	}
+	// 根據ID查詢航班
+    @GetMapping("/{id}")
+    public ResponseEntity<FlightDTO> getFlightById(@PathVariable Integer id) {
+        Optional<FlightDTO> flight = flightService.findFlightById(id);
+        return flight.map(ResponseEntity::ok)
+                     .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).build());
+    }
+	
 }

@@ -48,6 +48,7 @@ public class TicketImp implements TicketService {
 		List<TicketDTO> newTicketDTO = ticketRepository.findAll().stream()
 				.map(TicketDTO::new)
 				.toList();
+		System.out.println(newTicketDTO.toString());
 		// TODO Auto-generated method stub
 		return newTicketDTO;
 	}

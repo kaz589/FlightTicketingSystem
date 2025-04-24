@@ -2,9 +2,7 @@ package com.demo.model.DTO;
 
 
 import java.time.LocalDateTime;
-
-
-
+import java.util.Optional;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -33,7 +31,7 @@ public class TicketDTO {
 	private int totalDistance;
 	private boolean isPaid;
 	private String orderNo;
-	
+	private int flightid;
 	public TicketDTO(Ticket entity) {
 		
 		
@@ -48,6 +46,12 @@ public class TicketDTO {
 	        	    .map(Seat::getFlight) // 取得每個座位的航班
 	        	    .mapToInt(flight -> flight != null ? flight.getEstimatedDistance() : 0)
 	        	    .sum();
+	        this.flightid = Optional.ofNullable(entity.getSeats())
+	        	    .filter(seats -> !seats.isEmpty())
+	        	    .map(seats -> seats.get(0))
+	        	    .map(seat -> seat.getFlight())
+	        	    .map(flight -> flight.getId())
+	        	    .orElse(0);
 	    } else {
 	        this.totalAmount = 0;
 	        this.totalDistance=0;

@@ -16,7 +16,7 @@ import com.demo.model.DTO.FlightDTO;
 
 public interface FlightService {
 	List<FlightDTO> findAllFlight(); // 查詢所有航班
-    Optional<FlightDTO> findFlightById(int id); // 根據 ID 查詢航班
+    Optional<FlightDTO> findFlightById(Integer id); // 根據 ID 查詢航班
     ResponseEntity<Flight> createFlight(FlightDTO flight); // 新增航班
     Flight updateFlight(int id, FlightDTO flightDetails); // 更新航班
     void deleteFlight(int id); // 刪除航班
