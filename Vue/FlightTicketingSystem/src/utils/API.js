@@ -43,6 +43,8 @@ export const ApiAirport = {
 };
 //航班相關 API
 export const ApiFlight = {
+  // 根據ID查詢航班
+  getFlightById: (id) => instance.get(`/flight/${id}`),
   // 獲取所有航班
   getAllFlights: () => instance.get("/flight/getAll"),
 
