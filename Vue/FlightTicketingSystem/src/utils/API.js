@@ -127,6 +127,8 @@ export const ApiMember = {
 
   updateMemberAuthorityDetail: (info) =>
     instance.put(`/member/UpdateMemberAuthorityDetail`, info),
+  updateMemberAuthority: (info) =>
+    instance.put(`/member/UpdateMemberAuthority`, info),
 };
 
 //座位相關API

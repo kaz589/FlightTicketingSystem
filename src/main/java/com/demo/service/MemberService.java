@@ -160,6 +160,25 @@ public class MemberService {
 	    }
 	}
 	
+//只更新角色
+	public boolean updateJustAuthority(Integer id, String authority) {
+		Optional<Member> op = memberRepository.findById(id);
+		//如果找不到
+				if (op.isEmpty()) {
+			        return false;
+			    }else {
+			    	
+			    	//如果找得到
+					Member dbMember = op.get();
+					dbMember.setAuthority(authority);
+					
+					memberRepository.save(dbMember);
+					return true;
+			    }
+	}
+	
+	
+	
 	
 	
 	

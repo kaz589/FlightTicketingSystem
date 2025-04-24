@@ -49,12 +49,20 @@ export const useAuthStore = defineStore("auth", {
     },
     // 🔍 加一個方法來判斷是否有某個角色
     hasRole(role) {
+      console.log("當前角色", role);
+
       return this.roles.includes(role);
     },
     // 加一個方法來即時更新角色權限
     updateAuthorityDetail(newAuthorityDetail) {
       if (this.user) {
         this.user.authorityDetail = newAuthorityDetail;
+      }
+    },
+    // 加一個方法來即時更新角色
+    updateAuthority(newAuthority) {
+      if (this.user) {
+        this.user.authority = newAuthority;
       }
     },
   },

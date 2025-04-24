@@ -67,6 +67,11 @@ public class MemberController {
 	public boolean updateMemberAuthorityDetailById(@RequestBody MemberAuthorityDto memberDto) {
 		return memberService.updateJustAuthorityDetail(memberDto.getId(),memberDto.getAuthorityDetail());
 	}
+// 透過id更新權限(僅角色)	
+	@PutMapping("/UpdateMemberAuthority")
+	public boolean updateMemberAuthorityById(@RequestBody MemberAuthorityDto memberDto) {
+		return memberService.updateJustAuthority(memberDto.getId(),memberDto.getAuthority());
+	}
 	
 	
 	

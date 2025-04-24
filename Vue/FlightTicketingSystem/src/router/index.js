@@ -49,7 +49,7 @@ const router = createRouter({
     {
       path: "/admin",
       component: () => import("@/layouts/adminView.vue"),
-      meta: { requiresAuth: true, roles: ["ADMIN"] },
+      meta: { requiresAuth: true, roles: ["ADMIN", "MANAGER"] },
       children: [
         {
           path: "airport",

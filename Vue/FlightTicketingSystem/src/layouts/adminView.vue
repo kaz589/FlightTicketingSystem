@@ -150,13 +150,20 @@ const hasAuthority = (role) => {
   return authStore.user.authorityDetail.split(",").includes(role);
 };
 
+const RoleCount = computed(() => {
+  if (authStore.hasRole("MANAGER")) return 3;
+  if (authStore.hasRole("ADMIN")) return 2;
+  if (authStore.hasRole("USER")) return 1;
+  return 0;
+});
+
 const items = computed(() => [
   {
     title: "登入畫面",
     prependIcon: "mdi-view-dashboard-outline",
     link: true,
     path: "/login",
-    visible: true,
+    visible: false,
   },
   {
     title: "會員管理",
@@ -212,7 +219,7 @@ const items = computed(() => [
     prependIcon: "mdi mdi-shield-lock-outline",
     link: true,
     path: "/admin/authority",
-    visible: true,
+    visible: RoleCount.value == 3,
   },
 ]);
 </script>

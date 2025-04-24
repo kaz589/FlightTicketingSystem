@@ -508,6 +508,8 @@ function handleUpdate() {
         icon: "success",
         draggable: true,
       });
+      //更新大頭照
+      authStore.user.picture = res.data.picture;
     }
   });
 }
