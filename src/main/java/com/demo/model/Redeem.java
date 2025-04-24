@@ -53,9 +53,8 @@ public class Redeem {
 	@Min(value = 0, message = "金額不能小於 0")
 	private Integer redeemTotalMiles;
 	
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne
 	@JoinColumn(name = "member_id", referencedColumnName = "member_id")
-	@JsonBackReference
 	private Member member;
 	
 	@OneToMany(fetch = FetchType.LAZY,mappedBy = "redeem")

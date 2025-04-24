@@ -113,8 +113,8 @@ public class RedeemImp implements IRedeemService {
 				.orElseThrow(() -> new RuntimeException("找不到 ID 為 " + memberId + " 的會員"));
 
 		redeem.setMember(member);
-		redeemRepo.save(redeem);
-
+		redeem = redeemRepo.save(redeem);
+		
 		int totalMilesNeeded = 0; //計算總里程
 		List<RedeemItem> newRedeemItems= new ArrayList<>();
 		//遍歷本訂單的商品項目
@@ -149,7 +149,9 @@ public class RedeemImp implements IRedeemService {
 		redeemItemRepo.saveAll(newRedeemItems);
 		// 扣除會員里程
 		memberService.decreaseMilesById(memberId, totalMilesNeeded);
-		  return redeem;
+		redeem.setRedeemTotalMiles(totalMilesNeeded);
+//		redeemRepo.save(redeem);
+		return redeemRepo.save(redeem);
 	}
 
 //根據RedeemId軟刪除訂單

@@ -52,7 +52,6 @@ public class Products {
 	private String image;
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JsonBackReference
 	@JoinColumn(name = "category_id", referencedColumnName = "category_id")
 	private Category category;
 

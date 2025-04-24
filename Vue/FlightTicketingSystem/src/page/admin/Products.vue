@@ -3,15 +3,19 @@
     <div>
       <h1>商品管理</h1>
     </div>
-
-    <!-- 搜尋按鈕 -->
-    <v-btn prepend-icon="mdi-magnify" @click="search"> 搜尋全部 </v-btn>
-
-    <!-- 關鍵字搜尋欄 -->
-    <v-text-field v-model="searchFilters.name" label="輸入商品名稱" />
+    <br /><br />
+    <!-- 新增商品 -->
+    <v-btn @click="insertDialog = true">新增商品</v-btn>
+    <!-- 搜尋商品 -->
     <v-btn prepend-icon="mdi-magnify" @click="searchByName"> 搜尋 </v-btn>
 
     <br /><br />
+    <!-- 關鍵字搜尋欄 -->
+    <v-text-field v-model="searchFilters.name" label="輸入商品名稱" />
+    
+    <br /><br />
+
+    
 
     <!-- 商品表格 -->
     <v-data-table :headers="headers" :items="Allproducts" item-key="id">
@@ -23,24 +27,44 @@
       </template>
     </v-data-table>
 
+    
+
     <br /><br />
 
-    <!-- 新增商品表單 -->
-    <v-form>
-      <v-row>
-        <v-col>
+<!-- 新增商品對話框 -->
+ <v-dialog v-model="insertDialog" max-width="600">
+      <v-card>
+        <!-- 標題 -->
+        <v-card-title>
+        新增商品
+        </v-card-title>
+
+        <v-card-text>
+          <!-- 表單內容 -->
+          <v-form ref="form">
+             <!-- 選擇類別 -->
+            <v-select
+      v-model="insertData.category.categoryId"
+      :items="categoryOptions"
+      item-title="name"
+      item-value="id"
+      label="商品類別"
+      required
+    ></v-select>
+            <v-row>
+        <v-col cols="12" md="6">
           <v-text-field v-model="insertData.name" label="商品名稱" required />
         </v-col>
-        <v-col>
+        <v-col cols="12" md="6">
           <v-text-field v-model="insertData.desc" label="商品描述" required />
         </v-col>
-        <v-col>
+        <v-col cols="12" md="6">
           <v-text-field v-model="insertData.needmiles" label="所需里程" required />
         </v-col>
-        <v-col>
+        <v-col cols="12" md="6">
           <v-text-field v-model="insertData.quantity" label="庫存" required />
         </v-col>
-        <v-col>
+        <v-col cols="12" md="6">
           <v-file-input
             v-model="insertImageFile"
             label="商品照片"
@@ -48,43 +72,89 @@
             @change="handleInsertImageChange"
           />
         </v-col>
+        <v-col cols="12" md="6">
+        <v-btn color="primary" @click="uploadImage">上傳圖片</v-btn> 
+      </v-col>
       </v-row>
-    </v-form>
-    <v-btn color="primary" @click="uploadImage">上傳圖片</v-btn>
+      
+          </v-form>
+        </v-card-text>
+
+        <v-divider></v-divider>
+
+        <!-- 操作按鈕 -->
+        <v-card-actions>
+          <v-spacer></v-spacer>
+         
+          <v-btn variant="text"color="red" @click="insertDialog = false">取消</v-btn>
     <v-btn color="success" @click="insert">新增商品</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
 
     <br /><br />
+<!-- 編輯商品用對話框 -->
+    <v-dialog v-model="updateDialog" max-width="600">
+      <v-card>
+        <!-- 標題 -->
+        <v-card-title>
+          編輯商品
+        </v-card-title>
 
-    <!-- 修改商品表單 -->
-    <v-form>
-      <v-row>
-        <v-col>
+        <v-card-text>
+          <!-- 表單內容 -->
+          <v-form ref="form">
+             <!-- 選擇類別 -->
+            <v-select
+      v-model="updateData.category.categoryId"
+      :items="categoryOptions"
+      item-title="name"
+      item-value="id"
+      label="商品類別"
+      required
+    ></v-select>
+            <v-row>
+        <v-col cols="12" md="6">
           <v-text-field v-model="updateData.name" label="商品名稱" required />
         </v-col>
-        <v-col>
+        <v-col cols="12" md="6">
           <v-text-field v-model="updateData.desc" label="商品描述" required />
         </v-col>
-        <v-col>
+        <v-col cols="12" md="6">
           <v-text-field v-model="updateData.needmiles" label="所需里程" required />
         </v-col>
-        <v-col>
+        <v-col cols="12" md="6">
           <v-text-field v-model="updateData.quantity" label="庫存" required />
         </v-col>
-        <v-col>
+        <v-col cols="12" md="6">
           <v-file-input
             v-model="updateImageFile"
             label="商品照片"
             accept="image/*"
             @change="handleUpdateImageChange"
           />
-          <div v-if="updateData.image">
-            目前圖片：<img :src="updateData.image" height="100" />
-          </div>
         </v-col>
+        <v-col cols="12" md="6">
+        <v-btn color="primary" @click="uploadImageForUpdate">上傳圖片</v-btn> 
+      </v-col>
       </v-row>
-    </v-form>
-    <v-btn color="primary" @click="uploadImageForUpdate">上傳修改圖片</v-btn>
-    <v-btn color="success" @click="update">修改商品</v-btn>
+      
+          </v-form>
+        </v-card-text>
+
+        <v-divider></v-divider>
+
+        <!-- 操作按鈕 -->
+        <v-card-actions>
+          <v-spacer></v-spacer>
+         
+          <v-btn variant="text"color="red" @click="updateDialog = false">取消</v-btn>
+    <v-btn color="success" @click="update">更新商品</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+
+   
   </v-container>
 </template>
 
@@ -98,17 +168,27 @@ import 'sweetalert2/dist/sweetalert2.min.css';
 const Allproducts = ref([]);
 // 搜尋關鍵字
 const searchFilters = ref({ name: '' });
-
+//
+const insertDialog = ref(false)
+const updateDialog = ref(false)
 // 表格欄位
 const headers = ref([
-  { title: '商品 ID', value: 'id' },
+  { title: '商品ID', value: 'id' },
+  { title: '商品類別', value: 'category.categoryName' },
   { title: '名稱', value: 'name' },
   { title: '描述', value: 'desc' },
-  { title: '所需里程', value: 'needmiles' },
+  { title: '所需', value: 'needmiles' },
   { title: '庫存', value: 'quantity' },
   { title: '圖片', value: 'image' },
   { title: '操作', key: 'actions' }
 ]);
+const categoryOptions = [
+  { id: 1, name: '酒類' },
+  { id: 2, name: '旅行用品' },
+  { id: 3, name: '美妝類' },
+  { id: 4, name: '電子產品' },
+  { id: 5, name: '其他' },
+]
 
 // 預設表單
 const DEFAULT_FORM = { name: '', desc: '', needmiles: 0, quantity: 0, category: { categoryId: 1 }, image: '' };
@@ -117,6 +197,7 @@ const DEFAULT_UPDATE = { ...DEFAULT_FORM };
 // 新增
 const insertData = ref({ ...DEFAULT_FORM });
 const insertImageFile = ref(null);
+
 
 // 修改
 const updateData = ref({ ...DEFAULT_UPDATE });
@@ -166,17 +247,31 @@ async function uploadImageForUpdate() {
   }
 }
 
+function getFileName(path) {
+  if (!path) {
+    return '';
+  }
+  const lastSlashIndex = path.lastIndexOf('/');
+  if (lastSlashIndex === -1) {
+    return path; // 如果沒有斜線，直接返回整個字串
+  }
+  return path.substring(lastSlashIndex + 1);
+}
 // 新增商品
 async function insert() {
   if (!insertData.value.image) return Swal.fire('請先上傳圖片', '', 'warning');
   try {
-    await ApiProducts.addProduct(insertData.value);
+    await ApiProducts.addProduct(insertData.value).then(() => {
+      insertDialog.value = false;
+    });
     Swal.fire('新增成功', '', 'success').then(() => {
       searchByName();
       insertData.value = { ...DEFAULT_FORM };
       insertImageFile.value = null;
     });
   } catch (e) {
+    console.log(e);
+    
     Swal.fire('新增失敗', '', 'error');
   }
 }
@@ -190,17 +285,28 @@ function remove(id) {
 }
 // 編輯
 function edit(id) {
-  const item = Allproducts.value.find(p => p.id === id);
-  updateId.value = id;
-  updateData.value = { ...item };
+  //打開dialog
+  updateDialog.value = true;
+  //用id找product
+  ApiProducts.searchById(id).then((res) => {
+    console.log(res.data);
+    updateData.value = res.data;
+    console.log();
+    
+  })
+  // const item = Allproducts.value.find(p => p.id === id);
+  // updateId.value = id;
+  // updateData.value = { ...item };
 }
 
 // 修改商品
 async function update() {
   if (!updateData.value.image) return Swal.fire('請先上傳圖片', '', 'warning');
   try {
-    await ApiProducts.updateProduct(updateId.value, updateData.value);
+    await ApiProducts.updateProduct(updateData.value.id, updateData.value)
+
     Swal.fire('修改成功', '', 'success').then(search);
+    updateDialog.value = false;
   } catch (e) {
     Swal.fire('修改失敗', '', 'error');
   }

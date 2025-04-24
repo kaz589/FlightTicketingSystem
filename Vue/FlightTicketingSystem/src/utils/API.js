@@ -175,4 +175,59 @@ export const ApiProducts = {
     });
   }
 }
+// 訂單相關API
+export const ApiRedeem = {
+
+
+  // 查詢全部訂單 (GET /redeem/all)
+  getAllRedeem: () => instance.get('/redeem/all'),
+
+  // 根據 Id 查單筆訂單 (GET /redeem/{redeemId})
+  getRedeemById: (redeemId) => instance.get(`/redeem/${redeemId}`),
+
+  // 新增一筆訂單 (POST /redeem)
+  addRedeem: (createRedeemRequest) => instance.post('/redeem', createRedeemRequest),
+
+  // 更新訂單 (PUT /redeem/{redeemId})
+  updateRedeem: (redeemId, redeemData) => instance.put(`/redeem/${redeemId}`, redeemData),
+
+  // 更新訂單狀態 (PUT /redeem/{redeemId}/status)
+  updateRedeemStatus: (redeemId, newStatus) =>
+    instance.put(`/redeem/${redeemId}/status`, null, {
+      params: {
+        newStatus: newStatus,
+      },
+    }),
+
+  // 軟刪除訂單 (DELETE /redeem/{redeemId})
+  softDeleteRedeem: (redeemId) => instance.delete(`/redeem/${redeemId}`),
+
+  // 根據Redeem狀態查詢訂單 (GET /redeem/redeemStatus?redeemStatus={狀態值})
+  findByRedeemStatus: (redeemStatus) =>
+    instance.get('/redeem/redeemStatus', {
+      params: {
+        redeemStatus: redeemStatus,
+      },
+    }),
+
+  // 根據訂單成立時間查詢訂單列表 (GET /redeem/redeemDate?redeemDate={日期值})
+  findByTime: (redeemDate) =>
+    instance.get('/redeem/redeemDate', {
+      params: {
+        redeemDate: redeemDate,
+      },
+    }),
+
+  // 根據會員ID查詢訂單列表 (GET /redeem/memberId?memberId={會員ID})
+  findByMemberId: (memberId) =>
+    instance.get(`/redeem/memberId`, {
+      params: {
+        memberId: memberId,
+      },
+    }),
+
+  // 取消訂單 (PUT /redeem/{redeemId}/cancelRedeem)
+  cancelRedeem: (redeemId) => instance.put(`/redeem/${redeemId}/cancelRedeem`),
+};
+
 
