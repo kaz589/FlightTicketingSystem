@@ -180,7 +180,7 @@ export const ApiRedeem = {
 
 
   // 查詢全部訂單 (GET /redeem/all)
-  getAllRedeem: () => instance.get('/redeem/all'),
+  getAllRedeem: () => instance.get('/redeem/'),
 
   // 根據 Id 查單筆訂單 (GET /redeem/{redeemId})
   getRedeemById: (redeemId) => instance.get(`/redeem/${redeemId}`),

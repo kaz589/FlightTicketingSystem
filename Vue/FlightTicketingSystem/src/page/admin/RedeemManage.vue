@@ -13,58 +13,32 @@
   <!-- 搜尋全部訂單 -->
   <v-btn prepend-icon="mdi-magnify" @click="search"> 搜尋全部訂單 </v-btn>
 
- <!-- 新增訂單 -->
- <v-btn @click="openAddDialog">新增訂單</v-btn>
+
 
     <br /><br />
 
     <v-data-table :headers="headers" :items="Allredeem" item-key="redeemId">
       <template v-slot:item.actions="{ item }">
-        <div class="d-flex ga-2 justify-end">
-          <v-icon icon="mdi-pencil" @click="edit(item.redeemId)"></v-icon>
-          <v-icon icon="mdi-delete" @click="remove(item.redeemId)"></v-icon>
-          <v-icon icon="mdi-cancel" color="red" @click="cancel(item.id)"></v-icon>
-          <v-icon icon="mdi-check-circle-outline" color="green" @click="updateStatus(item.id, '已處理')"></v-icon>
+        <div class="d-flex gap-2 justify-end">
+          <v-select
+           v-model="item.redeemStatus"
+            :items="redeemStatusOptions"
+             item-title="status"
+             item-value="status"
+             label="訂單狀態"
+             required
+             dense
+             hide-details
+             @update:modelValue="val=>updateStatus(item,val)"
+         ></v-select>
+          <v-btn  @click="remove(item.redeemId)">刪除訂單</v-btn>
+          <v-btn  color="red" @click="cancel(item.redeemId)">取消訂單</v-btn>
+        
         </div>
       </template>
     </v-data-table>
 
     <br /><br />
-
-    <v-dialog v-model="dialog" max-width="600">
-      <v-card>
-        <v-card-title>
-          {{ updateId ? '修改訂單' : '新增訂單' }}
-        </v-card-title>
-
-        <v-card-text>
-          <v-form ref="form">
-            <v-row>
-              <v-col cols="12" md="6">
-                <v-text-field v-model="insertRedeem.red" label="訂單編號" required />
-              </v-col>
-              <v-col cols="12" md="6">
-                <v-text-field v-model="insertRedeem.memberId" label="會員 ID" type="number" required />
-              </v-col>
-              <v-col cols="12" md="6">
-                <v-text-field v-model="insertRedeem.redeemDate" label="訂單日期" type="date" required />
-              </v-col>
-              <v-col cols="12" md="6">
-                <v-text-field v-model="insertRedeem.redeemStatus" label="訂單狀態" />
-              </v-col>
-              </v-row>
-          </v-form>
-        </v-card-text>
-
-        <v-divider></v-divider>
-
-        <v-card-actions>
-          <v-spacer></v-spacer>
-          <v-btn variant="text" color="red" @click="closeDialog">取消</v-btn>
-          <v-btn color="success" @click="saveRedeem">{{ updateId ? '儲存修改' : '新增訂單' }}</v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
 
   </v-container>
 </template>
@@ -85,15 +59,30 @@ const dialog = ref(false);
 const headers = ref([
   { title: '訂單編號', value: 'redeemId' },
   { title: '會員 ID', value: 'member.memberId' },
-  { title: '訂單狀態', value: 'redeemStatus' },
+
   { title: '訂單日期', value: 'createAt' },
   { title: '總花費', value: 'redeemTotalMiles' },
   // 根據你的 Redeem 實體添加其他欄位標題
   { title: '操作', key: 'actions' },
 ]);
 
+//訂單狀態
+const redeemStatusOptions = ref([
+  { id: 1, status: '待處理' },
+  { id: 2, status: '處理中' },
+  { id: 3, status: '待出貨' },
+  { id: 4, status: '已出貨' },
+  { id: 5, status: '已送達' },
+  { id: 6, status: '已取消' },
+  { id: 7, status: '已完成' },
+])
 // 預設表單
-const DEFAULT_REDEEM_FORM = { redeemId: '', memberId: null, redeemDate: new Date().toISOString().split('T')[0], redeemStatus: '' };
+const DEFAULT_REDEEM_FORM = {
+  memberId: null,
+  redeemItems: [
+    { productId: null, quantity: null }
+  ]
+}
 const DEFAULT_REDEEM_UPDATE = { ...DEFAULT_REDEEM_FORM };
 
 // 新增
@@ -125,14 +114,20 @@ async function search() {
 
 
 // 根據會員 ID 查詢訂單
-function searchByMemberId(memberId) {
-  ApiRedeem.findByMemberId(memberId).then((res) => {
-    console.log(res.data);
-    Allredeem.value = res.data
-  });
+async function searchByMemberId(memberId) {
+  try {
+    const res = await ApiRedeem.findByMemberId(memberId);
+   // 過濾資料，只保留 deleted 為 false 的項目
+    Allredeem.value = res.data.filter(item => item.deleted === false);
+    console.log("查詢此會員未刪除訂單 Response:", res);
+    console.log("未刪除訂單資料:", Allredeem.value);
+  } catch (error) {
+    console.error("查詢訂單失敗:", error);
+    // 可以在這裡處理錯誤，例如顯示錯誤訊息
+  }
 }
 
-// 根據會員 ID 查詢訂單
+// 根據訂單 ID 查詢訂單
 function getRedeemById(redeemId) {
   ApiRedeem.getRedeemById(redeemId).then((res) => {
     console.log(res.data);
@@ -164,8 +159,11 @@ function closeDialog() {
 
 // 新增或修改訂單
 async function saveRedeem() {
+  console.log(insertRedeem.value);
   try {
     if (updateId.value) {
+      console.log("修改訂單");
+      
       // 修改訂單
       await ApiRedeem.updateRedeem(updateId.value, updateRedeem.value);
       Swal.fire('修改成功', '', 'success').then(() => {
@@ -174,6 +172,8 @@ async function saveRedeem() {
       });
     } else {
       // 新增訂單
+      console.log("新增訂單");
+      
       await ApiRedeem.addRedeem(insertRedeem.value);
       Swal.fire('新增成功', '', 'success').then(() => {
         search();
@@ -212,15 +212,25 @@ function remove(id) {
   });
 }
 
+// 假設 item 是從 props 或父層傳進來的
+ const props = defineProps(['item'])
+// 或你在列表裡用 v-for 的話，item 是迴圈變數
+
 // 更新訂單狀態
-function updateStatus(id, newStatus) {
-  ApiRedeem.updateRedeemStatus(id, newStatus)
+const updateStatus = (item,newStatus) => {
+  console.log(item);
+  console.log(newStatus);
+  //const item = Allredeem.value.find(p => p.id === id);
+  ApiRedeem.updateRedeemStatus(item.redeemId, String(newStatus))
     .then(() => {
-      Swal.fire('狀態更新成功！', `訂單 ${id} 狀態已更新為 ${newStatus}`, 'success');
+      Swal.fire('狀態更新成功！', `訂單 ${item.redeemId} 狀態已更新為 ${newStatus}`, 'success');
       search();
     })
     .catch(error => {
+      console.log(error);
+
       Swal.fire('狀態更新失敗！', error.response?.data?.message || '發生錯誤', 'error');
+      search();
     });
 }
 

@@ -33,7 +33,7 @@ public class RedeemController {
 	/**查詢全部訂單
 	 * @return 所有訂單的列表
 	 */
-	@GetMapping("/all")
+	@GetMapping("/")
 	public List<Redeem> getAllRedeem(){
 		return 	redeemService.getAllRedeem();
 	}

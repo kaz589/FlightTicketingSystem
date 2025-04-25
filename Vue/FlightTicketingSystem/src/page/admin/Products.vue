@@ -20,7 +20,7 @@
     <!-- 商品表格 -->
     <v-data-table :headers="headers" :items="Allproducts" item-key="id">
       <template v-slot:item.actions="{ item }">
-        <div class="d-flex ga-2 justify-end">
+        <div class="d-flex gap-2 justify-end">
           <v-icon icon="mdi-pencil" @click="edit(item.id)"></v-icon>
           <v-icon icon="mdi-delete" @click="remove(item.id)"></v-icon>
         </div>
