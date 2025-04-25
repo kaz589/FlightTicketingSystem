@@ -1,4 +1,5 @@
 <template>
+
   <v-app>
     <header class="sticky top-0 z-50 bg-white shadow-sm py-4 px-4">
       <div class="max-w-screen-xl mx-auto flex items-center justify-between">
@@ -42,6 +43,7 @@
 
         <div class="flex justify-end items-center space-x-4 text-base">
           <span class="mdi mdi-web text-[30px]"></span>
+
           <span
             ><img src="https://flagcdn.com/tw.svg" width="30" alt="Taiwan"
           /></span>
@@ -98,6 +100,7 @@
     <v-main>
       <div class="pa-4">
         <router-view></router-view>
+        <Footer/>
       </div>
     </v-main>
   </v-app>
@@ -109,6 +112,7 @@ import { useRouter } from "vue-router"; // 引入 vue-router
 
 import { useAuthStore } from "@/stores/auth"; // 引入 Pinia store
 import { logout } from "@/utils/logout"; // 導入登出函數
+import Footer from "./Footer.vue";
 
 const router = useRouter(); // 使用 vue-router
 const authStore = useAuthStore();

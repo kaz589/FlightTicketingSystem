@@ -19,6 +19,7 @@ import com.demo.model.AirplaneModel;
 import com.demo.model.Airports;
 import com.demo.model.Flight;
 import com.demo.model.Seat;
+import com.demo.model.Ticket;
 import com.demo.model.DTO.FlightDTO;
 import com.demo.repository.AirplaneModelRepository;
 import com.demo.repository.AirportsRepository;
@@ -51,9 +52,13 @@ public class FlightImp implements FlightService{
 	}
 
 	@Override
-	public Optional<FlightDTO> findFlightById(int id) {
+	public Optional<FlightDTO> findFlightById(Integer id) {
 		// TODO Auto-generated method stub
-		return Optional.empty();
+		
+		Optional<FlightDTO> newFlightDTO = flightRepository.findById(id)
+			    .map(FlightDTO::new);
+		
+		return newFlightDTO;
 	}
 
 	@Override

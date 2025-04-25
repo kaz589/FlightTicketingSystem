@@ -1,10 +1,11 @@
 <template>
     <div>
-<h1>
-這是訂單列表
-</h1>
+
     </div>
     <v-container   >  
+      <h1>
+訂單列表
+</h1>
     <v-row align="start" justify="center"  cols="1" md="1">
       <v-col
         v-for="order in orders"

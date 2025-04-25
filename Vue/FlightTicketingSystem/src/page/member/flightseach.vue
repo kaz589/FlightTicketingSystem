@@ -56,13 +56,15 @@
     </v-col>
   </v-row>
   <v-container>
-    <v-row align="start" justify="center" cols="1" md="1">
+    <v-row align="start" justify="center" cols="1" md="1" >
       <v-col
         v-for="flight in flights"
         :key="flight.id"
         align-self="center"
         cols="7"
         md="7"
+        sm="12"
+        xs="12"
       >
         <FlightCard :flight="flight"></FlightCard>
       </v-col>

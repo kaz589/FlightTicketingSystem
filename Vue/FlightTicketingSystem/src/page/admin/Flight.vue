@@ -97,7 +97,7 @@
 
           <VueDatePicker
             id="arrivalTime"
-            v-model="record.arrivalTime"
+            v-model="record.departureTime"
             :format="'yyyy/MM/dd--HH:mm'"
             :enable-time="true"
           ></VueDatePicker>
@@ -106,7 +106,7 @@
           <label for="departureTime">降落日期:</label>
           <VueDatePicker
             id="departureTime"
-            v-model="record.departureTime"
+            v-model="record.arrivalTime"
             :format="'yyyy/MM/dd--HH:mm'"
             :enable-time="true"
           ></VueDatePicker>
@@ -191,7 +191,7 @@ const getDistinctAirportName = () => {
 const getfullairports = () => {
   ApiAirport.getAllAirports().then((res) => {
     allfullairports.value = res.data;
-    console.log(allfullairports.value);
+    
     
   });
 }
@@ -231,9 +231,7 @@ function search() {
   const formattedArrivalTime = formatDate(searchFilters.value.arrivalTime);
   
 
-console.log(searchFilters.value);
 
-console.log(formattedArrivalTime);
 
 // 呼叫 API 搜尋航班
 ApiFlight.searchFlights(
@@ -246,7 +244,7 @@ ApiFlight.searchFlights(
     itemsPerPage.value,
 )
     .then((res) => {
-      console.log(res.data);
+      
       items.value = res.data.content; // 更新表格數據
       totalItems.value = res.data.totalElements; // 總數據條數
       totalPages.value = res.data.totalPages; // 總頁數
@@ -280,7 +278,7 @@ function save() {
 
     record.value.arrivalTime = formatDate(record.value.arrivalTime);
     record.value.departureTime = formatDate(record.value.departureTime);
-    
+    console.log(record.value);
     // 更新機場數據
     ApiFlight.updateFlight(record.value.id,record.value)
       .then(() => {
@@ -295,6 +293,9 @@ function save() {
 
     record.value.arrivalTime = formatDate(record.value.arrivalTime);
     record.value.departureTime = formatDate(record.value.departureTime);
+
+    console.log(record.value);
+    
     // 新增機場數據
       ApiFlight.createFlight(record.value)
       .then(() => {
@@ -312,8 +313,8 @@ const headers = ref([
   { title: "航線 ID", value: "id", sortable: true, align: "start" }, //sortable: true 表示可排序
   { title: "起始機場", value: "originAirport", sortable: true },
   { title: "抵達機場", value: "destinationAirport", sortable: true },
-  { title: "起飛時間", value: "arrivalTime", sortable: true },
-  { title: "抵達時間", value: "departureTime", sortable: true },
+  { title: "起飛時間", value: "departureTime", sortable: true },
+  { title: "抵達時間", value: "arrivalTime", sortable: true },
   { title: "機型", value: "modelName", sortable: true },
   { title: "頭等艙票價", value: "firstClassPrice", sortable: true },
   { title: "商務艙票價", value: "businessPrice", sortable: true },
@@ -383,6 +384,8 @@ watch(currentPage, () => {
 
 
 function formatDate(date) {
+
+
   if (!date) return null; // 如果日期為空，返回 null
   const d = new Date(date); // 確保是 Date 對象
   const year = d.getFullYear();
@@ -391,7 +394,7 @@ function formatDate(date) {
   const hours = String(d.getHours()).padStart(2, '0');
   const minutes = String(d.getMinutes()).padStart(2, '0');
   const seconds = String(d.getSeconds()).padStart(2, '0');
-
+  
   // 返回格式化的字符串
   return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
 }

@@ -158,9 +158,14 @@
     <v-col cols="12" md="6" v-if="pageControl === 2">
       <v-card class="mx-auto pa-2 no-shadow">
         <v-list>
-          <h2>另一個區域</h2>
+        
           <v-list-item>
-            <v-list-item-title>這是右側區域2的內容</v-list-item-title>
+
+            
+
+              <TicketOrderList/>
+          
+
           </v-list-item>
         </v-list>
       </v-card>

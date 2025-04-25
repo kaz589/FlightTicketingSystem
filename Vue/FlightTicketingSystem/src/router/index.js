@@ -1,6 +1,8 @@
 import { createRouter, createWebHistory } from "vue-router";
 import { useAuthStore } from "@/stores/auth"; // 引入 Pinia store
+import { useSeatStore } from "@/stores/useSeatStore";
 import Swal from "sweetalert2";
+
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -31,6 +33,7 @@ const router = createRouter({
           //支付頁面
           path: "SeatPayment",
           component: () => import("@/page/member/SeatPayment.vue"),
+          meta: { requiresAuth: true }, // 需要登錄的頁面
         },
         {
           //票務訂單
@@ -157,12 +160,24 @@ const router = createRouter({
 // 路由守衛
 router.beforeEach((to, from, next) => {
   const authStore = useAuthStore();
+  const seatStore = useSeatStore();
   console.log("路由守衛觸發，當前登錄狀態：", authStore.isAuthenticated);
+  // 只在 seatSelection 或 SeatPayment 頁面保留選位
+  const keepSeatPaths = ["/seatSelection", "/SeatPayment"];
+  const isSeatPage = keepSeatPaths.includes(to.path);
 
-  // 如果需要登入但尚未登入
+
+  if (!isSeatPage) {
+    seatStore.clearSelectedSeats && seatStore.clearSelectedSeats();
+  }
+  // 如果目標頁面需要登錄並且用戶尚未登錄
   if (to.meta.requiresAuth && !authStore.isAuthenticated) {
     console.log("用戶未登錄，跳轉到登錄頁面");
-    return next({ path: "/login" }); // ⚠️ 要加 return，避免繼續往下執行
+    next({ path: "/loginUser" }); // 重定向到登錄頁面
+  } else {
+    console.log("允許訪問，繼續進行");
+    next(); // 允許路由繼續
+
   }
 
   const requiredRoles = to.meta.roles;

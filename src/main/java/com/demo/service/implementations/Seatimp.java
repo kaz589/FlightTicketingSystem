@@ -78,12 +78,14 @@ public class Seatimp  implements SeatService{
 		    // 查詢過期、未訂票且未關聯 ticket 的座位
 		    List<Seat> expiredSeats = seatRepository.findExpiredAndUnbookedAndTicketIsNull(now);
 		    if (expiredSeats.isEmpty()) {
+		    	System.out.println("查無未付款座位");
 		        return;
 		    }
 		    for (Seat seat : expiredSeats) {
 		        seat.setLocked_at(null);
 		        seat.setExpires_at(null);
 		        seat.setBooked(false);
+		        seat.setTicket(null);
 		    }
 		    seatRepository.saveAll(expiredSeats);
 		

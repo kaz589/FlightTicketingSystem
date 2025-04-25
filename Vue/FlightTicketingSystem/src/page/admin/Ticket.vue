@@ -1,17 +1,19 @@
 <template>
-    <div>
-     <h1>票務訂單管理</h1>
-   </div>
-   <v-container>
-     <v-btn prepend-icon="mdi mdi-magnify" @click="search"> 搜尋 </v-btn>
-     <v-data-table
-       :headers="headers"
-       :items="items"
-       class="elevation-1"
-     >
-     <template v-slot:item.actions="{ item }">
+  <div>
+    <h1>票務訂單管理</h1>
+  </div>
+  <v-container>
+    <v-btn prepend-icon="mdi mdi-magnify" @click="search"> 搜尋 </v-btn>
+    <v-data-table :headers="headers" :items="items" class="elevation-1">
+      <template v-slot:item.actions="{ item }">
         <div class="d-flex ga-2 justify-end">
-
+          <v-icon
+            color="primary"
+            icon="mdi-eye"
+            size="small"
+            class="mr-2"
+            @click="showDialog(item)"
+          ></v-icon>
           <v-icon
             color="medium-emphasis"
             icon="mdi-delete"
@@ -20,10 +22,9 @@
           ></v-icon>
         </div>
       </template>
-     </v-data-table>
+    </v-data-table>
 
-
-      <!-- 確認刪除對話框 -->
+    <!-- 確認刪除對話框 -->
     <v-dialog v-model="deleteDialog" max-width="400">
       <v-card>
         <v-card-title class="headline">確認刪除</v-card-title>
@@ -35,27 +36,28 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
-   </v-container>
- </template>
- 
- <script setup>
- import { ref, watch, onMounted, shallowRef } from "vue";
- import { ApiSeats, ApiAirport,ApiTicket } from "@/utils/API";
- const deleteDialog = shallowRef(false); // 控制刪除對話框的顯示狀態
- // 表格標題資訊
- const headers = ref([
-   { title: "訂單ID", value: "ticketId", sortable: true, align: "start" }, //sortable: true 表示可排序
-   { title: "購票人帳號", value: "memberName", sortable: true },
-   { title: "訂票時間", value: "bookingTime", sortable: true },
-   { title: "操作", key: "actions", align: "end", sortable: false },
- ]);
- const record = ref(); // 存儲當前選中的記錄
+  </v-container>
+  <OrderDetailDialog v-model="dialogVisible" :order="selectedOrder" />
+</template>
+
+<script setup>
+import { ref, watch, onMounted, shallowRef } from "vue";
+import { ApiSeats, ApiAirport, ApiTicket } from "@/utils/API";
+import OrderDetailDialog from "@/components/ticket/OrderDetailDialog.vue";
+const deleteDialog = shallowRef(false); // 控制刪除對話框的顯示狀態
+// 表格標題資訊
+const headers = ref([
+  { title: "訂單ID", value: "ticketId", sortable: true, align: "start" }, //sortable: true 表示可排序
+  { title: "購票人帳號", value: "memberName", sortable: true },
+  { title: "訂票時間", value: "bookingTime", sortable: true },
+  { title: "操作", key: "actions", align: "end", sortable: false },
+]);
+const record = ref(); // 存儲當前選中的記錄
 
 // 重置記錄
 function resetRecord() {
   record.value = { ...DEFAULT_RECORD };
 }
-
 
 function remove(id) {
   const found = items.value.find((item) => item.ticketId === id);
@@ -84,20 +86,21 @@ function deleteItem() {
       alert("刪除失敗！");
     });
 }
- //搜尋函式
- function search() {
-    ApiTicket.getAllTickets()
-     .then((res) => {
-        console.log(res.data);
-        
-       items.value = res.data; // 更新表格數據
-     })
-     
- 
- }
- const items = ref([]); // 表格內容數據
- </script>
- 
- <style  scoped>
- 
- </style>
+//搜尋函式
+function search() {
+  ApiTicket.getAllTickets().then((res) => {
+    console.log(res.data);
+
+    items.value = res.data; // 更新表格數據
+  });
+}
+const dialogVisible = ref(false);
+const selectedOrder = ref(null);
+function showDialog(order) {
+  selectedOrder.value = order;
+  dialogVisible.value = true;
+}
+const items = ref([]); // 表格內容數據
+</script>
+
+<style scoped></style>
