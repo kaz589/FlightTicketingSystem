@@ -188,8 +188,7 @@ public class MemberService {
 	public boolean deleteMemberById(Integer id) {
 		
 		Optional<Member> op = memberRepository.findById(id);
-		
-		if (op.isPresent()) {
+				if (op.isPresent()) {
 			memberRepository.deleteById(id);
 			return true;
 		}else {
@@ -215,19 +214,31 @@ public class MemberService {
 		return null;		
 	}
 
-	// 透過id找會員，並減少某會員里程數
-		public Member decreaseMilesById(Integer id, Integer decreaseMiles) {
-			Optional<Member> op = memberRepository.findById(id);
-			
-			if (op.isPresent()) {
+
+	// 透過memberId找會員，並減少某會員里程數(改寫版)
+			public Member decreaseMilesById(Integer id, Integer decreaseMiles) {
+				Optional<Member> op = memberRepository.findById(id);
+				
+				if (op.isEmpty()) {
+					new RuntimeException("找不到 ID 為 " + id + " 的會員");
+				}	
 				Member member = op.get();
-				Integer resultRemainingMiles = member.getRemainingMiles() - decreaseMiles;
-				member.setRemainingMiles(resultRemainingMiles);
-				memberRepository.save(member);
-				return member;
+				if (decreaseMiles <= 0) {
+			            throw new IllegalArgumentException("扣除的里程數必須大於 0。");
+			        }
+				// 檢查里程足夠
+				int available = member.getRemainingMiles();
+				if (available < decreaseMiles) {
+					throw new IllegalArgumentException(String.format("里程不足：共需要 %d里程，目前帳號剩餘 %d里程", decreaseMiles, available));
+				}
+					member.setRemainingMiles(available-decreaseMiles);
+					memberRepository.save(member);
+					return member;
+						
 			}
-			return null;		
-		}
+			
+
+		
 		
 	// 透過username找會員
 		public Member getOneByUsername(String username) {
