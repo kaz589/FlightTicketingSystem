@@ -426,6 +426,7 @@ function hide() {
   detailControl.value = false;
 }
 
+//區分第三方登入和一般登入的圖片取得
 function getPictureUrl(pic) {
   if (!pic) return "/images/default.png";
   if (pic.startsWith("http")) return pic;
@@ -507,6 +508,8 @@ function handleUpdate() {
         icon: "success",
         draggable: true,
       });
+      //更新大頭照
+      authStore.user.picture = res.data.picture;
     }
   });
 }

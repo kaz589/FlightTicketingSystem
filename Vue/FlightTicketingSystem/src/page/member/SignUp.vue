@@ -14,56 +14,63 @@
               <form>
                 <!-- 2 column grid layout with text inputs for the first and last names -->
 
-                    <div data-mdb-input-init class="form-outline mb-4">
-                      <input
-                        type="text"
-                        id="form3Example1"
-                        class="form-control"
-                        v-model="signUpData.username"
-                        @input="validateUsername"
-                      />
-                      <label class="form-label" for="form3Example1">帳號</label>
-                      <small v-if="errors.username" class="text-danger">{{ errors.username }}</small>
-                    </div>
+                <div data-mdb-input-init class="form-outline mb-4">
+                  <input
+                    type="text"
+                    id="form3Example1"
+                    class="form-control active"
+                    v-model="signUpData.username"
+                    @input="validateUsername"
+                  />
+                  <label class="form-label" for="form3Example1">帳號</label>
+                  <small v-if="errors.username" class="text-danger">{{
+                    errors.username
+                  }}</small>
+                </div>
 
+                <div data-mdb-input-init class="form-outline mb-4">
+                  <input
+                    type="password"
+                    id="form3Example2"
+                    class="form-control active"
+                    v-model="signUpData.password"
+                    @input="validatePassword"
+                  />
+                  <label class="form-label" for="form3Example2">密碼</label>
+                  <small v-if="errors.password" class="text-danger">{{
+                    errors.password
+                  }}</small>
+                </div>
 
-                    <div data-mdb-input-init class="form-outline mb-4">
-                      <input
-                        type="password"
-                        id="form3Example2"
-                        class="form-control"
-                        v-model="signUpData.password"
-                        @input="validatePassword"
-                      />
-                      <label class="form-label" for="form3Example2">密碼</label>
-                      <small v-if="errors.password" class="text-danger">{{ errors.password }}</small>
-                    </div>
-
-                    <div data-mdb-input-init class="form-outline mb-4">
-                      <input
-                        type="password"
-                        id="form3Example5"
-                        class="form-control"
-                        v-model="PasswordDoubleCheck"
-                        @blur="validatePasswordDoubleCheck"
-                      />
-                      <label class="form-label" for="form3Example2">確認密碼</label>
-                      <small v-if="errors.passwordDoubleCheck" class="text-danger">{{ errors.passwordDoubleCheck }}</small>
-                    </div>
-          
-
+                <div data-mdb-input-init class="form-outline mb-4">
+                  <input
+                    type="password"
+                    id="form3Example5"
+                    class="form-control active"
+                    v-model="PasswordDoubleCheck"
+                    @blur="validatePasswordDoubleCheck"
+                  />
+                  <label class="form-label" for="form3Example2">確認密碼</label>
+                  <small
+                    v-if="errors.passwordDoubleCheck"
+                    class="text-danger"
+                    >{{ errors.passwordDoubleCheck }}</small
+                  >
+                </div>
 
                 <!-- Email input -->
                 <div data-mdb-input-init class="form-outline mb-4">
                   <input
                     type="email"
                     id="form3Example3"
-                    class="form-control"
+                    class="form-control active"
                     v-model="signUpData.email"
                     @input="validateEmail"
                   />
                   <label class="form-label" for="form3Example3">信箱</label>
-                  <small v-if="errors.email" class="text-danger">{{ errors.email }}</small>
+                  <small v-if="errors.email" class="text-danger">{{
+                    errors.email
+                  }}</small>
                 </div>
 
                 <!-- Password input -->
@@ -71,12 +78,14 @@
                   <input
                     type="text"
                     id="form3Example4"
-                    class="form-control"
+                    class="form-control active"
                     v-model="signUpData.phoneNumber"
                     @input="validatePhoneNumber"
                   />
                   <label class="form-label" for="form3Example4">電話</label>
-                  <small v-if="errors.phoneNumber" class="text-danger">{{ errors.phoneNumber }}</small>
+                  <small v-if="errors.phoneNumber" class="text-danger">{{
+                    errors.phoneNumber
+                  }}</small>
                 </div>
 
                 <!-- Submit button -->
@@ -119,22 +128,22 @@
 
 <script setup>
 import { ApiMember } from "@/utils/API";
-import { ref,computed } from "vue";
+import { ref, computed } from "vue";
 import Swal from "sweetalert2";
 import { useRouter } from "vue-router";
 
-const PasswordDoubleCheck = ref('');
+const PasswordDoubleCheck = ref("");
 //錯誤處理###########
 
 const errors = ref({});
 function validateForm() {
   errors.value = {}; // 清空錯誤
 
-  validateUsername()
-  validatePassword()
-  validateEmail()
-  validatePhoneNumber()
-  validatePasswordDoubleCheck()
+  validateUsername();
+  validatePassword();
+  validateEmail();
+  validatePhoneNumber();
+  validatePasswordDoubleCheck();
 
   return Object.keys(errors.value).length === 0;
 }
@@ -176,29 +185,18 @@ function validatePhoneNumber() {
 }
 
 //密碼驗證
-function validatePasswordDoubleCheck(){
-  
-
-  console.log("確認密碼為 : "+PasswordDoubleCheck.value);
-  console.log("密碼為 : "+signUpData.value.password);
+function validatePasswordDoubleCheck() {
+  console.log("確認密碼為 : " + PasswordDoubleCheck.value);
+  console.log("密碼為 : " + signUpData.value.password);
   //如果確認密碼與密碼不一致
-  if(PasswordDoubleCheck.value != signUpData.value.password){
+  if (PasswordDoubleCheck.value != signUpData.value.password) {
     errors.value.passwordDoubleCheck = "密碼需一致";
-  }else{
+  } else {
     delete errors.value.passwordDoubleCheck;
   }
 }
 
-
-
-
-
-
-
-
 //錯誤處理區塊###########
-
-
 
 const DEFAULT_FORM = ref({
   username: "",
@@ -227,7 +225,6 @@ function save() {
     return;
   }
 
-
   //   console.log(signUpData.value.username);
   //   console.log(signUpData.value.password);
   ApiMember.insertMember(signUpData.value).then((res) => {
@@ -251,10 +248,6 @@ function goToLogin() {
   event.preventDefault(); // ⛔ 阻止 submit
   router.push("/loginUser");
 }
-
-
-
-
 </script>
 
 <style scoped>

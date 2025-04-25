@@ -122,6 +122,13 @@ export const ApiMember = {
         "Content-Type": "multipart/form-data",
       },
     }),
+  //取得所有的Admin
+  getAllAdminList: () => instance.get(`/member/GetAllAdminList`),
+
+  updateMemberAuthorityDetail: (info) =>
+    instance.put(`/member/UpdateMemberAuthorityDetail`, info),
+  updateMemberAuthority: (info) =>
+    instance.put(`/member/UpdateMemberAuthority`, info),
 };
 
 //座位相關API

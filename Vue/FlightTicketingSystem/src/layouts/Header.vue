@@ -73,7 +73,7 @@
                   link
                   title="後台首頁"
                   @click="router.push('/admin')"
-                  v-if="showUserBtn === 2"
+                  v-if="showUserBtn >= 2"
                 />
                 <v-list-item
                   append-icon="mdi mdi-account"
@@ -104,7 +104,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted, computed } from "vue";
+import { ref, onMounted, computed, watch } from "vue";
 import { useRouter } from "vue-router"; // 引入 vue-router
 
 import { useAuthStore } from "@/stores/auth"; // 引入 Pinia store
@@ -119,11 +119,24 @@ if (authStore.user && authStore.user.picture) {
   userPicture.value = authStore.user.picture;
 }
 
+watch(
+  () => authStore.user?.picture,
+  (newPicture) => {
+    if (newPicture) {
+      userPicture.value = newPicture;
+    } else {
+      userPicture.value = "/images/default1.png";
+    }
+  },
+  { immediate: true } // 立即執行一次
+);
+
 // 👉 根據 store 判斷是否顯示登入按鈕
 const showLoginBtn = computed(() => !authStore.isAuthenticated);
 
 // 👉 根據角色來判斷顯示 User/Admin 按鈕
 const showUserBtn = computed(() => {
+  if (authStore.hasRole("MANAGER")) return 3;
   if (authStore.hasRole("ADMIN")) return 2;
   if (authStore.hasRole("USER")) return 1;
   return 0;
@@ -137,6 +150,7 @@ onMounted(() => {
 
 //計算是什麼角色
 const roleLabel = computed(() => {
+  if (showUserBtn.value === 3) return "主管";
   if (showUserBtn.value === 2) return "管理員";
   if (showUserBtn.value === 1) return "會員";
   return "";
@@ -164,6 +178,8 @@ function userPage() {
 }
 
 function getPictureUrl(pic) {
+  console.log(pic);
+
   if (!pic || pic === "null" || pic === "undefined")
     return "/images/default.png";
   if (pic.startsWith("http")) return pic;
