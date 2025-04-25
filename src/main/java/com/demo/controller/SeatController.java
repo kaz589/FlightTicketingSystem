@@ -3,7 +3,10 @@ package com.demo.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -22,11 +25,27 @@ public class SeatController {
 	
 	
 	@GetMapping("/getAll")
-	
-	public List<SeatDTO> sayHello() {
+	public List<SeatDTO> getAllSeats() {
 
 		List<SeatDTO> allairports = seatService.findAllSeat();
 		return allairports;
 	}
+	
+	@GetMapping("/flights/{flightId}")
+	public List<SeatDTO> getSeatsByFlightId(@PathVariable Integer flightId) {
+		
+		
+		return seatService.findSeatsByFlightId(flightId);
+	}
+	
+	@GetMapping("/tickets/{ticketId}")
+	public List<SeatDTO> getSeatsByTicketId(@PathVariable Integer ticketId) {
+	    return seatService.findSeatsByTicketId(ticketId);
+	}
+	 @PostMapping("/release/{seatId}")
+	    public ResponseEntity<String> releaseSeat(@PathVariable Integer seatId) {
+	        seatService.releaseSeatById(seatId);
+	        return ResponseEntity.ok("座位已解除綁定");
+	    }
 
 }

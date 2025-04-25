@@ -23,7 +23,7 @@ public class SeatDTO {
 	private String seatNumber;
     private String seatClass;
     private Ticket ticket;
-    private boolean isBooked;
+    private boolean booked;
     private Integer price;
     private String Seatclasname;
 
