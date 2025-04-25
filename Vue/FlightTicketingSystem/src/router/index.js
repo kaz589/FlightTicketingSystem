@@ -213,11 +213,8 @@ router.beforeEach((to, from, next) => {
   // 如果目標頁面需要登錄並且用戶尚未登錄
   if (to.meta.requiresAuth && !authStore.isAuthenticated) {
     console.log("用戶未登錄，跳轉到登錄頁面");
-    next({ path: "/loginUser" }); // 重定向到登錄頁面
-  } else {
-    console.log("允許訪問，繼續進行");
-    next(); // 允許路由繼續
-  }
+    return next({ path: "/loginUser" }); // 重定向到登錄頁面
+  } 
 
   const requiredRoles = to.meta.roles;
   const userRoles = authStore.roles;
