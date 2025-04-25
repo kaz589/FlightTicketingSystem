@@ -117,6 +117,20 @@ export const ApiMember = {
     instance.get(`/member/GetMemberByEmail/${email}`),
 
   login: (loginInfo) => instance.post(`/auth/login`, loginInfo),
+
+  pictureUpload: (file) =>
+    instance.post(`/upload`, file, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    }),
+  //取得所有的Admin
+  getAllAdminList: () => instance.get(`/member/GetAllAdminList`),
+
+  updateMemberAuthorityDetail: (info) =>
+    instance.put(`/member/UpdateMemberAuthorityDetail`, info),
+  updateMemberAuthority: (info) =>
+    instance.put(`/member/UpdateMemberAuthority`, info),
 };
 
 //座位相關API
@@ -125,9 +139,6 @@ export const ApiSeats = {
   getSeatsByFlightId: (flightId) => instance.get(`/seat/flights/${flightId}`),
 
   getSeatsByTicketId: (ticketId) => instance.get(`/seat/tickets/${ticketId}`),
-
-  
-
 };
 
 // 票務相關 API
@@ -140,13 +151,12 @@ export const ApiTicket = {
   updateTicket: (id, ticketDetails) =>
     instance.put(`/Ticket/${id}`, ticketDetails),
 
-   // 刪除票務
-   deleteTicket: (id) => instance.delete(`/Ticket/${id}`),
+  // 刪除票務
+  deleteTicket: (id) => instance.delete(`/Ticket/${id}`),
 
-   getCheckMacValue:(params)=>instance.post("/Ticket/calculate-mac",params),
-   getTicketsByCustomerId: (customerId) => instance.get(`/Ticket/member/${customerId}`),
-
-
+  getCheckMacValue: (params) => instance.post("/Ticket/calculate-mac", params),
+  getTicketsByCustomerId: (customerId) =>
+    instance.get(`/Ticket/member/${customerId}`),
 };
 
 //管理員相關API

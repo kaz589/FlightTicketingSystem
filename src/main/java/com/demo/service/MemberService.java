@@ -53,6 +53,16 @@ public class MemberService {
 	}
 	
 	
+	//找所有身分是ADMIN的Member
+	public List<Member> getAllWhereAuthorityIsAdmin() {
+		return memberRepository.findAllByAuthorityContaining("ADMIN");
+	}
+	
+	
+	
+	
+	
+	
 	//判斷username是否存在
 		public boolean usernameExist(String username) {
 			
@@ -104,9 +114,10 @@ public class MemberService {
 				dbMember.setUsername(member.getUsername());
 				
 				//密碼需要加密
-				String password = member.getPassword();
-				if (member.getPassword() != null) {
-				    String encodedPassword = passwordEncoder.encode(member.getPassword());// 使用 BCrypt 進行加密
+				String newPassword = member.getPassword();
+				if (newPassword != null && !newPassword.equals(dbMember.getPassword())) {
+				    // 只有當新密碼和原本的不同時，才進行加密與更新
+				    String encodedPassword = passwordEncoder.encode(newPassword);
 				    dbMember.setPassword(encodedPassword);
 				}			
 				dbMember.setEmail(member.getEmail());
@@ -116,19 +127,62 @@ public class MemberService {
 				dbMember.setRegistrationDate(member.getRegistrationDate());
 				dbMember.setEmailVerified(member.isEmailVerified());
 				dbMember.setPhoneVerified(member.isPhoneVerified());
+				dbMember.setPicture(member.getPicture());
+				dbMember.setAuthorityDetail(member.getAuthorityDetail());
 				
 				// 抽出方法處理會員等級(升等邏輯)
-			    dbMember.setMembershipLevel(determineMembershipLevel(member.getTotalMiles()));
+				if (member.getTotalMiles() != null) {
+					
+					dbMember.setMembershipLevel(determineMembershipLevel(member.getTotalMiles()));
+				}
 							
 				memberRepository.save(dbMember);
 				return dbMember;
 		    	
-		    }
-		
-		
-		
-		
+		    }		
 	}	
+	
+//只能更新權限
+	public boolean updateJustAuthorityDetail(Integer id,String authorityDetail) {
+		Optional<Member> op = memberRepository.findById(id);
+		
+		//如果找不到
+		if (op.isEmpty()) {
+	        return false;
+	    }else {
+	    	
+	    	//如果找得到
+			Member dbMember = op.get();
+			dbMember.setAuthorityDetail(authorityDetail);
+			
+			memberRepository.save(dbMember);
+			return true;
+	    }
+	}
+	
+//只更新角色
+	public boolean updateJustAuthority(Integer id, String authority) {
+		Optional<Member> op = memberRepository.findById(id);
+		//如果找不到
+				if (op.isEmpty()) {
+			        return false;
+			    }else {
+			    	
+			    	//如果找得到
+					Member dbMember = op.get();
+					dbMember.setAuthority(authority);
+					
+					memberRepository.save(dbMember);
+					return true;
+			    }
+	}
+	
+	
+	
+	
+	
+	
+	
 	
 // 刪除
 	public boolean deleteMemberById(Integer id) {
@@ -210,6 +264,17 @@ public class MemberService {
 		    // 👉 你可以在這裡加寄信邏輯，把 token 組成連結寄出去
 		    emailService.sendResetPasswordEmail(member.getEmail(), token);
 		}
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
 		
 		
 		

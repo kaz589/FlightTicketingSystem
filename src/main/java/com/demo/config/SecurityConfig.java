@@ -62,7 +62,7 @@ public class SecurityConfig {
 	         .authorizeHttpRequests(auth -> auth
 	        		 .anyRequest().permitAll() // 這裡放行所有請求
 //	             .requestMatchers(
-//	                 "/api/auth/**",          // ✅ 放行登入
+//	                 "/api/auth/**"          // ✅ 放行登入
 //	                 "/api/auth/register",       // ✅ 放行註冊（如果你有）
 //	                 "/swagger-ui/**",           // ✅ 放行 Swagger（如需）
 //	                 "/v3/api-docs/**"           // ✅ 放行 Swagger JSON（如需）

@@ -1,6 +1,8 @@
 import { createRouter, createWebHistory } from "vue-router";
 import { useAuthStore } from "@/stores/auth"; // 引入 Pinia store
 import { useSeatStore } from "@/stores/useSeatStore";
+import Swal from "sweetalert2";
+
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -50,7 +52,7 @@ const router = createRouter({
     {
       path: "/admin",
       component: () => import("@/layouts/adminView.vue"),
-      meta: { requiresAuth: true }, // 需要登錄的頁面
+      meta: { requiresAuth: true, roles: ["ADMIN", "MANAGER"] },
       children: [
         {
           path: "airport",
@@ -94,6 +96,11 @@ const router = createRouter({
           path: "travel",
           component: () => import("@/components/TravelPage.vue"),
           meta: { requiresAuth: true }, // 需要登錄的頁面
+        },
+        {
+          path: "authority",
+          component: () => import("@/page/admin/Authority.vue"),
+          meta: { requiresAuth: true, roles: ["MANAGER"] },
         },
       ],
     },
@@ -159,6 +166,7 @@ router.beforeEach((to, from, next) => {
   const keepSeatPaths = ["/seatSelection", "/SeatPayment"];
   const isSeatPage = keepSeatPaths.includes(to.path);
 
+
   if (!isSeatPage) {
     seatStore.clearSelectedSeats && seatStore.clearSelectedSeats();
   }
@@ -169,7 +177,32 @@ router.beforeEach((to, from, next) => {
   } else {
     console.log("允許訪問，繼續進行");
     next(); // 允許路由繼續
+
   }
+
+  const requiredRoles = to.meta.roles;
+  const userRoles = authStore.roles;
+
+  console.log("用戶角色：", userRoles);
+
+  // 如果有角色限制，但用戶的角色沒有符合
+  if (
+    requiredRoles &&
+    !requiredRoles.some((role) => userRoles.includes(role))
+  ) {
+    console.log("用戶角色不符合，跳轉未授權頁面");
+    Swal.fire({
+      icon: "error",
+      title: "用戶角色不符合",
+      text: "請以正確的帳號登入",
+    });
+
+    return next("/");
+  }
+
+  // 都通過才放行
+  console.log("允許訪問，繼續進行");
+  next();
 });
 
 export default router;

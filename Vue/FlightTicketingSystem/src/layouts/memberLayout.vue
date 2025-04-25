@@ -1,6 +1,5 @@
 <template>
   <v-app>
-
     <v-app-bar>
       <header class="grid grid-cols-3 items-center py-6">
         <!-- Left: Logo -->
@@ -51,8 +50,8 @@
             slim
             v-if="showUserBtn > 0"
           >
-            <v-avatar color="surface-light"  size="32" >
-              <v-img :src="userPicture ||'/images/default1.png'"></v-img>
+            <v-avatar color="surface-light" size="32">
+              <v-img :src="userPicture || '/images/default1.png'"></v-img>
             </v-avatar>
 
             <v-menu v-model="menuVisible" activator="parent" persistent>
@@ -62,7 +61,7 @@
                   link
                   title="後台首頁"
                   @click="router.push('/admin')"
-                  v-if="showUserBtn === 2"
+                  v-if="showUserBtn >= 2"
                 />
 
                 <v-list-item
@@ -101,40 +100,36 @@ import { useRouter } from "vue-router"; // 引入 vue-router
 import { useAuthStore } from "@/stores/auth"; // 引入 Pinia store
 import { logout } from "@/utils/logout"; // 導入登出函數
 
-
 const router = useRouter(); // 使用 vue-router
 const authStore = useAuthStore();
 
-const userPicture = ref('');
+const userPicture = ref("");
 //找到大頭貼
 if (authStore.user && authStore.user.picture) {
   userPicture.value = authStore.user.picture;
 } else {
-  userPicture.value = '/images/default1.png'; // 預設圖片
+  userPicture.value = "/images/default1.png"; // 預設圖片
 }
-
-
 
 // 👉 根據 store 判斷是否顯示登入按鈕
 const showLoginBtn = computed(() => !authStore.isAuthenticated);
 
 // 👉 根據角色來判斷顯示 User/Admin 按鈕
 const showUserBtn = computed(() => {
-  if (authStore.hasRole("ADMIN")) return 2;
   if (authStore.hasRole("USER")) return 1;
+  if (authStore.hasRole("ADMIN")) return 2;
+  if (authStore.hasRole("MANAGER")) return 3;
   return 0;
 });
-
 
 onMounted(() => {
   authStore.checkLoginStatus();
   console.log("isAuthenticated:", authStore.isAuthenticated);
 });
 
-
-
 //計算是什麼角色
 const roleLabel = computed(() => {
+  if (showUserBtn.value === 3) return "主管";
   if (showUserBtn.value === 2) return "管理員";
   if (showUserBtn.value === 1) return "會員";
   return "";
@@ -173,7 +168,6 @@ function userPage() {
 </script>
 
 <style scoped>
-
 .login-btn {
   padding: 8px 16px;
   border: 1px solid transparent;
@@ -186,6 +180,5 @@ function userPage() {
 .login-btn:hover {
   border-color: #ccc; /* 灰色邊框 */
   box-shadow: 0 0 5px #ccc; /* 灰色陰影 */
-
 }
 </style>

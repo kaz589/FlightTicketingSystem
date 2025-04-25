@@ -7,6 +7,7 @@ export const useAuthStore = defineStore("auth", {
     user: null, // 存儲用戶信息
     roles: JSON.parse(localStorage.getItem("roles") || "[]"), // 改成陣列
   }),
+
   actions: {
     login(user, token, externalRoles = []) {
       this.isAuthenticated = true; // 設置為登入狀態
@@ -30,12 +31,6 @@ export const useAuthStore = defineStore("auth", {
       localStorage.removeItem("roles");
     },
 
-    getters: {
-      //只要 token 有值，就回傳 true，否則回傳 false
-      //!! 是 JavaScript 裡的 雙重布林轉換技巧
-      isAuthenticated: (state) => !!state.token,
-    },
-
     checkLoginStatus() {
       // 檢查 localStorage 中是否有保存登入狀態
       const isLoggedIn = localStorage.getItem("isLoggedIn");
@@ -54,7 +49,21 @@ export const useAuthStore = defineStore("auth", {
     },
     // 🔍 加一個方法來判斷是否有某個角色
     hasRole(role) {
+      console.log("當前角色", role);
+
       return this.roles.includes(role);
+    },
+    // 加一個方法來即時更新角色權限
+    updateAuthorityDetail(newAuthorityDetail) {
+      if (this.user) {
+        this.user.authorityDetail = newAuthorityDetail;
+      }
+    },
+    // 加一個方法來即時更新角色
+    updateAuthority(newAuthority) {
+      if (this.user) {
+        this.user.authority = newAuthority;
+      }
     },
   },
 });

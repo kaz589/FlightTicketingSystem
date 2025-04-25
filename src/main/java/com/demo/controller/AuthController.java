@@ -1,6 +1,7 @@
 package com.demo.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -9,6 +10,7 @@ import com.demo.model.LoginRequest;
 import com.demo.utils.JwtTokenProvider;
 
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -25,6 +27,7 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest) {
+    	try {
         // 驗證用戶
 //    	這行會觸發 Spring Security 去驗證帳號密碼
 //    	✅ 驗證成功 → 回傳一個 Authentication
@@ -42,6 +45,11 @@ public class AuthController {
         
         //回傳
         return ResponseEntity.ok(new JwtResponse(jwt));
+    } 
+    	catch (BadCredentialsException e) {
+        // 捕獲錯誤並回傳具體訊息
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid username or password");
+    }
     }
 }
 

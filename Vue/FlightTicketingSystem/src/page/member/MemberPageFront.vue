@@ -5,8 +5,7 @@
       <v-card class="mx-auto pa-2 no-shadow">
         <v-list>
           <h2>您好! 歡迎回來</h2>
-          <br>
-
+          <br />
 
           <!-- click變換pageControl的值  -->
           <v-list-item
@@ -29,8 +28,14 @@
 
     <!-- 右侧区域 -->
     <v-col cols="12" md="3" v-if="pageControl === 1">
-      <v-card class="mx-auto" max-width="344">
-        <v-card-text>
+      <v-card class="mx-auto" max-width="344" style="">
+        <v-card-text
+          style="
+            border: 0.5px solid #003366; /* 設置邊框顏色和寬度 */
+            padding: 24px; /* 增加內邊距，讓內容離邊框更遠 */
+            border-radius: 12px; /* 圓角效果 */
+          "
+        >
           <!-- <br />
           <p class="text-h4 font-weight-black"></p>
           <br />
@@ -43,7 +48,7 @@
           <div class="text-medium-emphasis">
             <section>
               <div>
-                <div>電子郵件</div>
+                <div class="title">電子郵件</div>
                 <span class="contentIn">{{ searchUser.email }}</span>
               </div>
             </section>
@@ -51,7 +56,7 @@
             <hr />
             <section>
               <div>
-                <div>剩餘里程</div>
+                <div class="title">剩餘里程</div>
                 <span class="contentIn">{{
                   searchUser.totalMiles === 0
                     ? "尚未累積里程"
@@ -63,36 +68,42 @@
             <hr />
             <section>
               <div>
-                <div>會員等級</div>
+                <div class="title">會員等級</div>
                 <span class="contentIn">silver</span>
               </div>
             </section>
           </div>
+          <br />
+          <v-card-actions class="d-flex justify-end">
+            <v-btn
+              color="#003366"
+              text="詳細資訊"
+              variant="text"
+              @click="show"
+            ></v-btn>
+          </v-card-actions>
         </v-card-text>
-
-        <v-card-actions>
-          <v-btn
-            color="#003366"
-            text="詳細資訊"
-            variant="text"
-            @click="show"
-          ></v-btn>
-        </v-card-actions>
 
         <v-expand-transition>
           <v-card
             v-if="reveal"
             class="position-absolute w-100 pa-4"
             height="100%"
-            style="bottom: 0"
+            style="
+              bottom: 0;
+              border: 0.5px solid #003366; /* 設置邊框顏色和寬度 */
+              padding: 24px; /* 增加內邊距，讓內容離邊框更遠 */
+              border-radius: 12px; /* 圓角效果 */
+            "
           >
             <v-row align="center">
               <v-avatar size="64" class="mr-4">
                 <img
-                  :src="searchUser.picture || '/images/default.png'"
+                  :src="getPictureUrl(searchUser.picture)"
                   alt="圖片未顯示"
                 />
               </v-avatar>
+
               <div>
                 <h3 class="mb-1">{{ searchUser.fullName }}</h3>
               </div>
@@ -149,10 +160,12 @@
         <v-list>
         
           <v-list-item>
+
             
 
               <TicketOrderList/>
           
+
           </v-list-item>
         </v-list>
       </v-card>
@@ -173,7 +186,14 @@
     <!-- 區塊2結束 -->
 
     <!-- 詳細資料 第一個區塊 -->
-    <v-card-text v-if="detailControl && pageControl === 1">
+    <v-card-text
+      v-if="detailControl && pageControl === 1"
+      style="
+        border: 0.5px solid #003366; /* 設置邊框顏色和寬度 */
+        padding: 24px; /* 增加內邊距，讓內容離邊框更遠 */
+        border-radius: 12px; /* 圓角效果 */
+      "
+    >
       <!-- <br />
           <p class="text-h4 font-weight-black"></p>
           <br />
@@ -186,27 +206,71 @@
 
       <div class="text-medium-emphasis">
         <section>
-          <v-row v-for="(field, index) in fields" :key="index" align="center">
-            <v-col cols="5">
-              <v-text-field
-                v-model="field.value"
-                :label="field.label"
-                class="contentIn"
-                variant="underlined"
-                hide-details
-                density="comfortable"
-                readonly
-              />
-            </v-col>
-            <v-col cols="7" class="text-left">
-              <v-btn
-                prepend-icon="mdi mdi-pencil"
-                @click="editField(field, index)"
-              >
-                編輯
-              </v-btn>
-            </v-col>
-          </v-row>
+          <v-form v-model="formValid">
+            <v-row>
+              <v-col cols="5">
+                <v-text-field
+                  :readonly="loading"
+                  class="mb-2 remove-focus-bg"
+                  label="會員姓名"
+                  clearable
+                  :rules="[rules.required]"
+                  v-model="searchUser.fullName"
+                ></v-text-field>
+              </v-col>
+              <v-col cols="7">
+                <v-text-field
+                  class="mb-2"
+                  label="帳號"
+                  clearable
+                  v-model="searchUser.username"
+                ></v-text-field>
+              </v-col>
+            </v-row>
+            <v-row>
+              <v-col cols="5">
+                <v-text-field
+                  class="mb-2"
+                  label="電話"
+                  clearable
+                  :rules="[rules.phone]"
+                  v-model="searchUser.phoneNumber"
+                ></v-text-field>
+              </v-col>
+              <v-col cols="7">
+                <v-text-field
+                  class="mb-2"
+                  label="電子郵件"
+                  clearable
+                  :rules="[rules.email]"
+                  v-model="searchUser.email"
+                ></v-text-field>
+              </v-col>
+            </v-row>
+            <v-row>
+              <v-col cols="12">
+                <v-file-input
+                  v-model="file"
+                  label="選擇大頭貼"
+                  accept="image/*"
+                  @change="onFileChange"
+                ></v-file-input>
+              </v-col>
+            </v-row>
+            <br />
+
+            <!-- :disabled="!formValid"  -->
+            <v-btn
+              color="black"
+              size="large"
+              type="button"
+              variant="elevated"
+              @click="handleUpdate"
+              :disabled="!formValid"
+            >
+              更新
+            </v-btn>
+          </v-form>
         </section>
       </div>
     </v-card-text>
@@ -257,7 +321,6 @@ import { ref, onMounted, watch, computed } from "vue";
 import { useAuthStore } from "@/stores/auth"; // 引入 Pinia store
 import { ApiMember } from "@/utils/API";
 import Swal from "sweetalert2";
-import TicketOrderList from "./TicketOrderList.vue";
 
 //#region  第一區塊(勿更動)
 // Pinia store 實例
@@ -304,61 +367,59 @@ function enter() {
   // 先抓取使用者資料
   a.value = authStore.user.memberId;
 
-  
-    // 如果是用戶名，根據用戶名查找會員
-    ApiMember.getMember(a.value)
-      .then((res) => {
-        if (res.status === 200) {
-          searchUser.value = res.data;
-          console.log(searchUser.value); // 確認是否正確返回資料
-        } else {
-          console.error("API 返回錯誤狀態碼:", res.status);
-        }
-      })
-      .catch((error) => {
-        console.error("API 請求錯誤:", error);
-      });
-  }
-
+  // 如果是用戶名，根據用戶名查找會員
+  ApiMember.getMember(a.value)
+    .then((res) => {
+      if (res.status === 200) {
+        searchUser.value = res.data;
+        console.log(searchUser.value); // 確認是否正確返回資料
+      } else {
+        console.error("API 返回錯誤狀態碼:", res.status);
+      }
+    })
+    .catch((error) => {
+      console.error("API 請求錯誤:", error);
+    });
+}
 
 // 預設欄位資料
-const fields = computed(() => [
-  { label: "會員姓名", value: searchUser.value.fullName || "尚未填寫" },
-  { label: "帳號", value: searchUser.value.username || "尚未填寫" },
-  { label: "電子郵件", value: searchUser.value.email || "尚未填寫" },
-  { label: "電話", value: searchUser.value.phoneNumber || "尚未填寫" },
-]);
+// const fields = computed(() => [
+//   { label: "會員姓名", value: searchUser.value.fullName || "尚未填寫" },
+//   { label: "帳號", value: searchUser.value.username || "尚未填寫" },
+//   { label: "電子郵件", value: searchUser.value.email || "尚未填寫" },
+//   { label: "電話", value: searchUser.value.phoneNumber || "尚未填寫" },
+// ]);
 
 //彈出框
 
 const dialog = ref(false);
 const model = ref("原始資料");
-const editLabel = ref();
-const editValue = ref();
-const defaultEditValue = ref();
-const proxyModel = ref({
-  value: "",
-}); // proxyModel預設值
+// const editLabel = ref();
+// const editValue = ref();
+// const defaultEditValue = ref();
+// const proxyModel = ref({
+//   value: "",
+// }); // proxyModel預設值
 
 // // 這裡是監控 `proxyModel` 的變化，並且可以根據需求修改
 // watch(proxyModel.value, (newVal) => {
 //   console.log("proxyModel 更新:", newVal);
 // });
 
-function editField(field, index) {
-  //開啟編輯視窗
-  openEdit();
+// function editField(field, index) {
+//   //開啟編輯視窗
+//   openEdit();
 
-  proxyModel.value = { value: editValue.value }; // 更新 proxyModel 的內容
-  console.log("index", index);
+//   proxyModel.value = { value: editValue.value }; // 更新 proxyModel 的內容
+//   console.log("index", index);
 
-  // 編輯欄位的邏輯
-  // console.log("編輯欄位:", field.value);
-  //抓取field當中，第field個(field.label可以抓到編輯欄位!!!!!!!!!)
-  editLabel.value = field.label;
-  editValue.value = field.value;
-  //抓取field當中，第field個(field.value可以抓到值!!!!!!!!!)
-}
+//   // 編輯欄位的邏輯
+//   // console.log("編輯欄位:", field.value);
+//   //抓取field當中，第field個(field.label可以抓到編輯欄位!!!!!!!!!)
+//   editLabel.value = field.label;
+//   editValue.value = field.value;
+//   //抓取field當中，第field個(field.value可以抓到值!!!!!!!!!)
+// }
 
 function show() {
   reveal.value = true;
@@ -370,32 +431,81 @@ function hide() {
   detailControl.value = false;
 }
 
-// 開啟編輯視窗
-function openEdit() {
-  dialog.value = true;
+//區分第三方登入和一般登入的圖片取得
+function getPictureUrl(pic) {
+  if (!pic) return "/images/default.png";
+  if (pic.startsWith("http")) return pic;
+  return "http://localhost:8080" + pic;
 }
 
-function handleSave() {
-  // 這裡可以抓到 model 的值()
-  console.log("保存的值:", model);
-  //先找到更改的資訊
-  //把model.value指定給searchUser.value
+// // 開啟編輯視窗
+// function openEdit() {
+//   dialog.value = true;
+// }
 
-  console.log("更改的項目:", editLabel.value);
-  if (editLabel.value === "會員姓名") {
-    searchUser.value.fullName = model.value;
-  } else if (editLabel.value === "帳號") {
-    searchUser.value.username = model.value;
-  } else if (editLabel.value === "電子郵件") {
-    searchUser.value.email = model.value;
-  } else if (editLabel.value === "電話") {
-    searchUser.value.phoneNumber = model.value;
-  }
-  // searchUser.value.fullName = model.value;
-  console.log("更改的值:", editValue.value);
+// function handleSave() {
+//   // 這裡可以抓到 model 的值()
+//   console.log("保存的值:", model);
+//   //先找到更改的資訊
+//   //把model.value指定給searchUser.value
 
+//   console.log("更改的項目:", editLabel.value);
+//   if (editLabel.value === "會員姓名") {
+//     searchUser.value.fullName = model.value;
+//   } else if (editLabel.value === "帳號") {
+//     searchUser.value.username = model.value;
+//   } else if (editLabel.value === "電子郵件") {
+//     searchUser.value.email = model.value;
+//   } else if (editLabel.value === "電話") {
+//     searchUser.value.phoneNumber = model.value;
+//   }
+//   // searchUser.value.fullName = model.value;
+//   console.log("更改的值:", editValue.value);
+
+//   ApiMember.updateMember(searchUser.value).then((res) => {
+//     if (res.status === 200) {
+//       console.log("更新成功");
+//       //放sweetalert成功
+//       Swal.fire({
+//         title: "更新成功!",
+//         icon: "success",
+//         draggable: true,
+//       });
+
+//       // 清空 model
+//       model.value = "";
+//       // 關閉對話框
+//       dialog.value = false;
+//     }
+//   });
+// }
+
+//詳細資訊 (更新版)
+const formValid = ref(false);
+const required = (value) => !!value || "此欄位為必填";
+const email = (value) =>
+  /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value) || "請輸入有效的電子郵件";
+const phone = (value) => /^09\d{8}$/.test(value) || "請輸入正確的手機號碼";
+
+const rules = {
+  required,
+  email,
+  phone,
+};
+
+//新增更改資訊
+function handleUpdate() {
+  console.log("開始更新");
+
+  console.log("file url: ", searchUser.value);
+  console.log(searchUser.value);
+  console.log(
+    "送出前的 searchUser 資料：",
+    JSON.stringify(searchUser.value, null, 2)
+  );
   ApiMember.updateMember(searchUser.value).then((res) => {
     if (res.status === 200) {
+      console.log(res.data); // 確保這裡的 picture URL 正確
       console.log("更新成功");
       //放sweetalert成功
       Swal.fire({
@@ -403,45 +513,89 @@ function handleSave() {
         icon: "success",
         draggable: true,
       });
-
-      // 清空 model
-      model.value = "";
-      // 關閉對話框
-      dialog.value = false;
+      //更新大頭照
+      authStore.user.picture = res.data.picture;
     }
   });
 }
+
+const file = ref(null);
+
+//更新照片
+function onFileChange(event) {
+  let file;
+
+  if (event.target && event.target.files) {
+    // 標準 HTML input type="file" 的情況
+    file = event.target.files[0];
+  } else if (Array.isArray(event) && event[0] instanceof File) {
+    // 有些元件可能直接傳 File 陣列
+    file = event[0];
+  } else if (event && event[0] && event[0].file instanceof File) {
+    // MDB 的元件可能是這樣的格式
+    file = event[0].file;
+  } else {
+    console.error("無法解析檔案格式", event);
+    return;
+  }
+
+  console.log("實際上傳的檔案是：", file);
+  console.log("file instanceof File: ", file instanceof File);
+
+  const formData = new FormData();
+  formData.append("file", file);
+
+  ApiMember.pictureUpload(formData)
+    .then((res) => {
+      const imageUrl = res.data.imageUrl; // 回傳的圖片 URL
+      searchUser.value.picture = imageUrl;
+    })
+    .catch((err) => {
+      console.error("上傳失敗", err);
+    });
+}
+
 //#endregion
 </script>
 
 <style scoped>
 .no-shadow {
-  box-shadow: none; /* 移除陰影 */
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* 添加陰影 */
+  border-radius: 12px; /* 圓角效果 */
+  background-color: #ffffff; /* 白色背景，讓內容更加突出 */
+  padding: 20px; /* 添加內邊距 */
+  border: 0.5px solid #003366; /* 設置邊框顏色和寬度 */
 }
 
-.contentIn {
+.v-list-item {
+  border-radius: 8px;
+  margin-bottom: 10px; /* 設定項目之間的間隔 */
+}
+
+.v-list-item:hover {
+  background-color: #f0f0f0; /* 鼠標懸停時背景顏色 */
+}
+
+.v-list-item-title {
+  font-weight: 500; /* 讓標題字體加粗 */
+  font-size: 18px; /* 設定適中的字體大小 */
+}
+
+h2 {
+  font-size: 24px;
+  color: #003366; /* 主要顏色 */
+  font-weight: 600; /* 加粗 */
+  margin-bottom: 20px;
+}
+
+.title {
   color: black;
-  font-size: 18px;
+  font-weight: 600; /* 加粗 */
+  font-size: 15px;
 }
 
-.custom-hr {
-  width: 80%; /* 設置為所需的寬度，這裡為 50% */
-  margin: 0; /* 如果希望它居中，使用 auto */
-  border: none; /* 移除原來的邊框樣式 */
-  border-top: 2px solid #000; /* 設定上邊框的顏色與樣式 */
-}
-
-/* 編輯框置中 */
-.overlay-wrapper {
-  position: fixed;
-  top: 0;
-  left: 0;
-  z-index: 9999; /* 確保在最上層 */
-  width: 100vw;
-  height: 100vh;
-  background-color: rgba(0, 0, 0, 0.3); /* 半透明背景 */
-  display: flex;
-  align-items: center;
-  justify-content: center;
+/* 移除聚焦時淺藍背景 */
+.remove-focus-bg .v-field__overlay {
+  background-color: transparent !important;
 }
 </style>
