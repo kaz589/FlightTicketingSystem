@@ -1,6 +1,6 @@
  <template>
-     <h1 class="text-4xl font-extrabold text-center mb-8">易趣輕鬆飛</h1>
-<div class="flex justify-center gap-6 text-base font-semibold mb-8">
+     <h1 class="text-4xl font-extrabold text-center mb-4">易趣輕鬆飛</h1>
+<div class="flex justify-center gap-6 text-2lg font-semibold mb-4">
     <button
       v-for="tab in tabs"
       :key="tab.name"
@@ -11,8 +11,8 @@
       "
     >
       <span class="flex items-center gap-1">
-        <i :class="['mdi', tab.icon]"></i>
-        {{ tab.name }}
+        <v-icon size="36">{{ tab.icon }}</v-icon>
+       <span class="text-[25px]">{{ tab.name }}</span> 
       </span>
       <span
         class="absolute left-0 bottom-0 h-0.5 bg-black transition-all duration-300"

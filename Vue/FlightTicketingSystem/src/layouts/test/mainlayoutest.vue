@@ -8,17 +8,18 @@
           src="@/assets/Easytrip_text.png"
           alt="Easytrip Logo"
           width="40%"
-          height="40%" />
+          height="40%"
+        />
       </div>
 
       <!-- Middle: Navigation -->
-       <!-- Tabs -->
-       <div class="flex justify-center space-x-6 text-base font-semibold mb-8">
+      <!-- Tabs -->
+      <div class="flex justify-center space-x-6 text-base font-semibold mb-8">
         <div v-for="tab in tabs" :key="tab.name">
           <button
             @click="$router.push(tab.path)"
             class="flex items-center space-x-1 pb-1"
-           >
+          >
             <!-- Icon -->
             <i :class="['mdi', tab.icon]"></i>
             <!-- Name -->
@@ -34,25 +35,25 @@
           ><img src="https://flagcdn.com/tw.svg" width="30" alt="Taiwan"
         /></span>
         <span>TWD</span>
-        <v-btn class="text-none me-2" height="48"    icon slim>
+        
+        <v-btn class="text-none me-2" height="48" icon slim>
           <v-avatar color="surface-light" class="mdi mdi-account" size="32" />
 
-          <v-menu  v-model="menuVisible" activator="parent" persistent>
+          <v-menu v-model="menuVisible" activator="parent" persistent>
             <v-list density="compact" nav>
-              <v-list-item
-                append-icon="mdi mdi-login"
-                link
-                title="登入" />
+              <v-list-item append-icon="mdi mdi-login" link title="登入" />
               <v-list-item
                 append-icon="mdi mdi-account"
                 link
-                title="個人頁面" />
+                title="個人頁面"
+              />
 
               <v-list-item
                 append-icon="mdi-logout"
                 link
                 title="登出"
-                @click="logoutChange()" />
+                @click="logoutChange()"
+              />
             </v-list>
           </v-menu>
         </v-btn>
@@ -64,94 +65,100 @@
       <!-- Title -->
       <h1 class="text-4xl font-extrabold mb-8">易趣輕鬆飛</h1>
 
-    
-
       <!-- Search Bar -->
       <div class="flex flex-wrap justify-center items-center gap-4">
         <!-- From -->
         <div
-          class="flex items-center bg-gray-100 px-4 py-3 rounded-full text-sm w-52">
+          class="flex items-center bg-gray-100 px-4 py-3 rounded-full text-sm w-52"
+        >
           <span class="mr-2 mdi mdi-airplane-takeoff"></span
           ><strong>From:</strong>
           <input
             type="text"
             placeholder="Origin"
-            class="bg-transparent outline-none ml-2 w-full" />
+            class="bg-transparent outline-none ml-2 w-full"
+          />
         </div>
 
         <!-- To -->
         <div
-          class="flex items-center bg-gray-100 px-4 py-3 rounded-full text-sm w-52">
+          class="flex items-center bg-gray-100 px-4 py-3 rounded-full text-sm w-52"
+        >
           <span class="mr-2 mdi mdi-airplane-landing"></span
           ><strong>To:</strong>
           <input
             type="text"
             placeholder="Destination"
-            class="bg-transparent outline-none ml-2 w-full" />
+            class="bg-transparent outline-none ml-2 w-full"
+          />
         </div>
 
         <!-- Date range (one input, two pickers) -->
         <div
-          class="flex items-center bg-gray-100 px-4 py-3 rounded-full text-sm w-64">
+          class="flex items-center bg-gray-100 px-4 py-3 rounded-full text-sm w-64"
+        >
           <span class="mr-2 mdi mdi-calendar-range"></span>
           <input
             type="text"
             ref="dateInput"
             placeholder="Start → End"
             class="bg-transparent outline-none w-full"
-            readonly />
+            readonly
+          />
         </div>
 
         <!-- Travelers -->
         <div
-          class="flex items-center bg-gray-100 px-4 py-3 rounded-full text-sm w-40">
+          class="flex items-center bg-gray-100 px-4 py-3 rounded-full text-sm w-40"
+        >
           <span class="mr-2 mdi mdi-account-multiple"></span>
           <span>1 Traveler</span>
         </div>
 
         <!-- Search Button -->
         <button
-          class="bg-green-400 hover:bg-green-500 text-white font-bold px-6 py-3 rounded-full">
+          class="bg-green-400 hover:bg-green-500 text-white font-bold px-6 py-3 rounded-full"
+        >
           Search
         </button>
       </div>
       <v-container>
-    <v-row align="start" justify="center">
-      <v-col
-        v-for="flight in flights"
-        :key="flight.id"
-        align-self="center"
-        cols="9"
-        md="9"
-      >
-        <v-card>
-          <v-card-title> </v-card-title>
-          <v-card-text>
-            <div class="flight-info">
-              <div class="departure">
-                <v-subheader>{{ flight.departureCity }}</v-subheader>
-                <br />
-                <v-text>{{ flight.departureTime }}</v-text>
-              </div>
-              <div class="line"></div>
-              <div class="arrival">
-                <v-subheader>{{ flight.arrivalCity }}</v-subheader>
-                <br />
-                <v-text>{{ flight.arrivalTime }}</v-text>
-              </div>
-            </div>
-          </v-card-text>
-          <v-card-actions style="display: flex; justify-content: flex-end">
-            <v-btn
-              color="#2196F3"
-              text="選擇座位"
-              @click="reveal = true"
-            ></v-btn>
-          </v-card-actions>
-        </v-card>
-      </v-col>
-    </v-row>
-  </v-container>
+        <v-row align="start" justify="center">
+          <v-col
+            v-for="flight in flights"
+            :key="flight.id"
+            align-self="center"
+            cols="9"
+            md="9"
+          >
+            <v-card>
+              <v-card-title> </v-card-title>
+              <v-card-text>
+                <div class="flight-info">
+                  <div class="departure">
+                    <v-subheader>{{ flight.departureCity }}</v-subheader>
+                    <br />
+                    <v-text>{{ flight.departureTime }}</v-text>
+                  </div>
+                  <div class="line"></div>
+                  <div class="arrival">
+                    <v-subheader>{{ flight.arrivalCity }}</v-subheader>
+                    <br />
+                    <v-text>{{ flight.arrivalTime }}</v-text>
+                  </div>
+                </div>
+              </v-card-text>
+              <v-card-actions style="display: flex; justify-content: flex-end">
+                <v-btn
+                  color="#2196F3"
+                  text="選擇座位"
+                  @click="reveal = true"
+                ></v-btn>
+              </v-card-actions>
+            </v-card>
+          </v-col>
+        </v-row>
+      </v-container>
     </main>
   </div>
 </template>
@@ -164,53 +171,52 @@ const menuVisible = ref(false);
 const flights = ref([
   {
     id: 1,
-    departureCity: '紐約',
-    departureTime: '4/11 10:00 AM',
-    arrivalCity: '倫敦',
-    arrivalTime: '4/11 8:00 PM',
-    link: '#',
+    departureCity: "紐約",
+    departureTime: "4/11 10:00 AM",
+    arrivalCity: "倫敦",
+    arrivalTime: "4/11 8:00 PM",
+    link: "#",
   },
   {
     id: 2,
-    departureCity: '洛杉磯',
-    departureTime: '4/12 11:00 AM',
-    arrivalCity: '東京',
-    arrivalTime: '4/13 3:00 PM',
-    link: '#',
+    departureCity: "洛杉磯",
+    departureTime: "4/12 11:00 AM",
+    arrivalCity: "東京",
+    arrivalTime: "4/13 3:00 PM",
+    link: "#",
   },
   {
     id: 3,
-    departureCity: '巴黎',
-    departureTime: '4/12 9:00 AM',
-    arrivalCity: '柏林',
-    arrivalTime: '4/12 11:30 AM',
-    link: '#',
+    departureCity: "巴黎",
+    departureTime: "4/12 9:00 AM",
+    arrivalCity: "柏林",
+    arrivalTime: "4/12 11:30 AM",
+    link: "#",
   },
   {
     id: 4,
-    departureCity: '香港',
-    departureTime: '4/13 2:00 PM',
-    arrivalCity: '悉尼',
-    arrivalTime: '4/14 10:00 AM',
-    link: '#',
+    departureCity: "香港",
+    departureTime: "4/13 2:00 PM",
+    arrivalCity: "悉尼",
+    arrivalTime: "4/14 10:00 AM",
+    link: "#",
   },
   {
     id: 5,
-    departureCity: '上海',
-    departureTime: '4/14 6:00 PM',
-    arrivalCity: '舊金山',
-    arrivalTime: '4/14 2:00 PM',
-    link: '#',
+    departureCity: "上海",
+    departureTime: "4/14 6:00 PM",
+    arrivalCity: "舊金山",
+    arrivalTime: "4/14 2:00 PM",
+    link: "#",
   },
 ]);
 
-
-
 const tabs = [
-  { 
-    name: "航班", 
+  {
+    name: "航班",
     icon: "mdi-airplane",
-    path: "/login", },
+    path: "/login",
+  },
   { name: "禮品", icon: "mdi-gift" },
   { name: "景點", icon: "mdi-map-marker-radius" },
 ];
