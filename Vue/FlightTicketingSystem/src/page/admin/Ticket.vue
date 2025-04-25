@@ -12,7 +12,7 @@
             icon="mdi-eye"
             size="small"
             class="mr-2"
-            @click="showDetail(item)"
+            @click="showDialog(item)"
           ></v-icon>
           <v-icon
             color="medium-emphasis"
@@ -21,7 +21,6 @@
             @click="remove(item.ticketId)"
           ></v-icon>
         </div>
-        
       </template>
     </v-data-table>
 
@@ -38,11 +37,13 @@
       </v-card>
     </v-dialog>
   </v-container>
+  <OrderDetailDialog v-model="dialogVisible" :order="selectedOrder" />
 </template>
 
 <script setup>
 import { ref, watch, onMounted, shallowRef } from "vue";
 import { ApiSeats, ApiAirport, ApiTicket } from "@/utils/API";
+import OrderDetailDialog from "@/components/ticket/OrderDetailDialog.vue";
 const deleteDialog = shallowRef(false); // 控制刪除對話框的顯示狀態
 // 表格標題資訊
 const headers = ref([
@@ -92,6 +93,12 @@ function search() {
 
     items.value = res.data; // 更新表格數據
   });
+}
+const dialogVisible = ref(false);
+const selectedOrder = ref(null);
+function showDialog(order) {
+  selectedOrder.value = order;
+  dialogVisible.value = true;
 }
 const items = ref([]); // 表格內容數據
 </script>

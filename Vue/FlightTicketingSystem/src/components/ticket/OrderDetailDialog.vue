@@ -48,7 +48,7 @@
             :key="seat.seatNumber"
             style="margin-bottom: 10px"
           >
-            <SeatCard :selectseat="seat" />
+            <SeatCard :selectseat="seat" :action-type="'delete'" />
           </div>
         </div>
       </v-card-text>

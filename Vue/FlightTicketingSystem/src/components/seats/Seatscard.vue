@@ -34,7 +34,7 @@
         v-if="actionType === 'delete'"
         color="#F44336"
         text="刪除座位"
-        @click="deleteSeat"
+        @click="deleteSeat(selectseat)"
       ></v-btn>
     </v-card-actions>
   </v-card>
@@ -46,6 +46,10 @@ import { useRouter } from "vue-router"; // 引入 vue-router
 import { useSeatStore } from "@/stores/useSeatStore";
 const router = useRouter(); // 使用 vue-router
 defineProps(["selectseat", "actionType"]);
+function deleteSeat(selectseat){
+  
+
+}
 </script>
 
 <style scoped></style>
