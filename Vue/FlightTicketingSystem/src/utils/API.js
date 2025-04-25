@@ -285,7 +285,7 @@ export const ApiRedeem = {
 
 
 
-};
+
 
 export const ApiEmail = {
   //要求更新密碼
