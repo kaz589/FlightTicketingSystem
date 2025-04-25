@@ -157,17 +157,17 @@
     <!-- 可以在這邊製作區塊2的網頁內容 -->
     <v-col cols="12" md="6" v-if="pageControl === 2">
       <v-card class="mx-auto pa-2 no-shadow">
-        <v-list>
         
-          <v-list-item>
+        
+        
 
             
 
               <TicketOrderList/>
           
 
-          </v-list-item>
-        </v-list>
+          
+        
       </v-card>
     </v-col>
     <!-- 區塊2結束 -->

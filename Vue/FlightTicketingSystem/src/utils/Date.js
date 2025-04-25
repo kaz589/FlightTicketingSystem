@@ -32,3 +32,29 @@ export function formatDepartureTime(str) {
     // 4. 格式化
     return `${hours}:${minutes.toString().padStart(2, '0')}`;
   }
+
+
+  export function formatDate(dateStr, type = 'full') {
+    if (!dateStr) return '';
+    const date = new Date(dateStr);
+    if (type === 'date') {
+      return date.toLocaleDateString('zh-TW', {
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit'
+      });
+    }
+    if (type === 'time') {
+      return date.toLocaleTimeString('zh-TW', {
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: true
+      });
+    }
+    // 預設 full
+    return (
+      date.toLocaleDateString('zh-TW', { year: 'numeric', month: '2-digit', day: '2-digit' }) +
+      ' ' +
+      date.toLocaleTimeString('zh-TW', { hour: '2-digit', minute: '2-digit', hour12: true })
+    );
+  }

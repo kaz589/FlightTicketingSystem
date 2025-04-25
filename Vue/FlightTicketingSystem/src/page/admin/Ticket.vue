@@ -37,7 +37,7 @@
       </v-card>
     </v-dialog>
   </v-container>
-  <OrderDetailDialog v-model="dialogVisible" :order="selectedOrder" />
+  <OrderDetailDialog v-model="dialogVisible" :order="selectedOrder" :action-type="'delete'"/>
 </template>
 
 <script setup>
