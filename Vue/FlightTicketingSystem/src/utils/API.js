@@ -166,17 +166,17 @@ export const ApiTicket = {
 
 };
 
-//管理員相關API
+// 管理員相關API
 export const ApiAdmin = {
-
   getAdmin: (id) => instance.get(`/admin/GetAdmin/${id}`),
+
   insertAdmin: (adminInsert) =>
     instance
       .post(`/admin/InsertAdmin`, adminInsert)
       .then((response) => {
         console.log(response.data);
 
-        //如果沒回傳，代表username存在
+        // 如果沒回傳，代表username存在
         if (!response.data || response.data.length === 0) {
           console.log("username存在");
           return null;
@@ -185,15 +185,15 @@ export const ApiAdmin = {
           return response.data; // 返回 API 響應資料
         }
       })
-
-
       .catch((error) => {
         console.error("API 請求錯誤:", error);
         throw error; // 抛出錯誤以便外層處理
       }),
+
   // login: (admin) =>
   //   instance.post(`/admin/GetPassword`, admin)
 };
+
 
 //里程兌換-商品管理相關API
 export const ApiProducts = {
