@@ -18,4 +18,10 @@ onMounted(() => {
 .my-swal-popup {
   z-index: 200000000 !important;
 }
+.fade-enter-active, .fade-leave-active {
+  transition: opacity 0.4s;
+}
+.fade-enter-from, .fade-leave-to {
+  opacity: 0;
+}
 </style>

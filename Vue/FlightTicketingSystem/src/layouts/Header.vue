@@ -48,8 +48,8 @@
           /></span>
           <span class="text-[35px]">TWD</span>
           <v-btn class="text-none" variant="flat" stacked>
-            <v-badge  color="error" content="2">
-              <v-icon size="36" >mdi mdi-cart-variant</v-icon>
+            <v-badge color="error" content="2">
+              <v-icon size="36">mdi mdi-cart-variant</v-icon>
             </v-badge>
           </v-btn>
           <span class="text-[35px]">{{ roleLabel }}</span>
@@ -104,8 +104,11 @@
 
     <v-main>
       <div class="pa-4">
-        
-        <router-view></router-view>
+        <router-view v-slot="{ Component }">
+          <transition name="fade" mode="out-in">
+            <component :is="Component" :key="$route.fullPath" />
+          </transition>
+        </router-view>
         <Footer />
       </div>
     </v-main>
@@ -197,7 +200,7 @@ function getPictureUrl(pic) {
 }
 </script>
 
-<style scoped>
+<style>
 /* a span {
   display: block;
   height: 2px;
