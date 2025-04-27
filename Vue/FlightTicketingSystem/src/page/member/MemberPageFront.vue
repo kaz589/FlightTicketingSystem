@@ -126,7 +126,7 @@
               </v-col>
             </v-row>
             <v-row justify="end">
-              <v-btn>里程兌換</v-btn>
+              <v-btn @click="checkRedeem">里程兌換訂單</v-btn>
             </v-row>
 
             <v-divider class="my-4"></v-divider>
@@ -322,6 +322,7 @@ import { useAuthStore } from "@/stores/auth"; // 引入 Pinia store
 import { ApiMember } from "@/utils/API";
 import Swal from "sweetalert2";
 import TicketOrderList from "@/page/member/TicketOrderList.vue";
+import router from "@/router";
 
 //#region  第一區塊(勿更動)
 // Pinia store 實例
@@ -556,6 +557,10 @@ function onFileChange(event) {
     });
 }
 
+//查看里程訂單
+function checkRedeem() {
+  router.push("/checkredeem");
+ }
 //#endregion
 </script>
 

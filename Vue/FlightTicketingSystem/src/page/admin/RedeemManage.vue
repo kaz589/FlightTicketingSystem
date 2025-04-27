@@ -31,8 +31,9 @@
              hide-details
              @update:modelValue="val=>updateStatus(item,val)"
          ></v-select>
-          <v-btn  @click="remove(item.redeemId)">刪除訂單</v-btn>
-          <v-btn  color="red" @click="cancel(item.redeemId)">取消訂單</v-btn>
+          <v-btn color="red" @click="remove(item.redeemId)">刪除訂單</v-btn>
+          <v-btn  color="light-blue" @click="update(item.redeemId)">編輯訂單</v-btn>
+       
         
         </div>
       </template>
@@ -43,7 +44,8 @@
   </v-container>
 </template>
 
-<script setup>import { ref, onMounted } from 'vue';
+<script setup>
+import { ref, onMounted } from 'vue';
 import { ApiRedeem } from '@/utils/API';
 import Swal from 'sweetalert2';
 import 'sweetalert2/dist/sweetalert2.min.css';
@@ -72,9 +74,6 @@ const redeemStatusOptions = ref([
   { id: 2, status: '處理中' },
   { id: 3, status: '待出貨' },
   { id: 4, status: '已出貨' },
-  { id: 5, status: '已送達' },
-  { id: 6, status: '已取消' },
-  { id: 7, status: '已完成' },
 ])
 // 預設表單
 const DEFAULT_REDEEM_FORM = {
@@ -220,7 +219,7 @@ function remove(id) {
 const updateStatus = (item,newStatus) => {
   console.log(item);
   console.log(newStatus);
-  //const item = Allredeem.value.find(p => p.id === id);
+  
   ApiRedeem.updateRedeemStatus(item.redeemId, String(newStatus))
     .then(() => {
       Swal.fire('狀態更新成功！', `訂單 ${item.redeemId} 狀態已更新為 ${newStatus}`, 'success');
@@ -234,29 +233,6 @@ const updateStatus = (item,newStatus) => {
     });
 }
 
-// 取消訂單
-function cancel(id) {
-  Swal.fire({
-    title: '確定要取消訂單嗎？',
-    icon: 'warning',
-    showCancelButton: true,
-    confirmButtonColor: '#d33',
-    cancelButtonColor: '#3085d6',
-    confirmButtonText: '確定取消',
-    cancelButtonText: '取消',
-  }).then((result) => {
-    if (result.isConfirmed) {
-      ApiRedeem.cancelRedeem(id)
-        .then(() => {
-          Swal.fire('訂單已取消！', '', 'success');
-          search();
-        })
-        .catch(error => {
-          Swal.fire('取消訂單失敗！', error.response?.data?.message || '發生錯誤', 'error');
-        });
-    }
-  });
-}
 </script>
 
 <style scoped>

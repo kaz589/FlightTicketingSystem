@@ -58,6 +58,11 @@ const router = createRouter({
           path: "checkoutconfirm",
           component: () => import("@/page/member/checkoutConfirm.vue"),
         },
+        {
+          //會員查看訂單
+          path: "checkredeem",
+          component: () => import("@/page/member/checkredeem.vue"),
+        },
       ],
     },
     {

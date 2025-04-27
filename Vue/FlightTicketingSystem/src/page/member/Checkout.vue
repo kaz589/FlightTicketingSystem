@@ -33,7 +33,7 @@ const cartStore = usecartStore();
  
   onMounted(() => {
 
-console.log(selectcarts);
+console.log(selectcarts.value);
 }
 )
 
@@ -69,8 +69,16 @@ const totalRedeemMiles = computed(() => {
 
     const res = await ApiRedeem.addRedeem(payload);
     console.log("結帳成功：", res);
-    // alert("結帳成功!");
-    router.push("/checkoutconfirm"); // 成功後跳轉
+    const redeemId = res.data.redeemId; //拿到訂單ID
+
+if (redeemId) {
+  router.push({
+    path: "/checkoutconfirm",
+    query: { redeemId: redeemId } // 帶著redeemId跳轉
+  });
+} else {
+  throw new Error("後端沒回傳redeemId");
+}
   } catch (error) {
     console.error("結帳失敗：", error);
     // 判斷是不是自訂錯誤訊息

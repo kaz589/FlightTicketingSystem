@@ -42,7 +42,9 @@ import { ApiProducts } from '@/utils/API';
 import Swal from 'sweetalert2';
 import 'sweetalert2/dist/sweetalert2.min.css';
 import productcard from '@/components/product/productcard.vue';
-
+onMounted(() => {
+  search()
+})
 // 商品列表
 const Allproducts = ref([]);
 const products = ref([]);
