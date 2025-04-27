@@ -9,7 +9,9 @@ const router = createRouter({
     {
       path: "/",
 
+
       component: () => import("@/layouts/Header.vue"),
+
       children: [
         {
           path: "",
@@ -28,6 +30,7 @@ const router = createRouter({
           path: "seatSelection",
           component: () => import("@/page/member/seatSelection.vue"),
         },
+
         {
           //支付頁面
           path: "SeatPayment",
@@ -73,7 +76,11 @@ const router = createRouter({
           component: () => import("@/page/admin/Products.vue"),
           meta: { requiresAuth: true }, // 需要登錄的頁面
         },
-
+        {
+          path: "redeemmanage",
+          component: () => import("@/page/admin/RedeemManage.vue"),
+          meta: { requiresAuth: true }, // 需要登錄的頁面
+        },
         {
           path: "flight",
           component: () => import("@/page/admin/Flight.vue"),
@@ -105,11 +112,13 @@ const router = createRouter({
       path: "/login",
       component: () => import("@/page/auth/LoginPage.vue"),
     },
+
     {
       path: "/testtt",
       component: () => import("@/page/admin/TESTTT.vue"),
       meta: { requiresAuth: true }, // 需要登錄的頁面
     },
+
 
     {
       //會員登入
@@ -139,6 +148,11 @@ const router = createRouter({
       component: () => import("@/page/member/ResetPassword.vue"), // 你的 ResetPassword.vue 組件
       props: (route) => ({ token: route.query.token }), // 透過 query 參數將 token 傳給 ResetPassword 組件
     },
+
+    {
+      path: '/productdetail',
+      component: () => import('@/page/member/ProductDetail.vue')
+    }
 
     // {
     //   path: '/about',
@@ -199,11 +213,8 @@ router.beforeEach((to, from, next) => {
   // 如果目標頁面需要登錄並且用戶尚未登錄
   if (to.meta.requiresAuth && !authStore.isAuthenticated) {
     console.log("用戶未登錄，跳轉到登錄頁面");
-    next({ path: "/loginUser" }); // 重定向到登錄頁面
-  } else {
-    console.log("允許訪問，繼續進行");
-    next(); // 允許路由繼續
-  }
+    return next({ path: "/loginUser" }); // 重定向到登錄頁面
+  } 
 
   const requiredRoles = to.meta.roles;
   const userRoles = authStore.roles;

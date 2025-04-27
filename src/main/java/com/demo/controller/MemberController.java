@@ -96,11 +96,11 @@ public class MemberController {
 	}
 	
 //  更新里程數(花費旅程 扣款)
-	@PutMapping("/DecreaseMiles/{id}/{decreaseMiles}")
-	public Member decreaseMilesById(@PathVariable Integer id,
+	@PutMapping("/DecreaseMiles/{memberId}/{decreaseMiles}")
+	public Member decreaseMilesById(@PathVariable Integer memberId,
 									@PathVariable Integer decreaseMiles) {
 		
-		return memberService.decreaseMilesById(id, decreaseMiles);
+		return memberService.decreaseMilesById(memberId, decreaseMiles);
 		
 	}
 	

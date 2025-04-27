@@ -1,6 +1,6 @@
- <template>
-     <h1 class="text-4xl font-extrabold text-center mb-4">易趣輕鬆飛</h1>
-<div class="flex justify-center gap-6 text-2lg font-semibold mb-4">
+<template>
+  <h1 class="text-4xl font-extrabold text-center mb-4">易趣輕鬆飛</h1>
+  <div class="flex justify-center gap-6 text-2lg font-semibold mb-4">
     <button
       v-for="tab in tabs"
       :key="tab.name"
@@ -12,7 +12,7 @@
     >
       <span class="flex items-center gap-1">
         <v-icon size="36">{{ tab.icon }}</v-icon>
-       <span class="text-[25px]">{{ tab.name }}</span> 
+        <span class="text-[25px]">{{ tab.name }}</span>
       </span>
       <span
         class="absolute left-0 bottom-0 h-0.5 bg-black transition-all duration-300"
@@ -24,14 +24,11 @@
   <!-- 根據選擇的 Tab 顯示不同內容 -->
   <div class="w-full mx-auto px-4">
     <div v-if="selectedTab === '航班'">
-      <flightseach/>
-
-
+      <flightseach />
     </div>
     <div v-else-if="selectedTab === '禮品'">
       <!-- 禮品頁面內容 -->
-      <h2 class="text-2xl font-bold mb-4">禮品專區</h2>
-      <p>這裡可以放禮品兌換、展示等內容。</p>
+      <test2 />
     </div>
     <div v-else-if="selectedTab === '發現更多目的地'">
       <!-- 發現更多目的地頁面內容 -->
@@ -41,8 +38,9 @@
   </div>
 </template>
 <script setup>
-import {ref}from 'vue'
-import flightseach from '@/page/member/flightseach.vue';
+import { ref } from "vue";
+import flightseach from "@/page/member/flightseach.vue";
+import test2 from "./test2.vue";
 const selectedTab = ref("航班");
 const tabs = [
   { name: "航班", icon: "mdi-airplane" },
