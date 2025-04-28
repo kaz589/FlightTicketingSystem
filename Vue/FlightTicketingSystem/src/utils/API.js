@@ -86,6 +86,9 @@ export const ApiFlight = {
 export const ApiMember = {
   getMember: (id) => instance.get(`/member/GetMember/${id}`),
   getAllMember: () => instance.get(`/member/GetAllMember`),
+  getAllMemberByFullname: (name) =>
+    instance.get(`/member/GetAllMemberByFullname/${name}`),
+
   updateMember: (memberUpdate) =>
     instance.put(`/member/UpdateMember`, memberUpdate),
   insertMember: (memberInsert) =>

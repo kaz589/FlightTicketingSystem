@@ -40,6 +40,13 @@ public class MemberController {
 	public List<Member> GetAllMembers(){
 		return memberService.getAll();
 	}
+
+//  透過姓名查詢會員
+	@GetMapping("GetAllMemberByFullname/{name}")
+	public List<Member> GetAllMemberByFullname(@PathVariable String name){
+		return memberService.getAllByFullName(name);
+	}
+	
 	
 //  查詢所有管理員
 	@GetMapping("/GetAllAdminList")

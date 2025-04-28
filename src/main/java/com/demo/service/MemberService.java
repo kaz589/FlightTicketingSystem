@@ -48,6 +48,21 @@ public class MemberService {
 		return null;
 	}
 	
+	public List<Member> getAllByFullName(String name) {
+		
+		
+		List<Member> members = memberRepository.findAllByFullName(name);
+		
+		if (members != null) {
+			return members;
+		}
+		
+		return null;
+	}
+	
+	
+	
+	
 	public List<Member> getAll() {
 		return memberRepository.findAll();		
 	}
