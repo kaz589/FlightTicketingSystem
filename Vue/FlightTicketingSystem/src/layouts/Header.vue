@@ -47,8 +47,9 @@
             ><img src="https://flagcdn.com/tw.svg" width="40" alt="Taiwan"
           /></span>
           <span class="text-[35px]">TWD</span>
-          <v-btn class="text-none" variant="flat" stacked>
-            <v-badge  color="error" content="2">
+          <v-btn @click="router.push('/checkout')" class="text-none" variant="flat" stacked>
+            <v-badge  color="error" :content="productTypesCount"
+            :model-value="productTypesCount>0">
               <v-icon size="36" >mdi mdi-cart-variant</v-icon>
             </v-badge>
           </v-btn>
@@ -116,13 +117,18 @@
 import { ref, onMounted, computed, watch } from "vue";
 import { useRouter } from "vue-router"; // 引入 vue-router
 
+import { storeToRefs } from "pinia";
 import { useAuthStore } from "@/stores/auth"; // 引入 Pinia store
 import { logout } from "@/utils/logout"; // 導入登出函數
 import Footer from "./Footer.vue";
+import { usecartStore } from "@/stores/usecartStore";
+
 
 const router = useRouter(); // 使用 vue-router
 const authStore = useAuthStore();
 
+const cartStore = usecartStore();
+const {productTypesCount } = storeToRefs(cartStore)
 const userPicture = ref("");
 //找到大頭貼
 if (authStore.user && authStore.user.picture) {

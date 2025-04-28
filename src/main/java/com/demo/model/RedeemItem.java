@@ -40,7 +40,6 @@ public class RedeemItem {
 	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "product_id", referencedColumnName = "product_id")
-	@JsonBackReference
 	private Products product;
 	
 	

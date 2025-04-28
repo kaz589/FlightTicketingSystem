@@ -126,7 +126,7 @@
               </v-col>
             </v-row>
             <v-row justify="end">
-              <v-btn>里程兌換</v-btn>
+              <v-btn @click="checkRedeem">里程兌換訂單</v-btn>
             </v-row>
 
             <v-divider class="my-4"></v-divider>
@@ -174,14 +174,9 @@
     <!-- 區塊2結束 -->
 
     <!-- 可以在這邊製作區塊3的網頁內容 -->
-    <v-col cols="12" md="6" v-if="pageControl === 3">
+    <v-col cols="12" md="8" v-if="pageControl === 3">
       <v-card class="mx-auto pa-2 no-shadow">
-        <v-list>
-          <h2>另一個區域</h2>
-          <v-list-item>
-            <v-list-item-title>這是右側區域3的內容</v-list-item-title>
-          </v-list-item>
-        </v-list>
+        <checkredeem/>
       </v-card>
     </v-col>
     <!-- 區塊2結束 -->
@@ -323,12 +318,14 @@ import { useAuthStore } from "@/stores/auth"; // 引入 Pinia store
 import { ApiMember } from "@/utils/API";
 import Swal from "sweetalert2";
 import TicketOrderList from "@/page/member/TicketOrderList.vue";
+import router from "@/router";
+import checkredeem from '@/page/member/checkredeem.vue'
 
 //#region  第一區塊(勿更動)
 // Pinia store 實例
 const authStore = useAuthStore();
 
-// 設定控制按鈕 (1為個人資訊, 2為預訂紀錄, 3為價格通知)
+// 設定控制按鈕 (1為個人資訊, 2為預訂紀錄, 3為里程兌換訂單)
 const pageControl = ref(1);
 // 控制詳細資料
 let detailControl = ref(false);
@@ -337,7 +334,7 @@ let reveal = ref(false);
 const items = [
   { text: "個人資訊", icon: "mdi-account" },
   { text: "你的預訂紀錄", icon: "mdi-clock" },
-  { text: "價格通知", icon: "mdi mdi-bell-outline" },
+  { text: "里程兌換訂單", icon: "mdi mdi-bell-outline" },
 ];
 
 const a = ref();
@@ -557,6 +554,10 @@ function onFileChange(event) {
     });
 }
 
+//查看里程訂單
+function checkRedeem() {
+  router.push("/checkredeem");
+ }
 //#endregion
 </script>
 
