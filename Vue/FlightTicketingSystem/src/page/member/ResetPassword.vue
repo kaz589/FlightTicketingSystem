@@ -3,14 +3,20 @@
     <v-card width="400">
       <v-card-title class="text-h6 text-center">重設密碼</v-card-title>
       <v-card-text v-if="tokenValid">
-        <v-form ref="formRef" @submit.prevent="submitNewPassword">
+        <v-form ref="formRef" @submit.prevent="submitNewPassword" v-model="isValid">
           <v-text-field
             v-model="newPassword"
             label="新密碼"
             type="password"
             :rules="[rules.required]"
           />
-          <v-btn type="submit" color="primary" block class="mt-2">送出</v-btn>
+          <v-text-field 
+          v-model="passwordConfirm"
+          label="確認密碼"
+          type="password"
+          :rules="[rules.confirm]"
+          />
+          <v-btn type="submit" color="primary" block class="mt-2" :disabled="!isValid">送出</v-btn>
         </v-form>
       </v-card-text>
       <v-card-text v-else>
@@ -32,9 +38,12 @@ const route = useRoute();
 const token = route.query.token;
 const newPassword = ref("");
 const tokenValid = ref(false);
+const passwordConfirm = ref("");
+const isValid = ref(false);
 
 const rules = {
   required: (v) => !!v || "密碼不能為空",
+  confirm: (C) => C == newPassword.value || "密碼不一致" 
 };
 
 onMounted(async () => {

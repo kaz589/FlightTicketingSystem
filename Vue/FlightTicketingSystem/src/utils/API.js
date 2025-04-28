@@ -106,6 +106,25 @@ export const ApiMember = {
         console.error("API 請求錯誤:", error);
         throw error; // 抛出錯誤以便外層處理
       }),
+  insertMemberDefaultAdmin: (memberInsert) =>
+    instance
+      .post(`/member/InsertMemberDefaultAdmin`, memberInsert)
+      .then((response) => {
+        console.log(response.data);
+        //如果沒回傳，代表username存在
+        if (!response.data || response.data.length === 0) {
+          console.log("username存在");
+          return null;
+        } else {
+          console.log("API 請求成功:", response);
+          return response.data; // 返回 API 響應資料
+        }
+      })
+      .catch((error) => {
+        console.error("API 請求錯誤:", error);
+        throw error; // 抛出錯誤以便外層處理
+      }),
+
   deleteMemberById: (id) => instance.delete(`/member/DeleteMember/${id}`),
   increaseMiles: (id, plus) =>
     instance.put(`/member/IncreaseMiles/${id}/${plus}`),

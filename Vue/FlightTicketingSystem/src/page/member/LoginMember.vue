@@ -63,6 +63,16 @@
             >
               登入
             </button>
+            <button
+              type="submit"
+              data-mdb-button-init
+              data-mdb-ripple-init
+              class="btn btn-primary btn-lg btn-block"
+              @click="AutoEnter"
+              style="background-color: green;"
+            >
+              一鍵輸入
+            </button>
 
             <div class="divider d-flex align-items-center my-4">
               <p class="text-center fw-bold mx-3 mb-0 text-muted">或</p>
@@ -226,6 +236,20 @@ onMounted(() => {
     rememberAccount.value = true;
   }
 });
+
+//一鍵填入
+function AutoEnter(){
+  console.log("一鍵填入");
+  
+  event.preventDefault(); // ⛔ 阻止 submit
+  rawData.value.username = "Patrick";
+  rawData.value.password = "Patrick";
+
+  
+
+}
+
+
 </script>
 
 <style scoped>
