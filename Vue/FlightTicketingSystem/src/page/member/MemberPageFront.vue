@@ -14,7 +14,9 @@
             :value="item"
             color="primary"
             rounded="xl"
+            :to="item.to"
             @click="pageControl = i + 1"
+            router
           >
             <template v-slot:prepend>
               <v-icon :icon="item.icon"></v-icon>
@@ -359,6 +361,11 @@ watch(searchUser, (newVal) => {
 });
 
 onMounted(() => {
+  const params = new URLSearchParams(window.location.search);
+  const tab = parseInt(params.get('tab'));
+  if (tab >= 1 && tab <= items.length) {
+    pageControl.value = tab;
+  }
   //預設資料為空
   model.value = "";
   enter();
