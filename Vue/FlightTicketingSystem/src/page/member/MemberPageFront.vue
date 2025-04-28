@@ -69,7 +69,7 @@
             <section>
               <div>
                 <div class="title">會員等級</div>
-                <span class="contentIn">silver</span>
+                <span class="contentIn">{{searchUser.membershipLevel}}</span>
               </div>
             </section>
           </div>
@@ -371,6 +371,7 @@ function enter() {
   ApiMember.getMember(a.value)
     .then((res) => {
       if (res.status === 200) {
+        
         searchUser.value = res.data;
         console.log(searchUser.value); // 確認是否正確返回資料
       } else {
@@ -433,7 +434,7 @@ function hide() {
 
 //區分第三方登入和一般登入的圖片取得
 function getPictureUrl(pic) {
-  if (!pic) return "/images/default.png";
+  if (!pic) return "/images/default1.png";
   if (pic.startsWith("http")) return pic;
   return "http://localhost:8080" + pic;
 }
