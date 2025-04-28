@@ -48,7 +48,7 @@
             :key="seat.seatNumber"
             style="margin-bottom: 10px"
           >
-            <SeatCard :selectseat="seat" :action-type="'delete'" />
+            <SeatCard :selectseat="seat" :action-type="actionType" />
           </div>
         </div>
       </v-card-text>
@@ -61,7 +61,6 @@ import { defineProps, defineEmits, onMounted, ref, watch } from "vue";
 import SeatCard from "@/components/seats/Seatscard.vue";
 import { ApiSeats, ApiFlight } from "@/utils/API";
 import { getFlightDuration } from "@/utils/Date";
-
 const props = defineProps({
   modelValue: Boolean,
   order: Object,

@@ -215,11 +215,19 @@ const items = computed(() => [
     visible: hasAuthority("產品"),
   },
   {
+
+    title: "里程兌換訂單管理",
+    prependIcon: "mdi mdi-clipboard-list",
+    link: true,
+    path: "/admin/redeemmanage",
+  },
+  {
     title: "權限管理",
     prependIcon: "mdi mdi-shield-lock-outline",
     link: true,
     path: "/admin/authority",
     visible: RoleCount.value == 3,
+
   },
 ]);
 </script>

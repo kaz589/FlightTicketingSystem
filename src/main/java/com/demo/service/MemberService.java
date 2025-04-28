@@ -14,6 +14,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import com.demo.controller.PasswordHashing;
 import com.demo.model.Member;
 import com.demo.model.PasswordResetToken;
+import com.demo.model.DTO.MembershipCountDTO;
+import com.demo.model.DTO.ProviderCountDTO;
 import com.demo.repository.MemberRepository;
 import com.demo.repository.PasswordResetTokenRepository;
 
@@ -48,6 +50,21 @@ public class MemberService {
 		return null;
 	}
 	
+	public List<Member> getAllByFullName(String name) {
+		
+		
+		List<Member> members = memberRepository.findAllByFullName(name);
+		
+		if (members != null) {
+			return members;
+		}
+		
+		return null;
+	}
+	
+	
+	
+	
 	public List<Member> getAll() {
 		return memberRepository.findAll();		
 	}
@@ -76,7 +93,7 @@ public class MemberService {
 		}
 	
 	
-	
+	//新增會員
 	public Member insertMember(Member member) {
 		
 		
@@ -96,10 +113,46 @@ public class MemberService {
 		member.setPassword(password_Hashing);
 		member.setTotalMiles(0); //初始值0
 		member.setRemainingMiles(0); //初始值0
+		member.setMembershipLevel("普通會員");
 		
 		memberRepository.save(member);
 		return member;
 	}
+	
+	
+	//新增管理員
+		public Member insertMemberDefaultAdmin(Member member) {
+			
+			
+			// 要確認username是否重複
+			// 先透過username查有沒有密碼
+			boolean result = usernameExist(member.getUsername());
+			if (result) {
+				//username存在，不能新增
+				return null;
+				
+			}		
+			//密碼需要加密
+			String password = member.getPassword();
+			
+			
+			String password_Hashing = passwordEncoder.encode(password);  // 使用 BCrypt 進行加密
+			member.setPassword(password_Hashing);
+			member.setTotalMiles(0); //初始值0
+			member.setRemainingMiles(0); //初始值0
+			member.setAuthority("ADMIN");//預設為ADMIN
+			member.setMembershipLevel("普通會員");
+			
+			memberRepository.save(member);
+			return member;
+		}
+	
+	
+	
+	
+	
+	
+	
 // 先找再更改
 	public Member updateMemberById(Member member) {
 		Optional<Member> op = memberRepository.findById(member.getMemberId());
@@ -188,8 +241,7 @@ public class MemberService {
 	public boolean deleteMemberById(Integer id) {
 		
 		Optional<Member> op = memberRepository.findById(id);
-		
-		if (op.isPresent()) {
+				if (op.isPresent()) {
 			memberRepository.deleteById(id);
 			return true;
 		}else {
@@ -215,19 +267,31 @@ public class MemberService {
 		return null;		
 	}
 
-	// 透過id找會員，並減少某會員里程數
-		public Member decreaseMilesById(Integer id, Integer decreaseMiles) {
-			Optional<Member> op = memberRepository.findById(id);
-			
-			if (op.isPresent()) {
+
+	// 透過memberId找會員，並減少某會員里程數(改寫版)
+			public Member decreaseMilesById(Integer id, Integer decreaseMiles) {
+				Optional<Member> op = memberRepository.findById(id);
+				
+				if (op.isEmpty()) {
+					new RuntimeException("找不到 ID 為 " + id + " 的會員");
+				}	
 				Member member = op.get();
-				Integer resultRemainingMiles = member.getRemainingMiles() - decreaseMiles;
-				member.setRemainingMiles(resultRemainingMiles);
-				memberRepository.save(member);
-				return member;
+				if (decreaseMiles <= 0) {
+			            throw new IllegalArgumentException("扣除的里程數必須大於 0。");
+			        }
+				// 檢查里程足夠
+				int available = member.getRemainingMiles();
+				if (available < decreaseMiles) {
+					throw new IllegalArgumentException(String.format("里程不足：共需要 %d里程，目前帳號剩餘 %d里程", decreaseMiles, available));
+				}
+					member.setRemainingMiles(available-decreaseMiles);
+					memberRepository.save(member);
+					return member;
+						
 			}
-			return null;		
-		}
+			
+
+		
 		
 	// 透過username找會員
 		public Member getOneByUsername(String username) {
@@ -267,9 +331,19 @@ public class MemberService {
 		
 		
 		
+		//計算會員各等級數量
+		public List<MembershipCountDTO> countMemberShip(){
+			
+			List<MembershipCountDTO> countByMembershipLevel = memberRepository.countByMembershipLevel();
+			
+			return countByMembershipLevel;
+		}
 		
-		
-		
+		//計算各會員登入方式
+		public List<ProviderCountDTO> countProvider(){
+			List<ProviderCountDTO> countByProvider = memberRepository.countByProvider();
+			return countByProvider;
+		}
 		
 		
 		

@@ -14,12 +14,14 @@ public class WebConfig implements WebMvcConfigurer {
 				.allowedMethods("GET", "POST", "PUT", "DELETE"); // 添加 PUT 和 DELETE;
 	}
 
+	
+	
 	@Override
 	public void addResourceHandlers(ResourceHandlerRegistry registry) {
 
 	    // 保留原有的設定
 	    registry.addResourceHandler("/images/**")
-	            .addResourceLocations("file:uploads/images/");
+	            .addResourceLocations("file:uploads/images/","file:uploads/ProductsImage/");
 
 	    // 新增的設定
 	    registry.addResourceHandler("/uploads/images/**")
