@@ -12,7 +12,7 @@ import com.demo.service.ICategoryService;
 
 
 @Service
-public class CategoryImp implements ICategoryService {
+public class CategoryImpl implements ICategoryService {
 
 	@Autowired
 	private CategoryRepository cRepo;
@@ -29,9 +29,7 @@ public class CategoryImp implements ICategoryService {
 		return cRepo.save(category);
 	}
 
-	@Override
-	public void deleteCategoryById(Integer categoryId) {
-		cRepo.deleteById(categoryId);
-	}
+	
+	
 
 }

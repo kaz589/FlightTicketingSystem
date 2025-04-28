@@ -103,6 +103,31 @@ public class Seatimp  implements SeatService{
 	return newSeatDTO;
 	}
 
+	@Override
+	public void releaseSeatById(Integer seatId) {
+		 Seat seat = seatRepository.findById(seatId)
+			        .orElseThrow(() -> new IllegalArgumentException("找不到該座位: " + seatId));
+			    seat.setLocked_at(null);
+			    seat.setExpires_at(null);
+			    seat.setBooked(false);
+			    seat.setTicket(null);
+			    seatRepository.save(seat);
+		
+	}
+
+	@Override
+	public void releaseSeatsByIds(List<Integer> seatIds) {
+		List<Seat> seats = seatRepository.findAllById(seatIds);
+	    for (Seat seat : seats) {
+	        seat.setLocked_at(null);
+	        seat.setExpires_at(null);
+	        seat.setBooked(false);
+	        seat.setTicket(null);
+	    }
+	    seatRepository.saveAll(seats);
+		
+	}
+
 	
 
 	

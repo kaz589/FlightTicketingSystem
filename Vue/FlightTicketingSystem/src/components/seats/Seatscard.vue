@@ -44,12 +44,33 @@
 // import { defineProps } from "vue";
 import { useRouter } from "vue-router"; // 引入 vue-router
 import { useSeatStore } from "@/stores/useSeatStore";
+import Swal from "sweetalert2";
+import "sweetalert2/dist/sweetalert2.min.css";
+import { ApiSeats } from "@/utils/API";
 const router = useRouter(); // 使用 vue-router
 defineProps(["selectseat", "actionType"]);
 function deleteSeat(selectseat){
-  
+  console.log(selectseat);
+  const result =  Swal.fire({
+    title: "確認要送出訂單嗎？",
+    text: "送出後將進入付款流程，請確認座位及金額正確。",
+    icon: "question",
+    showCancelButton: true,
+    confirmButtonText: "確認送出",
+    cancelButtonText: "取消",
+    customClass: {
+    popup: 'my-swal-popup'
+  }
+  });
+  if (result.isConfirmed) {
+    ApiSeats.releaseSeat(selectseat.seatId).then((res) => {console.log(res.data);
+      })
+
+
+  }
 
 }
 </script>
 
-<style scoped></style>
+<style scoped>
+</style>

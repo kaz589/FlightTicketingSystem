@@ -1,6 +1,6 @@
 <template>
   <v-row>
-    <!-- 左侧区域 -->
+    
     <v-col cols="12" md="3">
       <v-card class="mx-auto pa-2 no-shadow">
         <v-list>
@@ -157,11 +157,18 @@
     <!-- 可以在這邊製作區塊2的網頁內容 -->
     <v-col cols="12" md="6" v-if="pageControl === 2">
       <v-card class="mx-auto pa-2 no-shadow">
-        <v-list>
-          <v-list-item>
-            <TicketOrderList />
-          </v-list-item>
-        </v-list>
+
+        
+        
+        
+
+            
+
+              <TicketOrderList/>
+          
+
+          
+      
       </v-card>
     </v-col>
     <!-- 區塊2結束 -->
@@ -315,6 +322,7 @@ import { ref, onMounted, watch, computed } from "vue";
 import { useAuthStore } from "@/stores/auth"; // 引入 Pinia store
 import { ApiMember } from "@/utils/API";
 import Swal from "sweetalert2";
+import TicketOrderList from "@/page/member/TicketOrderList.vue";
 
 //#region  第一區塊(勿更動)
 // Pinia store 實例

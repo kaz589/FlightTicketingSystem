@@ -12,14 +12,6 @@ import com.demo.model.Redeem;
 
 @Repository
 public interface RedeemRepository extends JpaRepository<Redeem, Integer> {
-	/**
-	 * 根據Redeem狀態查詢符合條件的Redeem紀錄
-	 * 
-	 * @param redeem_status Redeem的狀態
-	 * @return 返回符合條件的Redeem紀錄列表
-	 */
-	@Query("FROM Redeem r WHERE redeemStatus=:status")
-	List<Redeem> selectRedeemByStatus(@Param("status") String redeemStatus);
 
 	/**
 	 * 根據Redeem時間查詢符合條件的Redeem紀錄
@@ -27,7 +19,13 @@ public interface RedeemRepository extends JpaRepository<Redeem, Integer> {
 	 * @param redeem_time Redeem的時間
 	 * @return 返回符合條件的Redeem紀錄列表
 	 */
-	@Query("FROM Redeem r WHERE redeemTime=:redeemTime")
-	List<Redeem> selectRedeemByTime(@Param("redeemTime") Date redeemTime);
+	List<Redeem> findByCreateAt(Date date);
+	
+	List<Redeem> findByMember_MemberId(Integer memberId);
+
+	List<Redeem> findByRedeemStatus(String redeemStatus);
+
+
+	
 
 }

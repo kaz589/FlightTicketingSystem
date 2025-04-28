@@ -6,11 +6,11 @@
           <img
             src="@/assets/Easytrip_text.png"
             alt="Easytrip Logo"
-            class="w-36 h-auto object-contain transition-transform duration-300 hover:scale-105"
+            class="w-40 h-auto object-contain transition-transform duration-300 hover:scale-105"
             @click="router.push('/')"
           />
         </div>
-        <nav class="hidden md:flex space-x-8 text-base font-semibold ml-12">
+        <nav class="hidden md:flex space-x-8 text-3xl font-semibold ml-12">
           <a
             href="#"
             class="relative group text-gray-700 hover:text-black transition-colors duration-200"
@@ -40,14 +40,19 @@
           </a>
         </nav>
 
-        <div class="flex justify-end items-center space-x-4 text-base">
-          <span class="mdi mdi-web text-[30px]"></span>
+        <div class="flex justify-end items-center space-x-2 text-base">
+          <span class="mdi mdi-web text-[40px]"></span>
 
           <span
-            ><img src="https://flagcdn.com/tw.svg" width="30" alt="Taiwan"
+            ><img src="https://flagcdn.com/tw.svg" width="40" alt="Taiwan"
           /></span>
-          <span>TWD</span>
-          <span>{{ roleLabel }}</span>
+          <span class="text-[35px]">TWD</span>
+          <v-btn class="text-none" variant="flat" stacked>
+            <v-badge  color="error" content="2">
+              <v-icon size="36" >mdi mdi-cart-variant</v-icon>
+            </v-badge>
+          </v-btn>
+          <span class="text-[35px]">{{ roleLabel }}</span>
           <button
             class="login-btn"
             @click="router.push('/loginUser')"
@@ -55,6 +60,7 @@
           >
             <span>登入</span>
           </button>
+
           <v-btn
             class="text-none me-2"
             height="48"
@@ -98,6 +104,7 @@
 
     <v-main>
       <div class="pa-4">
+        
         <router-view></router-view>
         <Footer />
       </div>
