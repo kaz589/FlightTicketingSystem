@@ -22,8 +22,10 @@ import com.demo.repository.ProductsRepository;
 import com.demo.repository.RedeemItemRepository;
 import com.demo.repository.RedeemRepository;
 import com.demo.service.IRedeemService;
+import com.demo.service.MailService;
 import com.demo.service.MemberService;
 
+import jakarta.mail.MessagingException;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 
@@ -48,6 +50,9 @@ public class RedeemImp implements IRedeemService {
 	
 	@Autowired
 	private MemberService memberService;
+	
+	@Autowired
+	private MailService mailService;
 	
 //	訂單預設狀態
 	private static final String INITIAL_STATUS = "處理中";
@@ -147,11 +152,26 @@ public class RedeemImp implements IRedeemService {
 
 		}
 		redeemItemRepo.saveAll(newRedeemItems);
+		
 		// 扣除會員里程
 		memberService.decreaseMilesById(memberId, totalMilesNeeded);
 		redeem.setRedeemTotalMiles(totalMilesNeeded);
+		//寄信
+	String customerName =member.getFullName();
+	String email =member.getEmail();
+	String redeemId=redeem.getRedeemId().toString();
+	Integer AA=totalMilesNeeded;
+try {
+	mailService.sendRedeemMail(email, customerName, redeemId, AA.toString());
+} catch (MessagingException e) {
+	
+	e.printStackTrace();
+	System.out.println(e);
+}
+		
 //		redeemRepo.save(redeem);
 		return redeemRepo.save(redeem);
+		
 	}
 
 //根據RedeemId軟刪除訂單

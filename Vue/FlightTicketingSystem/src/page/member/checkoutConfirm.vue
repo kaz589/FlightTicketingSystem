@@ -39,7 +39,7 @@
           </div>
         </v-card>
       </v-col>
-
+<!-- 
       <v-col cols="12" >
         <v-card class="pa-6" elevation="6" rounded="xl">
           <v-card-title class="text-h5 mb-4">收件資訊</v-card-title>
@@ -73,13 +73,13 @@
               color="primary"
               block
               @click="submitOrder"
-              :disabled="!valid"
+              :disabled="!memberId"
             >
               確認送出
             </v-btn>
           </v-form>
         </v-card>
-      </v-col>
+      </v-col> -->
     </v-row>
   </v-container>
 </template>
@@ -87,13 +87,23 @@
   <script setup>
 
 import { ApiMember } from '@/utils/API';
-import { ref, computed, onMounted } from 'vue';
+import { ref, computed, onMounted,reactive } from 'vue';
 import { useRoute,useRouter } from "vue-router"; // 引入 vue-router
 import { ApiRedeem } from '@/utils/API';
 // 1. 從 URL 拿到 redeemId
 const route = useRoute();
 const router = useRoute();
 const redeemId = ref(route.query.redeemId);
+  const memberId = 2;
+// 驗證表單是否通過
+  const valid = ref(false);
+
+  // 會員資料（收件人）
+const member = reactive({
+  fullname: '',
+  address: '',
+  phone:''
+})
 
 // 2. 用來存後端回來的訂單詳情
 const redeemDetail = ref(null);
@@ -139,7 +149,9 @@ const redeemDetail = ref(null);
   };
 
   function submitOrder() {
-    if (valid.value) {
+    if (memberId) {
+      console.log(memberId);
+      
       console.log('送出資料:', formData.value);
       alert('結帳成功！');
         // 這邊可以加 API 請求送出訂單資料

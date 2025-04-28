@@ -32,7 +32,7 @@
              @update:modelValue="val=>updateStatus(item,val)"
          ></v-select>
           <v-btn color="red" @click="remove(item.redeemId)">刪除訂單</v-btn>
-          <v-btn  color="light-blue" @click="update(item.redeemId)">編輯訂單</v-btn>
+       
        
         
         </div>

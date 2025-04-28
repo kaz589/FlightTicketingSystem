@@ -16,6 +16,13 @@
             @click="cancelRedeem(item.redeemId)"
           >
             取消訂單
+          </v-btn> <v-btn
+            v-if="item.status !== '已完成'"
+            color="blue"
+            size="small"
+            @click="checkRedeemDetail(item.redeemId)"
+          >
+            查看訂單明細
           </v-btn>
           <span v-else class="text-grey">不可取消</span>
         </template>
@@ -24,10 +31,15 @@
   </template>
   
   <script setup>
-import { ref, onMounted } from 'vue'
-import { ApiRedeem } from '@/utils/API';
-const memberId = 2;
+import { ref, onMounted, } from 'vue'
+  import { ApiRedeem } from '@/utils/API';
+  import { useRouter } from "vue-router"; // 引入 vue-router
+  import { useAuthStore } from "@/stores/auth";
+  import dayjs from 'dayjs';
 
+  const authStore = useAuthStore();
+const memberId = authStore.user.memberId;
+const router = useRouter(); 
   // 表格欄位
   const headers = [
     { title: '訂單編號', value: 'redeemId' },
@@ -40,35 +52,48 @@ const memberId = 2;
   // 訂單資料
   const redeems = ref([])
   
-  // 取得訂單列表
-  const fetchRedeems = async () => {
-    try {
-      const response = await ApiRedeem.findByMemberId(memberId)
-    redeems.value = response.data
-    } catch (error) {
-      console.error('取得訂單失敗', error)
-    }
+  async function fetchRedeems(memberId) {
+  try {
+    const res = await ApiRedeem.findByMemberId(memberId);
+   // 過濾資料，只保留 deleted 為 false 的項目
+   redeems.value = res.data.filter(item => item.deleted === false);
+    console.log("查詢此會員未刪除訂單 Response:", res);
+    console.log("未刪除訂單資料:", redeems.value);
+  } catch (error) {
+    console.error("查詢訂單失敗:", error);
+    // 可以在這裡處理錯誤，例如顯示錯誤訊息
   }
-  
-  // 取消訂單
-  const cancelRedeem = async (redeemId) => {
-    if (!confirm('確定要取消這筆訂單嗎？')) {
-      return
-    }
-  
-    try {
-        await ApiRedeem.cancelRedeem(redeemId);
-      alert('訂單已取消')
-      fetchRedeems() // 重新抓一次
-    } catch (error) {
-      console.error('取消訂單失敗', error)
-      alert('取消失敗，請稍後再試')
-    }
+}
+  //查看明細
+  const checkRedeemDetail = (redeemId) => {
+    router.push({
+    path: "/checkoutconfirm",
+    query: { redeemId: redeemId } // 帶著redeemId跳轉
+  });
+   }
+// 取消訂單
+const cancelRedeem = (redeemId) => {
+  console.log('redeemId:', redeemId);
+
+  if (!confirm('確定要取消這筆訂單嗎？')) {
+    return; // 如果按「取消」，直接跳出，不要送出 API
   }
+
+  ApiRedeem.cancelRedeem(redeemId)
+    .then(() => {
+      alert('訂單已取消');
+      fetchRedeems(memberId) // 重新抓一次
+    })
+    .catch((error) => {
+      console.error('取消訂單失敗', error);
+      alert('取消失敗，請稍後再試');
+    });
+};
+
   
   // 載入時撈資料
   onMounted(() => {
-    fetchRedeems()
+    fetchRedeems(memberId)
   })
   </script>
   

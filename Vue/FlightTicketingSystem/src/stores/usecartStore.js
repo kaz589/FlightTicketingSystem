@@ -11,6 +11,9 @@ export const usecartStore = defineStore(
                 selectcarts.value.splice(index, 1);
             }
         }
+        function clearcartStore() {
+            selectcarts.value = [];
+        }
         function addProduct(product) {
             // 禁止選擇已下架的商品
             if (product.unavailable) return;
@@ -39,7 +42,8 @@ export const usecartStore = defineStore(
             selectcarts,
             addProduct,
             removeProduct,
-            productTypesCount
+            productTypesCount,
+            clearcartStore
         }
     },
     {

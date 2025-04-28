@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>訂單付款完成通知</title>
+</head>
+<body>
+    <h2>親愛的 <span th:text="${customerName}">客戶</span> 先生/小姐 您好：</h2>
+    <p>您的里程兌換訂單 <strong th:text="${orderNumber}">123456</strong> 已經完成付款。</p>
+    <p>花費里程：<span th:text="${amount}">NT$1,000</span></p>
+    <p>兌換時間：<span th:text="${payTime}">2024-04-25 10:45</span></p>
+    <hr>
+    <p>感謝您的使用！如有疑問請聯絡客服。</p>
+    <p>Best regards,<br>易趣Easytrip團隊</p>
+</body>
+</html>

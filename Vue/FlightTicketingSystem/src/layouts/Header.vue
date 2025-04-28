@@ -48,8 +48,8 @@
           /></span>
           <span class="text-[35px]">TWD</span>
           <v-btn @click="router.push('/checkout')" class="text-none" variant="flat" stacked>
-            <v-badge  color="error" :content="productTypesCoutnt"
-            :model-value="productTypesCoutnt>0">
+            <v-badge  color="error" :content="productTypesCount"
+            :model-value="productTypesCount>0">
               <v-icon size="36" >mdi mdi-cart-variant</v-icon>
             </v-badge>
           </v-btn>
@@ -128,7 +128,7 @@ const router = useRouter(); // 使用 vue-router
 const authStore = useAuthStore();
 
 const cartStore = usecartStore();
-const {productTypesCoutnt } = storeToRefs(cartStore)
+const {productTypesCount } = storeToRefs(cartStore)
 const userPicture = ref("");
 //找到大頭貼
 if (authStore.user && authStore.user.picture) {

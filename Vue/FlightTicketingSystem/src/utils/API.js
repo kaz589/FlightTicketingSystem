@@ -279,8 +279,8 @@ export const ApiRedeem = {
       },
     }),
 
-  // 取消訂單 (PUT /redeem/{redeemId}/cancelRedeem)
-  cancelRedeem: (redeemId) => instance.put(`/redeem/${redeemId}/cancelRedeem`),
+  // 取消訂單 (PUT /redeem/cancelRedeem/{redeemId})
+  cancelRedeem: (redeemId) => instance.put(`/redeem/cancelRedeem/${redeemId}`, {}),
 };
 
 

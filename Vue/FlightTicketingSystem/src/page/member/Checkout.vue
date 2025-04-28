@@ -26,7 +26,8 @@
   import selectProductCard from "@/components/product/selectProductCard.vue";
   import { useRouter } from "vue-router"; // 引入 vue-router
 import { ApiRedeem } from "@/utils/API";
-
+  import { useAuthStore } from "@/stores/auth";
+  const authStore = useAuthStore();
 const cartStore = usecartStore();
   const { productTypesCount,selectcarts } = storeToRefs(cartStore)
 
@@ -58,7 +59,7 @@ const totalRedeemMiles = computed(() => {
     console.log("準備送出商品資料...");
 
     const payload = {
-      memberId: 2, // 先寫死，之後要用登入的ID
+      memberId: authStore.user.memberId, // 先寫死，之後要用登入的ID
       redeemItems: selectcarts.value.map(product => ({
         productId: product.id,
         quantity: product.quantity
@@ -70,8 +71,9 @@ const totalRedeemMiles = computed(() => {
     const res = await ApiRedeem.addRedeem(payload);
     console.log("結帳成功：", res);
     const redeemId = res.data.redeemId; //拿到訂單ID
-
-if (redeemId) {
+    usecartStore().clearcartStore();
+    if (redeemId) {
+    
   router.push({
     path: "/checkoutconfirm",
     query: { redeemId: redeemId } // 帶著redeemId跳轉
