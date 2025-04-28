@@ -9,7 +9,9 @@ const router = createRouter({
     {
       path: "/",
 
+
       component: () => import("@/layouts/Header.vue"),
+
       children: [
         {
           path: "",
@@ -28,6 +30,7 @@ const router = createRouter({
           path: "seatSelection",
           component: () => import("@/page/member/seatSelection.vue"),
         },
+
         {
           //支付頁面
           path: "SeatPayment",
@@ -45,8 +48,6 @@ const router = createRouter({
           component: () => import("@/page/member/MemberPageFront.vue"),
         },
       ],
-
-      // component: () => import("@/layouts/userView.vue"),
     },
     {
       path: "/admin",
@@ -75,7 +76,11 @@ const router = createRouter({
           component: () => import("@/page/admin/Products.vue"),
           meta: { requiresAuth: true }, // 需要登錄的頁面
         },
-
+        {
+          path: "redeemmanage",
+          component: () => import("@/page/admin/RedeemManage.vue"),
+          meta: { requiresAuth: true }, // 需要登錄的頁面
+        },
         {
           path: "flight",
           component: () => import("@/page/admin/Flight.vue"),
@@ -107,15 +112,14 @@ const router = createRouter({
       path: "/login",
       component: () => import("@/page/auth/LoginPage.vue"),
     },
+
     {
       path: "/testtt",
       component: () => import("@/page/admin/TESTTT.vue"),
       meta: { requiresAuth: true }, // 需要登錄的頁面
     },
-    {
-      path: "/ss",
-      component: () => import("@/layouts/memberLayout.vue"),
-    },
+
+
     {
       //會員登入
       path: "/loginUser",
@@ -145,6 +149,11 @@ const router = createRouter({
       props: (route) => ({ token: route.query.token }), // 透過 query 參數將 token 傳給 ResetPassword 組件
     },
 
+    {
+      path: '/productdetail',
+      component: () => import('@/page/member/ProductDetail.vue')
+    }
+
     // {
     //   path: '/about',
     //   name: 'about',
@@ -154,6 +163,10 @@ const router = createRouter({
     //   component: () => import('../views/AboutView.vue'),
     // },
   ],
+  scrollBehavior(to, from, savedPosition) {
+    // 每次切換路由時，頁面滾動到最頂端
+    return { top: 0 };
+  },
 });
 
 // 路由守衛
@@ -166,6 +179,36 @@ router.beforeEach((to, from, next) => {
   const keepSeatPaths = ["/seatSelection", "/SeatPayment"];
   const isSeatPage = keepSeatPaths.includes(to.path);
 
+
+  // 進入 SeatPayment 前必須有選座位
+  if (to.path === "/SeatPayment") {
+    if (!seatStore.selectedSeatIds || seatStore.selectedSeatIds.length === 0) {
+      Swal.fire({
+        icon: "warning",
+        title: "請先選擇座位",
+        text: "請先完成選位，再進行付款。",
+      });
+  
+      // 從 from.query.flightid 取得 flightid（假設是從 seatSelection 跳過來的）
+      const flightid = from.query.flightid || to.query.flightid;
+  
+      // 如果有 flightid 就帶回 seatSelection
+      if (flightid) {
+        return next({ path: "/seatSelection", query: { flightid } });
+      } else {
+        // 沒有 flightid 就回首頁
+        return next("/");
+      }
+    }
+  }
+  if (to.path === "/seatSelection" && !to.query.flightid) {
+    Swal.fire({
+      icon: "warning",
+      title: "請選擇航班",
+      text: "請從正確的航班入口進入選位。",
+    });
+    return next("/");
+  }
   if (!isSeatPage) {
     seatStore.clearSelectedSeats && seatStore.clearSelectedSeats();
   }
@@ -173,8 +216,10 @@ router.beforeEach((to, from, next) => {
   if (to.meta.requiresAuth && !authStore.isAuthenticated) {
     console.log("用戶未登錄，跳轉到登錄頁面");
     return next({ path: "/loginUser" }); // 重定向到登錄頁面
+
   }
   // 檢查角色權限
+
 
   const requiredRoles = to.meta.roles;
   const userRoles = authStore.roles;

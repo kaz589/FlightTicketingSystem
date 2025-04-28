@@ -15,6 +15,8 @@ import com.demo.service.MailService;
 import com.demo.service.MemberService;
 import com.demo.service.TicketService;
 
+import jakarta.mail.MessagingException;
+
 
 @RestController
 
@@ -39,9 +41,12 @@ public class payController {
 	    	 memberService.increaseMilesById(ticket.getMember().getMemberId(), newTicketDTO.getTotalDistance());
 	    	// 更新訂單付款狀態
 		    ticketService.markTicketPaidByOrderId(orderid);
-		    String subject = "訂單 " + orderid + " 付款成功";
-	        String content = "訂單 " + orderid + " 付款成功";
-		    mailService.sendPlainText( ticket.getMember().getEmail(), subject, content);
+		    try {
+				mailService.sendOrderPaidMail(ticket.getMember().getEmail(),ticket.getMember().getFullName() ,ticket.getOrderNo(),"NT$"+newTicketDTO.getTotalAmount());
+			} catch (MessagingException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		    // 付款成功後導向結果頁（可依需求更改）
 		    return new RedirectView("http://localhost:5173/");
 	    }

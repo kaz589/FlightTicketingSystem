@@ -101,7 +101,7 @@ onMounted(() => {
 });
 // 搜尋函數
 async function search() {
-  // 取得起訖時間
+  // 取得起始時間
   const [startTime, endTime] = range.value || [];
 
   try {

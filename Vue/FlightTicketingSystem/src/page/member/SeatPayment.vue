@@ -1,5 +1,9 @@
 <template>
   <div class="flight-header">
+    <div v-if="flight" class="city-name">
+      <h1>請確認訂購座位</h1>
+    </div>
+    <br />
     <div class="airport-row">
       <div class="airport-col">
         <div v-if="flight" class="city-name">
@@ -46,11 +50,11 @@
       <p class="text-2xl">
         預計累計里程：
         <span class="text-red-600 text-3xl font-bold">
-          ${{ seatStore.totalDistance }}
+          {{ seatStore.totalDistance }} KM
         </span>
       </p>
       <v-btn
-        prepend-icon="mdi mdi-cash-sync"
+        prepend-icon="mdi mdi-cash-check"
         @click="handleSubmit"
         stacked
         size="large"
@@ -137,6 +141,8 @@ import {
 import { formatDepartureTime } from "@/utils/Date";
 import { ApiTicket } from "@/utils/API";
 import { useAuthStore } from "@/stores/auth";
+import Swal from "sweetalert2";
+import "sweetalert2/dist/sweetalert2.min.css";
 const authStore = useAuthStore();
 onMounted(() => {
   // const params = new URLSearchParams(window.location.search);
@@ -171,39 +177,49 @@ const formData = reactive({
 });
 
 const handleSubmit = async () => {
-  try {
-    const host = "http://localhost:8080/pay";
+  const result = await Swal.fire({
+    title: "確認要送出訂單嗎？",
+    text: "送出後將進入付款流程，請確認座位及金額正確。",
+    icon: "question",
+    showCancelButton: true,
+    confirmButtonText: "確認送出",
+    cancelButtonText: "取消",
+  });
+  if (result.isConfirmed) {
+    try {
+      const host = "http://localhost:8080/pay";
 
-    formData.ItemName = seatStore.selectedSeatNumbers;
-    formData.TotalAmount = seatStore.totalPrice;
-    formData.MerchantTradeDate = getCurrentDateTimeFormatted();
-    formData.MerchantTradeNo = generateOrderIdWithRandom();
-    formData.ClientBackURL = `${host}?orderid=${formData.MerchantTradeNo}`;
+      formData.ItemName = seatStore.selectedSeatNumbers;
+      formData.TotalAmount = seatStore.totalPrice;
+      formData.MerchantTradeDate = getCurrentDateTimeFormatted();
+      formData.MerchantTradeNo = generateOrderIdWithRandom();
+      formData.ClientBackURL = `${host}?orderid=${formData.MerchantTradeNo}`;
 
-    const data = {
-      orderId: formData.MerchantTradeNo, // 字串
-      customerId: memberid.value, // 整數
-      seatIds: seatStore.selectedSeatIds, // 整數陣列
-    };
-    // 等待訂票 API 回應
-    const ticketRes = await ApiTicket.createTicket(data);
+      const data = {
+        orderId: formData.MerchantTradeNo, // 字串
+        customerId: memberid.value, // 整數
+        seatIds: seatStore.selectedSeatIds, // 整數陣列
+      };
+      // 等待訂票 API 回應
+      const ticketRes = await ApiTicket.createTicket(data);
 
-    const checkMacValue = await generateCheckMacValue(formData);
-    if (checkMacValue) {
-      formData.CheckMacValue = checkMacValue;
-      console.log("CheckMacValue:", checkMacValue);
-      await nextTick(); // 等待 DOM 更新
+      const checkMacValue = await generateCheckMacValue(formData);
+      if (checkMacValue) {
+        formData.CheckMacValue = checkMacValue;
+        console.log("CheckMacValue:", checkMacValue);
+        await nextTick(); // 等待 DOM 更新
 
-      if (paymentForm.value) {
-        console.log(paymentForm.value);
+        if (paymentForm.value) {
+          console.log(paymentForm.value);
 
-        paymentForm.value.submit();
+          paymentForm.value.submit();
+        }
+      } else {
+        console.error("CheckMacValue is null");
       }
-    } else {
-      console.error("CheckMacValue is null");
+    } catch (error) {
+      console.error("Error:", error);
     }
-  } catch (error) {
-    console.error("Error:", error);
   }
 };
 

@@ -14,4 +14,8 @@ onMounted(() => {
 });
 </script>
 
-<style></style>
+<style>
+.my-swal-popup {
+  z-index: 200000000 !important;
+}
+</style>

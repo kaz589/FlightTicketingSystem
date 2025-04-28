@@ -15,8 +15,11 @@ public interface SeatService {
     List<SeatDTO>findSeatsByTicketId(Integer ticketId);
     //鎖定座位
     void lockSeat(List<Integer> seatIds, Ticket newTicket, int lockMinutes);
-   //釋放座位方法
+   //釋放未付款座位方法
     void releaseExpiredLocks() ;
+   
+    void releaseSeatById(Integer seatId);
+    void releaseSeatsByIds(List<Integer> seatIds);
 	
 
 }

@@ -55,8 +55,9 @@ public class TicketImp implements TicketService {
 
 	@Override
 	public Optional<TicketDTO> findTicketById(int id) {
-		// TODO Auto-generated method stub
-		return Optional.empty();
+		Optional<TicketDTO> TicketDTO= ticketRepository.findById(id)
+			    .map(TicketDTO::new);
+		return TicketDTO;
 	}
 
 	@Override

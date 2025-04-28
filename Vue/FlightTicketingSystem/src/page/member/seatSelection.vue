@@ -107,7 +107,7 @@
       <p class="text-2xl">
         預計累計里程：
         <span class="text-red-600 text-3xl font-bold">
-          ${{ seatStore.totalDistance }}
+          {{ seatStore.totalDistance }} KM
         </span>
       </p>
       <v-btn
@@ -225,7 +225,7 @@ function getseat(id) {
 }
 .plane-icon {
   font-size: 2.2rem;
-  color: #1976d2;
+  color: black;
 }
 .flight-info {
   margin-top: 18px;

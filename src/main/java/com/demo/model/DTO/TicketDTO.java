@@ -2,6 +2,8 @@ package com.demo.model.DTO;
 
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.Date;
 import java.util.Optional;
 
 import org.springframework.beans.BeanUtils;
@@ -9,6 +11,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 import com.demo.model.Ticket;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.demo.model.Flight;
 import com.demo.model.Member;
 import com.demo.model.Seat;
 
@@ -32,26 +35,49 @@ public class TicketDTO {
 	private boolean isPaid;
 	private String orderNo;
 	private int flightid;
+	private String departure;
+	private String destination;
+	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss") 
+	@DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") 
+	private Date  departureDate;
+	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss") 
+	@DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") 
+	private Date  arrivalDate ;
+	
 	public TicketDTO(Ticket entity) {
 		
 		
 		BeanUtils.copyProperties(entity, this);
 		// 用 SeatDTO 計算總價
 	    if (entity.getSeats() != null) {
-	        this.totalAmount = entity.getSeats().stream()
-	            .map(seat -> new SeatDTO(seat)) // 轉 SeatDTO，計算票價
-	            .mapToInt(seatDTO -> seatDTO.getPrice() != null ? seatDTO.getPrice() : 0)
-	            .sum();
-	        this.totalDistance = entity.getSeats().stream()
-	        	    .map(Seat::getFlight) // 取得每個座位的航班
-	        	    .mapToInt(flight -> flight != null ? flight.getEstimatedDistance() : 0)
-	        	    .sum();
-	        this.flightid = Optional.ofNullable(entity.getSeats())
-	        	    .filter(seats -> !seats.isEmpty())
-	        	    .map(seats -> seats.get(0))
-	        	    .map(seat -> seat.getFlight())
-	        	    .map(flight -> flight.getId())
-	        	    .orElse(0);
+	    	// 票價、距離
+	    	this.totalAmount = entity.getSeats().stream()
+	    	    .map(seat -> new SeatDTO(seat))
+	    	    .mapToInt(seatDTO -> seatDTO.getPrice() != null ? seatDTO.getPrice() : 0)
+	    	    .sum();
+
+	    	this.totalDistance = entity.getSeats().stream()
+	    	    .map(Seat::getFlight)
+	    	    .mapToInt(flight -> flight != null ? flight.getEstimatedDistance() : 0)
+	    	    .sum();
+
+	    	// 只取第一個 flight
+	    	Flight firstFlight = Optional.ofNullable(entity.getSeats())
+	    	    .filter(seats -> !seats.isEmpty())
+	    	    .map(seats -> seats.get(0))
+	    	    .map(Seat::getFlight)
+	    	    .orElse(null);
+
+	    	this.flightid = firstFlight != null ? firstFlight.getId() : 0;
+	    	this.departure = firstFlight != null && firstFlight.getOriginAirport() != null
+	    	    ? firstFlight.getOriginAirport().getCity()
+	    	    : "";
+	    	this.destination = firstFlight != null && firstFlight.getDestinationAirport() != null
+	    	    ? firstFlight.getDestinationAirport().getCity()
+	    	    : "";
+	    	this.departureDate = firstFlight != null ? firstFlight.getDepartureTime() : null;
+	    	this.arrivalDate   = firstFlight != null ? firstFlight.getArrivalTime()   : null;
+	        
 	    } else {
 	        this.totalAmount = 0;
 	        this.totalDistance=0;
