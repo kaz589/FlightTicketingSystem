@@ -140,8 +140,6 @@ watch(
   (newPicture) => {
     if (newPicture) {
       userPicture.value = newPicture;
-    } else {
-      userPicture.value = "/images/default1.png";
     }
   },
   { immediate: true } // 立即執行一次
@@ -197,7 +195,7 @@ function getPictureUrl(pic) {
   console.log(pic);
 
   if (!pic || pic === "null" || pic === "undefined")
-    return "/images/default.png";
+    return "/images/default1.png";
   if (pic.startsWith("http")) return pic;
   return "http://localhost:8080" + pic;
 }

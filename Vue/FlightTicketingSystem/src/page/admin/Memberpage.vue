@@ -48,7 +48,22 @@
   <br />
   <hr />
 
-  <v-btn prepend-icon="mdi mdi-magnify" @click="search"> 搜尋全部會員 </v-btn>
+  <!-- <v-btn prepend-icon="mdi mdi-magnify" @click="search"> 搜尋全部會員 </v-btn> -->
+  <v-row align="center">
+    <v-col cols="auto">
+      <v-btn prepend-icon="mdi mdi-magnify" @click="searchByFullName">
+        透過會員姓名搜尋
+      </v-btn>
+    </v-col>
+    <v-col>
+      <v-text-field
+        label="會員姓名"
+        :rules="rules"
+        style="max-width: 300px"
+        v-model="searchByFullNameTarget"
+      ></v-text-field>
+    </v-col>
+  </v-row>
 
   <!-- <div>搜尋全部 : {{ targetAll }}</div> -->
   <!-- <hr /> -->
@@ -548,6 +563,24 @@ function edit(member) {
   console.log(member);
   updateData.value = member; //此處已經是proxy物件，不用再.value
   dialog.value = true; //打開彈出框
+}
+
+//透過fullname查詢
+
+const searchByFullNameTarget = ref("P");
+
+function searchByFullName() {
+  console.log("透過全名查詢");
+
+  if (!searchByFullNameTarget.value) {
+    search();
+    return;
+  }
+  ApiMember.getAllMemberByFullname(searchByFullNameTarget.value).then((res) => {
+    if (res.data) {
+      targetAll.value = res.data;
+    }
+  });
 }
 </script>
 

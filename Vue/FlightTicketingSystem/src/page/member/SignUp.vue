@@ -98,6 +98,18 @@
                 >
                   註冊
                 </button>
+
+                <button
+                  type="submit"
+                  data-mdb-button-init
+                  data-mdb-ripple-init
+                  class="btn btn-primary btn-block mb-4"
+                  style="background-color: green;"
+                  @click="saveDefault"
+                >
+                  一鍵填入
+                </button>
+
                 <!-- <button
                   type="submit"
                   data-mdb-button-init
@@ -248,6 +260,34 @@ function goToLogin() {
   event.preventDefault(); // ⛔ 阻止 submit
   router.push("/loginUser");
 }
+
+//新增預設登入功能
+function saveDefault(){
+  event.preventDefault(); // ⛔ 阻止 submit
+  console.log("一鍵填入");
+
+
+
+  const DEFAULT_user = ref({
+  username: "Patrick",
+  password: "Patrick",
+  email: "p0139013zkuku6386@gmail.com",
+  phoneNumber: "0912345678",
+  registrationDate: new Date().toISOString().slice(0, 10), // 自動填入今天日期
+  authority: "USER",
+});
+
+signUpData.value =({ ...DEFAULT_user.value });
+console.log(signUpData.value);
+PasswordDoubleCheck.value = "Patrick";
+
+
+  
+}
+
+
+
+
 </script>
 
 <style scoped>
