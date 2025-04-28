@@ -96,6 +96,7 @@ public class MemberService {
 		member.setPassword(password_Hashing);
 		member.setTotalMiles(0); //初始值0
 		member.setRemainingMiles(0); //初始值0
+		member.setMembershipLevel("普通會員");
 		
 		memberRepository.save(member);
 		return member;
@@ -123,6 +124,7 @@ public class MemberService {
 			member.setTotalMiles(0); //初始值0
 			member.setRemainingMiles(0); //初始值0
 			member.setAuthority("ADMIN");//預設為ADMIN
+			member.setMembershipLevel("普通會員");
 			
 			memberRepository.save(member);
 			return member;

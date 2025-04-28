@@ -58,9 +58,9 @@
               <div>
                 <div class="title">剩餘里程</div>
                 <span class="contentIn">{{
-                  searchUser.totalMiles === 0
+                  searchUser.remainingMiles === 0
                     ? "尚未累積里程"
-                    : searchUser.totalMiles
+                    : searchUser.remainingMiles
                 }}</span>
               </div>
             </section>
@@ -69,7 +69,7 @@
             <section>
               <div>
                 <div class="title">會員等級</div>
-                <span class="contentIn">{{searchUser.membershipLevel}}</span>
+                <span class="contentIn">{{ searchUser.membershipLevel }}</span>
               </div>
             </section>
           </div>
@@ -158,14 +158,8 @@
     <v-col cols="12" md="6" v-if="pageControl === 2">
       <v-card class="mx-auto pa-2 no-shadow">
         <v-list>
-        
           <v-list-item>
-
-            
-
-              <TicketOrderList/>
-          
-
+            <TicketOrderList />
           </v-list-item>
         </v-list>
       </v-card>
@@ -371,7 +365,6 @@ function enter() {
   ApiMember.getMember(a.value)
     .then((res) => {
       if (res.status === 200) {
-        
         searchUser.value = res.data;
         console.log(searchUser.value); // 確認是否正確返回資料
       } else {
