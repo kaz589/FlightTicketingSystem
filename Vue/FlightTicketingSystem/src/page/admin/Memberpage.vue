@@ -44,6 +44,11 @@
       </v-col>
     </v-row>
   </v-container>
+
+  <div>
+    <PieChart />
+  </div>
+
   <br />
   <br />
   <hr />
@@ -297,6 +302,7 @@ import { ref, onMounted, shallowRef, watch } from "vue";
 import { ApiMember } from "@/utils/API";
 import Swal from "sweetalert2";
 import "sweetalert2/dist/sweetalert2.min.css";
+import PieChart from "@/components/PieChart.vue";
 
 //初始運行函數(使之一開始就運行)
 onMounted(() => {

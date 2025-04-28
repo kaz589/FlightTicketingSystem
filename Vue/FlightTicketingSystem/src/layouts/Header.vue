@@ -1,5 +1,4 @@
 <template>
-
   <v-app>
     <header class="sticky top-0 z-50 bg-white shadow-sm py-4 px-4">
       <div class="max-w-screen-xl mx-auto flex items-center justify-between">
@@ -100,7 +99,7 @@
     <v-main>
       <div class="pa-4">
         <router-view></router-view>
-        <Footer/>
+        <Footer />
       </div>
     </v-main>
   </v-app>

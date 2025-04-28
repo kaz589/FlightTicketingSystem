@@ -8,7 +8,8 @@
           src="@/assets/Easytrip_text.png"
           alt="Easytrip Logo"
           width="40%"
-          height="40%" />
+          height="40%"
+        />
       </div>
 
       <!-- Middle: Navigation -->
@@ -28,7 +29,8 @@
         <img
           src="@/assets/Easytrip.png"
           alt="User Avatar"
-          class="rounded-full h-12 w-12" />
+          class="rounded-full h-12 w-12"
+        />
       </div>
     </header>
 
@@ -47,7 +49,8 @@
               selectedTab === tab.name
                 ? 'border-b-2 border-black'
                 : 'text-gray-500'
-            ">
+            "
+          >
             <!-- Icon -->
             <i :class="['mdi', tab.icon]"></i>
             <!-- Name -->
@@ -60,48 +63,56 @@
       <div class="flex flex-wrap justify-center items-center gap-4">
         <!-- From -->
         <div
-          class="flex items-center bg-gray-100 px-4 py-3 rounded-full text-sm w-52">
+          class="flex items-center bg-gray-100 px-4 py-3 rounded-full text-sm w-52"
+        >
           <span class="mr-2 mdi mdi-airplane-takeoff"></span
           ><strong>From:</strong>
           <input
             type="text"
             placeholder="Origin"
-            class="bg-transparent outline-none ml-2 w-full" />
+            class="bg-transparent outline-none ml-2 w-full"
+          />
         </div>
 
         <!-- To -->
         <div
-          class="flex items-center bg-gray-100 px-4 py-3 rounded-full text-sm w-52">
+          class="flex items-center bg-gray-100 px-4 py-3 rounded-full text-sm w-52"
+        >
           <span class="mr-2 mdi mdi-airplane-landing"></span
           ><strong>To:</strong>
           <input
             type="text"
             placeholder="Destination"
-            class="bg-transparent outline-none ml-2 w-full" />
+            class="bg-transparent outline-none ml-2 w-full"
+          />
         </div>
 
         <!-- Date range (one input, two pickers) -->
         <div
-          class="flex items-center bg-gray-100 px-4 py-3 rounded-full text-sm w-64">
+          class="flex items-center bg-gray-100 px-4 py-3 rounded-full text-sm w-64"
+        >
           <span class="mr-2 mdi mdi-calendar-range"></span>
           <input
             type="text"
             ref="dateInput"
             placeholder="Start → End"
             class="bg-transparent outline-none w-full"
-            readonly />
+            readonly
+          />
         </div>
 
         <!-- Travelers -->
         <div
-          class="flex items-center bg-gray-100 px-4 py-3 rounded-full text-sm w-40">
+          class="flex items-center bg-gray-100 px-4 py-3 rounded-full text-sm w-40"
+        >
           <span class="mr-2 mdi mdi-account-multiple"></span>
           <span>1 Traveler</span>
         </div>
 
         <!-- Search Button -->
         <button
-          class="bg-green-400 hover:bg-green-500 text-white font-bold px-6 py-3 rounded-full">
+          class="bg-green-400 hover:bg-green-500 text-white font-bold px-6 py-3 rounded-full"
+        >
           Search
         </button>
       </div>
@@ -111,6 +122,7 @@
 
 <script setup>
 import { ref, onMounted } from "vue";
+import Picture from "@/components/Picture.vue";
 import flatpickr from "flatpickr";
 import "flatpickr/dist/flatpickr.min.css";
 
