@@ -200,10 +200,9 @@ export const ApiProducts = {
   //用id查單筆
   searchById: (id) => instance.get(`/products/${id}`),
   // 根據商品名稱查詢商品
-  searchProByName: (name) =>
-    instance.get(`/products/name`, {
-      params: { name },
-    }),
+  searchProByName: (name) => instance.get(`/products/name`, {
+    params: { name },
+  }),
   // 查詢低庫存商品
   searchlowstock: (threshold) =>
     instance.get(`/products/lowstock`, {

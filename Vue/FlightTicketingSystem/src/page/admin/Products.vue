@@ -213,6 +213,8 @@ function search() {
 }
 // 按名稱查詢
 function searchByName() {
+  console.log(searchFilters.value.name);
+  
   ApiProducts.searchProByName(searchFilters.value.name).then(res => Allproducts.value = res.data);
 }
 

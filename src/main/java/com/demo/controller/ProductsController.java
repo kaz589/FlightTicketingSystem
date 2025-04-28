@@ -70,6 +70,7 @@ public class ProductsController {
 	 */
 	@GetMapping("/name")
 	public List<Products> findProductsByName(@RequestParam("name") String name) {
+		  System.out.println("後端 Controller 接收到的 name 參數是：" + name);
 		List<Products> products = productsService.findProductsByName(name);
 		return checkNotEmpty(products, "沒有商品資料");
 	}

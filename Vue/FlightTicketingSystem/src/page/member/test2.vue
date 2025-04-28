@@ -15,15 +15,16 @@
       label="輸入商品名稱"
       hide-details
       class="mx-4"
+      v-model="searchFilters.name"
       ></v-text-field> 
       <br/>
       <br/>
-      <v-btn @click="search">搜尋</v-btn>
+      <v-btn @click="searchByName(name)">搜尋</v-btn>
     <br/>
     <br/>
       <v-row>
         <v-col
-          v-for="product in products"
+          v-for="product in Allproducts"
           :key="product.id"
           cols="12"
           md="3"
@@ -47,14 +48,21 @@ onMounted(() => {
 })
 // 商品列表
 const Allproducts = ref([]);
-const products = ref([]);
+
+// 搜尋關鍵字
+const searchFilters = ref({ name: '' });
 
 function search(){ 
   ApiProducts.getAllProduct().then((res) => {
-    products.value = res.data;
+    Allproducts.value = res.data;
     console.log(res.data);
     
   })
+}
+function searchByName() {
+  console.log(searchFilters.value.name);
+  
+  ApiProducts.searchProByName(searchFilters.value.name).then(res => Allproducts.value = res.data);
 }
 
 </script>
