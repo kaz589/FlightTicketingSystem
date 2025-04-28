@@ -58,9 +58,9 @@
               <div>
                 <div class="title">剩餘里程</div>
                 <span class="contentIn">{{
-                  searchUser.totalMiles === 0
+                  searchUser.remainingMiles === 0
                     ? "尚未累積里程"
-                    : searchUser.totalMiles
+                    : searchUser.remainingMiles
                 }}</span>
               </div>
             </section>
@@ -69,7 +69,7 @@
             <section>
               <div>
                 <div class="title">會員等級</div>
-                <span class="contentIn">silver</span>
+                <span class="contentIn">{{ searchUser.membershipLevel }}</span>
               </div>
             </section>
           </div>
@@ -157,6 +157,7 @@
     <!-- 可以在這邊製作區塊2的網頁內容 -->
     <v-col cols="12" md="6" v-if="pageControl === 2">
       <v-card class="mx-auto pa-2 no-shadow">
+
         
         
         
@@ -167,7 +168,7 @@
           
 
           
-        
+      
       </v-card>
     </v-col>
     <!-- 區塊2結束 -->
@@ -434,7 +435,7 @@ function hide() {
 
 //區分第三方登入和一般登入的圖片取得
 function getPictureUrl(pic) {
-  if (!pic) return "/images/default.png";
+  if (!pic) return "/images/default1.png";
   if (pic.startsWith("http")) return pic;
   return "http://localhost:8080" + pic;
 }

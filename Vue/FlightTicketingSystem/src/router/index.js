@@ -174,9 +174,11 @@ router.beforeEach((to, from, next) => {
   const authStore = useAuthStore();
   const seatStore = useSeatStore();
   console.log("路由守衛觸發，當前登錄狀態：", authStore.isAuthenticated);
+
   // 只在 seatSelection 或 SeatPayment 頁面保留選位
   const keepSeatPaths = ["/seatSelection", "/SeatPayment"];
   const isSeatPage = keepSeatPaths.includes(to.path);
+
 
   // 進入 SeatPayment 前必須有選座位
   if (to.path === "/SeatPayment") {
@@ -214,7 +216,10 @@ router.beforeEach((to, from, next) => {
   if (to.meta.requiresAuth && !authStore.isAuthenticated) {
     console.log("用戶未登錄，跳轉到登錄頁面");
     return next({ path: "/loginUser" }); // 重定向到登錄頁面
-  } 
+
+  }
+  // 檢查角色權限
+
 
   const requiredRoles = to.meta.roles;
   const userRoles = authStore.roles;
