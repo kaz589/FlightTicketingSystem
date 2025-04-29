@@ -47,6 +47,7 @@
             ><img src="https://flagcdn.com/tw.svg" width="40" alt="Taiwan"
           /></span>
           <span class="text-[35px]">TWD</span>
+
           <v-btn @click="router.push('/checkout')" class="text-none" variant="flat" stacked>
             <v-badge  color="error" :content="productTypesCount"
             :model-value="productTypesCount>0">
@@ -105,8 +106,11 @@
 
     <v-main>
       <div class="pa-4">
-        
-        <router-view></router-view>
+        <router-view v-slot="{ Component }">
+          <transition name="fade" mode="out-in">
+            <component :is="Component" :key="$route.fullPath" />
+          </transition>
+        </router-view>
         <Footer />
       </div>
     </v-main>
@@ -201,7 +205,7 @@ function getPictureUrl(pic) {
 }
 </script>
 
-<style scoped>
+<style>
 /* a span {
   display: block;
   height: 2px;

@@ -2,6 +2,7 @@ package com.demo.service;
 
 
 import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -36,8 +37,16 @@ public interface TicketService {
     void deleteTicket(int id);
     
     // 搜索票
-    Page<Ticket> searchTickets(Member member, LocalDateTime bookingStartTime, LocalDateTime bookingEndTime,
-                               int flightId, Pageable pageable);
+    Page<TicketDTO> searchTickets( String originAirport,
+            String destinationAirport,
+            Date startTime,
+            Date endTime,
+            Boolean paymentStatus,
+            String keyword,
+            int page, 
+            int size,
+            String sortBy,
+            String sortOrder);
     
     // 查詢票的座位
     List<Seat> findSeatsByTicketId(int ticketId);
