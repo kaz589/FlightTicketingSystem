@@ -15,6 +15,7 @@ import com.demo.controller.PasswordHashing;
 import com.demo.model.Member;
 import com.demo.model.PasswordResetToken;
 import com.demo.model.DTO.MembershipCountDTO;
+import com.demo.model.DTO.ProviderCountDTO;
 import com.demo.repository.MemberRepository;
 import com.demo.repository.PasswordResetTokenRepository;
 
@@ -338,7 +339,11 @@ public class MemberService {
 			return countByMembershipLevel;
 		}
 		
-		
+		//計算各會員登入方式
+		public List<ProviderCountDTO> countProvider(){
+			List<ProviderCountDTO> countByProvider = memberRepository.countByProvider();
+			return countByProvider;
+		}
 		
 		
 		

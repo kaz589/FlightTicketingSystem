@@ -68,7 +68,8 @@
             <section>
               <div>
                 <div class="title">會員等級</div>
-                <span class="contentIn">{{ searchUser.membershipLevel }}</span>
+                <span class="contentIn">{{searchUser.membershipLevel}}</span>
+
               </div>
             </section>
           </div>
@@ -361,6 +362,7 @@ function enter() {
   ApiMember.getMember(a.value)
     .then((res) => {
       if (res.status === 200) {
+        
         searchUser.value = res.data;
         console.log(searchUser.value); // 確認是否正確返回資料
       } else {

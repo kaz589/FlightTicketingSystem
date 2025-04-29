@@ -90,6 +90,10 @@ export const ApiFlight = {
 export const ApiMember = {
   getMember: (id) => instance.get(`/member/GetMember/${id}`),
   getAllMember: () => instance.get(`/member/GetAllMember`),
+  countMembershipLevel: () => instance.get(`/member/CountMembershipLevel`),
+  countProvider: () => instance.get(`/member/CountProvider`),
+
+
   getAllMemberByFullname: (name) =>
     instance.get(`/member/GetAllMemberByFullname/${name}`),
 

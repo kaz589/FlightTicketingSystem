@@ -19,6 +19,7 @@ import com.demo.Security.annotation.RequireJwt;
 import com.demo.dto.MemberAuthorityDto;
 import com.demo.model.Member;
 import com.demo.model.DTO.MembershipCountDTO;
+import com.demo.model.DTO.ProviderCountDTO;
 import com.demo.service.MemberService;
 
 
@@ -143,6 +144,12 @@ public class MemberController {
 	@GetMapping("/CountMembershipLevel")
 	public List<MembershipCountDTO> CountMembershipLevel(){
 		return memberService.countMemberShip();
+	}
+	
+	//找不同登入方式的人各有多少
+	@GetMapping("/CountProvider")
+	public List<ProviderCountDTO> CountProvider(){
+		return memberService.countProvider();
 	}
 	
 

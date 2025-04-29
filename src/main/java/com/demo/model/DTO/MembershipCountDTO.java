@@ -11,10 +11,17 @@ public class MembershipCountDTO {
         this.membershipLevel = membershipLevel;
         this.count = count;
     }
+    
+    
+
+
+
 
 	public String getMembershipLevel() {
 		return membershipLevel;
 	}
+	
+	
 
 	public void setMembershipLevel(String membershipLevel) {
 		this.membershipLevel = membershipLevel;
