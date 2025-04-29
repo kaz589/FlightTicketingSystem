@@ -1,6 +1,5 @@
 <template>
   <v-row>
-    
     <v-col cols="12" md="3">
       <v-card class="mx-auto pa-2 no-shadow">
         <v-list>
@@ -157,18 +156,7 @@
     <!-- 可以在這邊製作區塊2的網頁內容 -->
     <v-col cols="12" md="6" v-if="pageControl === 2">
       <v-card class="mx-auto pa-2 no-shadow">
-
-        
-        
-        
-
-            
-
-              <TicketOrderList/>
-          
-
-          
-      
+        <TicketOrderList />
       </v-card>
     </v-col>
     <!-- 區塊2結束 -->
