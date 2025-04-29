@@ -44,13 +44,14 @@ public class payController {
 		    try {
 				mailService.sendOrderPaidMail(ticket.getMember().getEmail(),ticket.getMember().getFullName() ,ticket.getOrderNo(),"NT$"+newTicketDTO.getTotalAmount());
 			} catch (MessagingException e) {
+				System.out.println("OKMAIL");
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		    // 付款成功後導向結果頁（可依需求更改）
-		    return new RedirectView("http://localhost:5173/memberFront?tabs=2");
+		    return new RedirectView("http://localhost:5173/memberFront?tab=2");
 	    }
-	    return new RedirectView("http://localhost:5173/memberFront?tabs=2");
+	    return new RedirectView("http://localhost:5173/memberFront?tab=2");
 	}
 
 	

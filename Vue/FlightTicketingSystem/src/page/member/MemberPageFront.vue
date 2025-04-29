@@ -1,4 +1,5 @@
 <template>
+  <div>
   <v-row>
     
     <v-col cols="12" md="3">
@@ -312,6 +313,7 @@
       </template>
     </v-confirm-edit>
   </v-dialog>
+</div>
 </template>
 
 <script setup>

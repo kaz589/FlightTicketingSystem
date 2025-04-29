@@ -33,4 +33,5 @@ public interface SeatRepository extends JpaRepository<Seat, Integer> {
     		""")
     List<Seat> findExpiredAndUnbookedAndTicketIsNull(@Param("now") LocalDateTime now);
     List<Seat> findByFlightIdAndBooked(Integer flightId, boolean booked);
+    List<Seat> findByBooked(boolean booked);
 }

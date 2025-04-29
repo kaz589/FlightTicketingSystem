@@ -205,7 +205,7 @@
         <!-- 操作按鈕 -->
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn color="primary" @click="">一鍵輸入</v-btn>
+          <v-btn color="primary" @click="autofill()">一鍵輸入</v-btn>
           <v-btn @click="dialog = false">取消</v-btn>
           <v-btn color="primary" @click="save">保存</v-btn>
         </v-card-actions>
@@ -246,7 +246,7 @@ onMounted(() => {
 });
 
 const allairports = ref([]); //所有不重複機場數據
-const allModels = ref(["A320", "B737"]); //所有不重複機型數據
+const allModels = ref(["A320", "B737-800F","A319-F"]); //所有不重複機型數據
 const allfullairports = ref([]);
 
 const getDistinctAirportName = () => {
@@ -451,6 +451,19 @@ function formatDate(date) {
 
   // 返回格式化的字符串
   return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+}
+function autofill() {
+  record.value = {
+    originAirport: allairports.value[0] || "台北松山",
+    destinationAirport: allairports.value[1] || "高雄小港",
+    departureTime: new Date(),
+    arrivalTime: new Date(Date.now() + 2 * 60 * 60 * 1000), // 兩小時後
+    modelName: allModels.value[0] || "A320",
+    firstClassPrice: 12000,
+    businessPrice: 8000,
+    economyPrice: 3500,
+    estimatedDistance: 350
+  };
 }
 </script>
 

@@ -56,27 +56,25 @@ public class SeatController {
 	     @PathVariable String status
 	 ) {
 		 
-		 System.out.println(flightId);
-		 System.out.println(status);
-	     // 查全部座位
-	     if (flightId == 0 && "all".equalsIgnoreCase(status)) {
-	    	 System.out.println("1");
-	         return seatService.findAllSeat();
-	     }
-	     // 查某航班全部座位
-	     else if (flightId != 0 && "all".equalsIgnoreCase(status)) {
-	    	 System.out.println("2");
-	         return seatService.findSeatsByFlightId(flightId);
-	     }
-	     // 查某航班已預定
-	     else if (flightId != 0&& !"all".equalsIgnoreCase(status) ) {
-	    	 System.out.println("3");
-	         return seatService.findSeatsByFlightIdAndBooked(flightId, Boolean.parseBoolean(status));
-	     }
-	     // 參數錯誤
-	     else {
-	         throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "狀態參數錯誤");
-	     }
+		 // 查全部座位
+		    if (flightId == 0 && "all".equalsIgnoreCase(status)) {
+		        return seatService.findAllSeat();
+		    }
+		    // 查所有航班的已預定/未預定
+		    if (flightId == 0 && ("true".equalsIgnoreCase(status) || "false".equalsIgnoreCase(status))) {
+		        boolean booked = Boolean.parseBoolean(status);
+		        return seatService.findSeatsByBooked(booked);
+		    }
+		    // 查某航班全部座位
+		    if (flightId != 0 && "all".equalsIgnoreCase(status)) {
+		        return seatService.findSeatsByFlightId(flightId);
+		    }
+		    // 查某航班已預定/未預定
+		    if (flightId != 0 && ("true".equalsIgnoreCase(status) || "false".equalsIgnoreCase(status))) {
+		        boolean booked = Boolean.parseBoolean(status);
+		        return seatService.findSeatsByFlightIdAndBooked(flightId, booked);
+		    }
+		    throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "狀態參數錯誤");
 	 }
 	 
 

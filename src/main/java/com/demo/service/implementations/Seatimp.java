@@ -139,6 +139,15 @@ public class Seatimp  implements SeatService{
 		return newSeatDTO;
 	}
 
+	@Override
+	public List<SeatDTO> findSeatsByBooked(boolean booked) {
+		 List <SeatDTO> newSeatDTO=seatRepository.findByBooked(   booked).stream()
+					.map(SeatDTO::new)
+					.toList();
+					
+					return newSeatDTO;
+	}
+
 	
 
 	
