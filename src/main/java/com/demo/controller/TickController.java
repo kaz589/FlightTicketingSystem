@@ -1,6 +1,7 @@
 package com.demo.controller;
 
 import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
@@ -9,6 +10,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -76,24 +78,33 @@ public class TickController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    // 搜尋訂票
     @GetMapping("/search")
-    public ResponseEntity<Page<Ticket>> searchTickets(
-            @RequestParam(required = false) Integer memberId,
-            @RequestParam(required = false) LocalDateTime bookingStartTime,
-            @RequestParam(required = false) LocalDateTime bookingEndTime,
-            @RequestParam(required = false) Integer flightId,
-            Pageable pageable) {
-
-        Member member = null;
-        if (memberId != null) {
-            member = new Member();
-            member.setMemberId(memberId);
-        }
-
-        Page<Ticket> tickets = ticketService.searchTickets(member, bookingStartTime, bookingEndTime, flightId, pageable);
-        return ResponseEntity.ok(tickets);
+    public Page<TicketDTO> searchTickets(
+            @RequestParam(required = false) String originAirport,
+            @RequestParam(required = false) String destinationAirport,
+            @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") Date arrivalTime,
+            @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") Date departureTime,
+            @RequestParam(required = false) Boolean paid,
+            @RequestParam(required = false) String keyword,
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "id") String sortBy,
+            @RequestParam(defaultValue = "asc") String sortOrder
+    ) {
+        return ticketService.searchTickets(
+                originAirport,
+                destinationAirport,
+                arrivalTime,
+                departureTime,
+                paid,
+                keyword,
+                page,
+                size,
+                sortBy,
+                sortOrder
+        );
     }
+
 
     // 根據訂票ID查詢座位
     @GetMapping("/{ticketId}/seats")
