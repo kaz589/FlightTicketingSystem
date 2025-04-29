@@ -1,4 +1,5 @@
 <template>
+  <div>
   <v-row>
     <v-col cols="12" md="3">
       <v-card class="mx-auto pa-2 no-shadow">
@@ -301,6 +302,7 @@
       </template>
     </v-confirm-edit>
   </v-dialog>
+</div>
 </template>
 
 <script setup>
