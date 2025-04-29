@@ -165,6 +165,9 @@ export const ApiSeats = {
 
   getSeatsByTicketId: (ticketId) => instance.get(`/seat/tickets/${ticketId}`),
   releaseSeat: (seatId) => instance.post(`/seat/release/${seatId}`),
+  getSeatsByFlightIdAndStatus: (flightId, status) =>
+    instance.get(`/seat/search/flights/${flightId}/${status}`),
+
 };
 
 // 票務相關 API

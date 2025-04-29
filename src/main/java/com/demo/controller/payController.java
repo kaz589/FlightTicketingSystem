@@ -48,9 +48,9 @@ public class payController {
 				e.printStackTrace();
 			}
 		    // 付款成功後導向結果頁（可依需求更改）
-		    return new RedirectView("http://localhost:5173/");
+		    return new RedirectView("http://localhost:5173/memberFront?tabs=2");
 	    }
-	    return new RedirectView("http://localhost:5173/");
+	    return new RedirectView("http://localhost:5173/memberFront?tabs=2");
 	}
 
 	

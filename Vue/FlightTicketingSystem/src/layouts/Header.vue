@@ -1,7 +1,7 @@
 <template>
   <v-app>
     <header class="sticky top-0 z-50 bg-white shadow-sm py-4 px-4">
-      <div class="max-w-screen-xl mx-auto flex items-center justify-between">
+      <div class="flex items-center justify-between w-full">
         <div class="flex items-center">
           <img
             src="@/assets/Easytrip_text.png"

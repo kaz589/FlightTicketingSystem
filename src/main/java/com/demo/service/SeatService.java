@@ -20,6 +20,9 @@ public interface SeatService {
    
     void releaseSeatById(Integer seatId);
     void releaseSeatsByIds(List<Integer> seatIds);
+    
+    // 查詢某航班已(未)預定的座位
+    List<SeatDTO> findSeatsByFlightIdAndBooked(Integer flightId, boolean booked);
 	
 
 }

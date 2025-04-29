@@ -4,7 +4,7 @@
       <div class="order-info-row">
         <span class="order-label">航線：</span>
         <span class="order-value">
-          {{ order.departure }} → {{ order.destination }}
+          {{ order.originAirport }} → {{ order.destinationAirport }}
         </span>
       </div>
       <!-- 新增：起飛日、降落日 -->
