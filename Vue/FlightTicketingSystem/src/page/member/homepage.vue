@@ -1,6 +1,7 @@
 <template>
   <div>
   <h1 class="text-4xl font-extrabold text-center mb-4">易趣輕鬆飛</h1>
+  
   <div class="flex justify-center gap-6 text-2lg font-semibold mb-4">
     <button
       v-for="tab in tabs"
@@ -43,6 +44,7 @@
 import { ref } from "vue";
 import flightseach from "@/page/member/flightseach.vue";
 import test2 from "./test2.vue";
+import carousel from "@/components/carousel.vue";
 const selectedTab = ref("航班");
 const tabs = [
   { name: "航班", icon: "mdi-airplane" },

@@ -32,4 +32,6 @@ public interface SeatRepository extends JpaRepository<Seat, Integer> {
     		  AND (s.ticket IS NULL OR t.isPaid = false)
     		""")
     List<Seat> findExpiredAndUnbookedAndTicketIsNull(@Param("now") LocalDateTime now);
+    List<Seat> findByFlightIdAndBooked(Integer flightId, boolean booked);
+    List<Seat> findByBooked(boolean booked);
 }

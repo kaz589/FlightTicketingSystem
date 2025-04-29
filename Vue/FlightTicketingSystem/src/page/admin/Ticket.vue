@@ -79,6 +79,7 @@
       :headers="headers"
       :items="items"
       class="elevation-1 my-bordered-table"
+      hide-default-footer
       @update:sort-by="updateSortBy"
     >
     <template v-slot:item.paid="{ item }">

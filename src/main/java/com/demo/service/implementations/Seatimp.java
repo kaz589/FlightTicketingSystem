@@ -128,6 +128,26 @@ public class Seatimp  implements SeatService{
 		
 	}
 
+	@Override
+	public List<SeatDTO> findSeatsByFlightIdAndBooked(Integer flightId, boolean booked) {
+		
+		
+		 List <SeatDTO> newSeatDTO=seatRepository.findByFlightIdAndBooked( flightId,  booked).stream()
+		.map(SeatDTO::new)
+		.toList();
+		
+		return newSeatDTO;
+	}
+
+	@Override
+	public List<SeatDTO> findSeatsByBooked(boolean booked) {
+		 List <SeatDTO> newSeatDTO=seatRepository.findByBooked(   booked).stream()
+					.map(SeatDTO::new)
+					.toList();
+					
+					return newSeatDTO;
+	}
+
 	
 
 	

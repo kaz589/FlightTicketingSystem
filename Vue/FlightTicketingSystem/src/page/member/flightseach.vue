@@ -48,7 +48,7 @@
     <!-- Search Button -->
     <v-col cols="auto">
     <button
-      class="bg-green-400 hover:bg-green-500 text-white font-bold px-6 py-3 rounded-full"
+      class="bg-blue-500 hover:bg-blue-600 text-white font-bold px-6 py-3 rounded-full"
       @click="search()"
     >
       Search
@@ -56,20 +56,26 @@
     </v-col>
   </v-row>
   <v-container>
-    <v-row align="start" justify="center" cols="1" md="1" >
-      <v-col
-        v-for="flight in flights"
+    <template v-if="flights && flights.length > 0">
+    <transition-group name="slide-fade" tag="div" class="flight-list-column">
+      <div
+        v-for="(flight, idx) in flights"
         :key="flight.id"
-        align-self="center"
-        cols="7"
-        md="7"
-        sm="12"
-        xs="12"
+        class="flight-card-block"
+        :style="{ transitionDelay: (idx * 120) + 'ms' }"
       >
-        <FlightCard :flight="flight"></FlightCard>
-      </v-col>
-    </v-row>
+        <FlightCard :flight="flight"   />
+      </div>
+    </transition-group>
+  </template>
+  <template v-else >
+    <div class="list-column">
+    <carousel/>
+    <ExpansionPanels/>
+  </div>
+  </template>
   </v-container>
+
 </template>
 
 <script setup>
@@ -80,11 +86,13 @@ import FlatPickr from "vue-flatpickr-component";
 import "flatpickr/dist/flatpickr.css";
 import FlightCard from "@/components/flight/flightcard.vue";
 import { Mandarin as zh } from "flatpickr/dist/l10n/zh.js"; // 中文語言包
+import ExpansionPanels from"@/components/ExpansionPanels.vue"
+import carousel from "@/components/carousel.vue";
+import { showLoadingSwal, closeLoadingSwal,showSuccessSwal } from '@/utils/swalLoading'
 const range = ref([]);
 const from=ref("");
 const to=ref("");
 const airports = ref([]);
-
 
 const config = {
   mode: "range",
@@ -115,9 +123,12 @@ async function search() {
       10    // size
     );
     flights.value = response.data.content; // 假設回傳格式為 { data: [...] }
+    showLoadingSwal();
     console.log("搜尋航班成功", response.data);
   } catch (error) {
     console.error("搜尋航班失敗", error);
+  }finally{
+    closeLoadingSwal();
   }
 }
 const flights = ref([
@@ -141,5 +152,40 @@ const flights = ref([
   font-size: 1.25rem;     /* 更大字體 */
   padding: 10px 15px;
   box-sizing: border-box;
+}
+.flight-list-column {
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* 置中 */
+  gap: 24px;
+  width: 100%;
+}
+.flight-card-block {
+  width: 100%;
+  max-width: 900px; /* 你想要的最大寬度 */
+}
+/* 動畫部分 */
+.slide-fade-enter-active {
+  transition: all 0.3s ease-out;
+}
+.slide-fade-leave-active {
+  transition: all 0.8s cubic-bezier(1, 0.5, 0.8, 1);
+}
+.slide-fade-enter-from,
+.slide-fade-leave-to {
+  transform: translateX(20px);
+  opacity: 0;
+}
+.list-column {
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* 子項目垂直方向置中 */
+  gap: 24px;
+  width: 80%;
+  margin: 0 auto;      /* 讓整個區塊在父容器水平置中 */
+}
+.v-container {
+  padding-left: 0 !important;
+  padding-right: 0 !important;
 }
 </style>
