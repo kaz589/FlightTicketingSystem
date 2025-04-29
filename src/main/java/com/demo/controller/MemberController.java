@@ -18,6 +18,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.demo.Security.annotation.RequireJwt;
 import com.demo.dto.MemberAuthorityDto;
 import com.demo.model.Member;
+import com.demo.model.DTO.MembershipCountDTO;
+import com.demo.model.DTO.ProviderCountDTO;
 import com.demo.service.MemberService;
 
 
@@ -137,7 +139,18 @@ public class MemberController {
 		public Member GetMemberByEmail(@PathVariable String email) {
 			return memberService.getOneByEmail(email);
 		}	
+		
+	//找所有user的會員等級各有多少人
+	@GetMapping("/CountMembershipLevel")
+	public List<MembershipCountDTO> CountMembershipLevel(){
+		return memberService.countMemberShip();
+	}
 	
+	//找不同登入方式的人各有多少
+	@GetMapping("/CountProvider")
+	public List<ProviderCountDTO> CountProvider(){
+		return memberService.countProvider();
+	}
 	
 
 }

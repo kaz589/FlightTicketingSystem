@@ -1,6 +1,5 @@
 <template>
   <v-row>
-    
     <v-col cols="12" md="3">
       <v-card class="mx-auto pa-2 no-shadow">
         <v-list>
@@ -71,7 +70,8 @@
             <section>
               <div>
                 <div class="title">會員等級</div>
-                <span class="contentIn">{{ searchUser.membershipLevel }}</span>
+                <span class="contentIn">{{searchUser.membershipLevel}}</span>
+
               </div>
             </section>
           </div>
@@ -159,18 +159,7 @@
     <!-- 可以在這邊製作區塊2的網頁內容 -->
     <v-col cols="12" md="6" v-if="pageControl === 2">
       <v-card class="mx-auto pa-2 no-shadow">
-
-        
-        
-        
-
-            
-
-              <TicketOrderList/>
-          
-
-          
-      
+        <TicketOrderList />
       </v-card>
     </v-col>
     <!-- 區塊2結束 -->
@@ -377,6 +366,7 @@ function enter() {
   ApiMember.getMember(a.value)
     .then((res) => {
       if (res.status === 200) {
+        
         searchUser.value = res.data;
         console.log(searchUser.value); // 確認是否正確返回資料
       } else {
