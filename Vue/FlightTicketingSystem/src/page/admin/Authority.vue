@@ -1,7 +1,11 @@
 <template>
   <div class="pa-4">
-    <h2 class="text-h5 mb-4">管理員清單</h2>
-
+    <v-row>
+      <h2 class="text-h5 mb-4">管理員清單</h2>
+      <v-btn class="ml-6" color="primary" @click="dialogNewAdmin = true"
+        >新增管理員</v-btn
+      >
+    </v-row>
     <v-data-table
       :headers="headers"
       :items="adminList"
@@ -59,6 +63,60 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
+
+    <!-- 新增管理員彈窗 -->
+    <v-dialog v-model="dialogNewAdmin" max-width="1000">
+      <v-card>
+        <v-card-title>新增管理員</v-card-title>
+        <v-card-text>
+          <v-form ref="form">
+            <v-row>
+              <v-col cols="12" md="4">
+                <v-text-field
+                  v-model="insertData.fullName"
+                  label="全名"
+                  :rules="[rules.required]"
+                ></v-text-field>
+              </v-col>
+              <v-col cols="12" md="4">
+                <v-text-field
+                  v-model="insertData.username"
+                  label="使用者名稱"
+                  :rules="[rules.required]"
+                ></v-text-field>
+              </v-col>
+              <v-col cols="12" md="4">
+                <v-text-field
+                  v-model="insertData.password"
+                  label="使用者密碼"
+                  type="password"
+                  :rules="[rules.required, rules.password]"
+                ></v-text-field>
+              </v-col>
+              <v-col cols="12" md="4">
+                <v-text-field
+                  v-model="insertData.email"
+                  label="信箱"
+                  :rules="[rules.required, rules.email]"
+                ></v-text-field>
+              </v-col>
+              <v-col cols="12" md="4">
+                <v-text-field
+                  v-model="insertData.phoneNumber"
+                  label="電話"
+                  :rules="[rules.required, rules.phone]"
+                ></v-text-field>
+              </v-col>
+            </v-row>
+          </v-form>
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer />
+          <v-btn text @click="dialogNewAdmin = false">取消</v-btn>
+          <v-btn color="primary" @click="submitForm">儲存</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </div>
 </template>
 
@@ -73,6 +131,7 @@ const authStore = useAuthStore(); // 使用 store
 const headers = [
   //   { title: "編號", key: "index", sortable: false },
   { title: "編號", key: "memberId" },
+  { title: "全名", key: "fullName" },
   { title: "管理員名稱", key: "username" },
   { title: "信箱", key: "email" },
   { title: "角色", key: "authority" },
@@ -192,6 +251,65 @@ function saveRolesUser() {
     }
   });
   dialogRole.value = false;
+}
+
+//新增管理員
+// 提交前先驗證整個 form
+const form = ref(null);
+const submitForm = () => {
+  form.value.validate().then((success) => {
+    if (success) {
+      saveNewAdmin();
+    }
+  });
+};
+
+// 驗證規則
+const rules = {
+  required: (v) => !!v || "此欄位為必填",
+  email: (v) => /.+@.+\..+/.test(v) || "請輸入有效的 Email",
+  phone: (v) => /^09\d{8}$/.test(v) || "請輸入正確的手機格式",
+  password: (v) => v.length >= 6 || "密碼需至少 6 碼",
+};
+
+const dialogNewAdmin = ref(false);
+const DEFAULT_INSERT = ref({
+  fullName: "",
+  username: "",
+  password: "",
+  email: "",
+  phoneNumber: "",
+});
+const insertData = ref({ ...DEFAULT_INSERT.value });
+
+//開啟新增管理員dialog
+function openDialogNewAdmin() {
+  dialogNewAdmin.value = true;
+}
+//儲存新增管理員
+function saveNewAdmin() {
+  console.log("按下按鈕");
+  console.log("要儲存的使用者：", insertData.value);
+  ApiMember.insertMemberDefaultAdmin(insertData.value).then((res) => {
+    if (res) {
+      console.log("新增成功");
+      // 立即重新取得管理員列表
+      getAllAdmin();
+      dialogNewAdmin.value = false;
+
+      // ✅ 清空表單
+      insertData.value = {
+        fullName: "",
+        username: "",
+        password: "",
+        email: "",
+        phoneNumber: "",
+      };
+
+      // ✅reset 驗證狀態
+      form.value?.resetValidation?.();
+    }
+  });
 }
 
 onMounted(() => {
