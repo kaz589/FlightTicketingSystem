@@ -48,6 +48,21 @@ public class MemberService {
 		return null;
 	}
 	
+	public List<Member> getAllByFullName(String name) {
+		
+		
+		List<Member> members = memberRepository.findAllByFullName(name);
+		
+		if (members != null) {
+			return members;
+		}
+		
+		return null;
+	}
+	
+	
+	
+	
 	public List<Member> getAll() {
 		return memberRepository.findAll();		
 	}
@@ -76,7 +91,7 @@ public class MemberService {
 		}
 	
 	
-	
+	//新增會員
 	public Member insertMember(Member member) {
 		
 		
@@ -96,10 +111,46 @@ public class MemberService {
 		member.setPassword(password_Hashing);
 		member.setTotalMiles(0); //初始值0
 		member.setRemainingMiles(0); //初始值0
+		member.setMembershipLevel("普通會員");
 		
 		memberRepository.save(member);
 		return member;
 	}
+	
+	
+	//新增管理員
+		public Member insertMemberDefaultAdmin(Member member) {
+			
+			
+			// 要確認username是否重複
+			// 先透過username查有沒有密碼
+			boolean result = usernameExist(member.getUsername());
+			if (result) {
+				//username存在，不能新增
+				return null;
+				
+			}		
+			//密碼需要加密
+			String password = member.getPassword();
+			
+			
+			String password_Hashing = passwordEncoder.encode(password);  // 使用 BCrypt 進行加密
+			member.setPassword(password_Hashing);
+			member.setTotalMiles(0); //初始值0
+			member.setRemainingMiles(0); //初始值0
+			member.setAuthority("ADMIN");//預設為ADMIN
+			member.setMembershipLevel("普通會員");
+			
+			memberRepository.save(member);
+			return member;
+		}
+	
+	
+	
+	
+	
+	
+	
 // 先找再更改
 	public Member updateMemberById(Member member) {
 		Optional<Member> op = memberRepository.findById(member.getMemberId());

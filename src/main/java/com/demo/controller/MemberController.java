@@ -40,6 +40,13 @@ public class MemberController {
 	public List<Member> GetAllMembers(){
 		return memberService.getAll();
 	}
+
+//  透過姓名查詢會員
+	@GetMapping("GetAllMemberByFullname/{name}")
+	public List<Member> GetAllMemberByFullname(@PathVariable String name){
+		return memberService.getAllByFullName(name);
+	}
+	
 	
 //  查詢所有管理員
 	@GetMapping("/GetAllAdminList")
@@ -56,6 +63,19 @@ public class MemberController {
 	public Member insertMember(@RequestBody Member member) {
 		return memberService.insertMember(member);
 	}
+	
+//	新增會員(預設為管理員)
+	@PostMapping("/InsertMemberDefaultAdmin")
+	public Member insertMemberDefaultAdmin(@RequestBody Member member) {
+		return memberService.insertMemberDefaultAdmin(member);
+	}
+	
+	
+	
+	
+	
+	
+	
 //	透過id更新會員資訊
 	@PutMapping("/UpdateMember")
 	public Member updateMemberById(@RequestBody Member member) {

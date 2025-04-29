@@ -61,4 +61,30 @@ public class MailService {
 	        mailSender.send(message);
 	    
 	}
+	    
+	    /**
+	     * 寄送訂單付款完成通知信
+	     */
+	    public void sendRedeemMail(String to, String customerName,String orderNumber, String amount) throws MessagingException {
+	    	Map<String, Object> variables = new HashMap<>();
+	        variables.put("customerName", customerName);
+	        variables.put("orderNumber", orderNumber);
+	        variables.put("amount", amount);
+	        variables.put("payTime", LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")));
+	        Context context = new Context();
+	        context.setVariables(variables);
+
+	        String subject = "訂單付款完成通知";
+	        String content = templateEngine.process("email/redeemMail.html", context);
+
+	        MimeMessage message = mailSender.createMimeMessage();
+	        MimeMessageHelper helper = new MimeMessageHelper(message, MimeMessageHelper.MULTIPART_MODE_MIXED_RELATED, StandardCharsets.UTF_8.name());
+	        helper.setFrom("965302@gmail.com");
+	        helper.setTo(to);
+	        helper.setSubject(subject);
+	        helper.setText(content, true);
+
+	        mailSender.send(message);
+	    
+	}
 }

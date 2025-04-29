@@ -220,6 +220,7 @@ const items = computed(() => [
     prependIcon: "mdi mdi-clipboard-list",
     link: true,
     path: "/admin/redeemmanage",
+    visible: hasAuthority("產品"),
   },
   {
     title: "權限管理",

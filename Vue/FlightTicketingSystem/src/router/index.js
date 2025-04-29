@@ -18,6 +18,7 @@ const router = createRouter({
           component: () => import("@/page/member/homepage.vue"),
         },
         {
+          //里程兌換
           path: "test2",
           component: () => import("@/page/member/test2.vue"),
         },
@@ -46,6 +47,21 @@ const router = createRouter({
           //會員專區
           path: "memberFront",
           component: () => import("@/page/member/MemberPageFront.vue"),
+        },
+        {
+          //購物車明細查看
+          path: "checkout",
+          component: () => import("@/page/member/Checkout.vue"),
+        },
+        {
+          //結帳確認畫面
+          path: "checkoutconfirm",
+          component: () => import("@/page/member/checkoutConfirm.vue"),
+        },
+        {
+          //會員查看訂單
+          path: "checkredeem",
+          component: () => import("@/page/member/checkredeem.vue"),
         },
       ],
     },
@@ -147,11 +163,6 @@ const router = createRouter({
       name: "reset-password",
       component: () => import("@/page/member/ResetPassword.vue"), // 你的 ResetPassword.vue 組件
       props: (route) => ({ token: route.query.token }), // 透過 query 參數將 token 傳給 ResetPassword 組件
-    },
-
-    {
-      path: '/productdetail',
-      component: () => import('@/page/member/ProductDetail.vue')
     }
 
     // {
@@ -174,9 +185,11 @@ router.beforeEach((to, from, next) => {
   const authStore = useAuthStore();
   const seatStore = useSeatStore();
   console.log("路由守衛觸發，當前登錄狀態：", authStore.isAuthenticated);
+
   // 只在 seatSelection 或 SeatPayment 頁面保留選位
   const keepSeatPaths = ["/seatSelection", "/SeatPayment"];
   const isSeatPage = keepSeatPaths.includes(to.path);
+
 
   // 進入 SeatPayment 前必須有選座位
   if (to.path === "/SeatPayment") {
@@ -186,10 +199,10 @@ router.beforeEach((to, from, next) => {
         title: "請先選擇座位",
         text: "請先完成選位，再進行付款。",
       });
-  
+
       // 從 from.query.flightid 取得 flightid（假設是從 seatSelection 跳過來的）
       const flightid = from.query.flightid || to.query.flightid;
-  
+
       // 如果有 flightid 就帶回 seatSelection
       if (flightid) {
         return next({ path: "/seatSelection", query: { flightid } });
@@ -214,7 +227,12 @@ router.beforeEach((to, from, next) => {
   if (to.meta.requiresAuth && !authStore.isAuthenticated) {
     console.log("用戶未登錄，跳轉到登錄頁面");
     return next({ path: "/loginUser" }); // 重定向到登錄頁面
-  } 
+
+
+  }
+  // 檢查角色權限
+
+
 
   const requiredRoles = to.meta.roles;
   const userRoles = authStore.roles;

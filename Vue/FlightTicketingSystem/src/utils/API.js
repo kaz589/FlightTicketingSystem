@@ -89,6 +89,9 @@ export const ApiFlight = {
 export const ApiMember = {
   getMember: (id) => instance.get(`/member/GetMember/${id}`),
   getAllMember: () => instance.get(`/member/GetAllMember`),
+  getAllMemberByFullname: (name) =>
+    instance.get(`/member/GetAllMemberByFullname/${name}`),
+
   updateMember: (memberUpdate) =>
     instance.put(`/member/UpdateMember`, memberUpdate),
   insertMember: (memberInsert) =>
@@ -109,6 +112,25 @@ export const ApiMember = {
         console.error("API 請求錯誤:", error);
         throw error; // 抛出錯誤以便外層處理
       }),
+  insertMemberDefaultAdmin: (memberInsert) =>
+    instance
+      .post(`/member/InsertMemberDefaultAdmin`, memberInsert)
+      .then((response) => {
+        console.log(response.data);
+        //如果沒回傳，代表username存在
+        if (!response.data || response.data.length === 0) {
+          console.log("username存在");
+          return null;
+        } else {
+          console.log("API 請求成功:", response);
+          return response.data; // 返回 API 響應資料
+        }
+      })
+      .catch((error) => {
+        console.error("API 請求錯誤:", error);
+        throw error; // 抛出錯誤以便外層處理
+      }),
+
   deleteMemberById: (id) => instance.delete(`/member/DeleteMember/${id}`),
   increaseMiles: (id, plus) =>
     instance.put(`/member/IncreaseMiles/${id}/${plus}`),
@@ -190,16 +212,17 @@ export const ApiTicket = {
     }),
 };
 
-//管理員相關API
+// 管理員相關API
 export const ApiAdmin = {
   getAdmin: (id) => instance.get(`/admin/GetAdmin/${id}`),
+
   insertAdmin: (adminInsert) =>
     instance
       .post(`/admin/InsertAdmin`, adminInsert)
       .then((response) => {
         console.log(response.data);
 
-        //如果沒回傳，代表username存在
+        // 如果沒回傳，代表username存在
         if (!response.data || response.data.length === 0) {
           console.log("username存在");
           return null;
@@ -209,23 +232,25 @@ export const ApiAdmin = {
         }
       })
 
+
       .catch((error) => {
         console.error("API 請求錯誤:", error);
         throw error; // 抛出錯誤以便外層處理
       }),
+
   // login: (admin) =>
   //   instance.post(`/admin/GetPassword`, admin)
 };
+
 
 //里程兌換-商品管理相關API
 export const ApiProducts = {
   //用id查單筆
   searchById: (id) => instance.get(`/products/${id}`),
   // 根據商品名稱查詢商品
-  searchProByName: (name) =>
-    instance.get(`/products/name`, {
-      params: { name },
-    }),
+  searchProByName: (name) => instance.get(`/products/name`, {
+    params: { name },
+  }),
   // 查詢低庫存商品
   searchlowstock: (threshold) =>
     instance.get(`/products/lowstock`, {
@@ -301,8 +326,8 @@ export const ApiRedeem = {
       },
     }),
 
-  // 取消訂單 (PUT /redeem/{redeemId}/cancelRedeem)
-  cancelRedeem: (redeemId) => instance.put(`/redeem/${redeemId}/cancelRedeem`),
+  // 取消訂單 (PUT /redeem/cancelRedeem/{redeemId})
+  cancelRedeem: (redeemId) => instance.put(`/redeem/cancelRedeem/${redeemId}`, {}),
 };
 
 export const ApiEmail = {

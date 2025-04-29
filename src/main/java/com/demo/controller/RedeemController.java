@@ -12,6 +12,7 @@ import com.demo.model.Redeem;
 import com.demo.model.DTO.RedeemDTO;
 import com.demo.service.IRedeemService;
 
+import io.swagger.v3.oas.annotations.StringToClassMapItem;
 import jakarta.validation.Valid;
 
 import org.springframework.web.bind.annotation.GetMapping;
@@ -116,11 +117,11 @@ public class RedeemController {
 		return redeemService.findByMemberId(memberId);
 	};
 	
-	@PutMapping("/{redeemId}/cancelRedeem")
-	public Redeem cancelRedeem(@PathVariable Integer redeemId) {
-		return redeemService.cancelRedeem(redeemId);
-	}
 	
+	@PutMapping("/cancelRedeem/{redeemId}")
+	public Redeem cancelRedeem(@PathVariable Integer redeemId) {
+	    return redeemService.cancelRedeem(redeemId);
+	}
 	
 	
 }

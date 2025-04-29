@@ -21,10 +21,13 @@ public class WebConfig implements WebMvcConfigurer {
 
 	    // 保留原有的設定
 	    registry.addResourceHandler("/images/**")
-	            .addResourceLocations("file:uploads/images/","file:uploads/ProductsImage/");
+	            .addResourceLocations("file:uploads/images/");
 
 	    // 新增的設定
 	    registry.addResourceHandler("/uploads/images/**")
 	            .addResourceLocations("file:./uploads/images/");
+	    
+	    registry.addResourceHandler("/ProductsImage/**")
+        .addResourceLocations("file:uploads/ProductsImage/");
 	}
 }
