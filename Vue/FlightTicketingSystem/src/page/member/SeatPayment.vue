@@ -1,4 +1,5 @@
 <template>
+  <div>
   <div class="flight-header">
     <div v-if="flight" class="city-name">
       <h1>請確認訂購座位</h1>
@@ -127,6 +128,7 @@
       v-model="formData.CheckMacValue"
     />
   </form>
+</div>
 </template>
 
 <script setup>

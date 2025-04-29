@@ -1,4 +1,5 @@
 <template>
+  <div>
   <div class="flight-header">
     <div class="airport-row">
       <div class="airport-col">
@@ -121,6 +122,7 @@
       >
     </v-col>
   </v-row>
+</div>
 </template>
 
 <script setup>

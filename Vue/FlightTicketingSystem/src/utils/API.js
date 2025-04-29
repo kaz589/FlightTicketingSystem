@@ -32,7 +32,6 @@ export const ApiAirport = {
     sortBy,
     sortOrder
   ) =>
-
     instance.get(`/airports/search`, {
       params: {
         keyword: keyword || "all", // 默認值為 "all"
@@ -182,27 +181,52 @@ export const ApiTicket = {
   updateTicket: (id, ticketDetails) =>
     instance.put(`/Ticket/${id}`, ticketDetails),
 
-
   // 刪除票務
   deleteTicket: (id) => instance.delete(`/Ticket/${id}`),
 
   getCheckMacValue: (params) => instance.post("/Ticket/calculate-mac", params),
   getTicketsByCustomerId: (customerId) =>
     instance.get(`/Ticket/member/${customerId}`),
-
+  // 搜尋票務
+  searchTickets: (
+    originAirport,
+    destinationAirport,
+    arrivalTime,
+    departureTime,
+    paid,
+    keyword,
+    page,
+    size,
+    sortBy,
+    sortOrder
+  ) =>
+    instance.get(`/Ticket/search`, {
+      params: {
+        originAirport: originAirport || null,
+        destinationAirport: destinationAirport || null,
+        arrivalTime: arrivalTime || null, // yyyy-MM-dd HH:mm:ss 格式
+        departureTime: departureTime || null, // yyyy-MM-dd HH:mm:ss 格式
+        paid: paid !== null ? paid : null, // 布林值
+        keyword: keyword || null,
+        page: page || 1,
+        size: size || 10,
+        sortBy: sortBy || "id",
+        sortOrder: sortOrder || "asc",
+      },
+    }),
 };
 
-//管理員相關API
+// 管理員相關API
 export const ApiAdmin = {
-
   getAdmin: (id) => instance.get(`/admin/GetAdmin/${id}`),
+
   insertAdmin: (adminInsert) =>
     instance
       .post(`/admin/InsertAdmin`, adminInsert)
       .then((response) => {
         console.log(response.data);
 
-        //如果沒回傳，代表username存在
+        // 如果沒回傳，代表username存在
         if (!response.data || response.data.length === 0) {
           console.log("username存在");
           return null;
@@ -217,19 +241,20 @@ export const ApiAdmin = {
         console.error("API 請求錯誤:", error);
         throw error; // 抛出錯誤以便外層處理
       }),
+
   // login: (admin) =>
   //   instance.post(`/admin/GetPassword`, admin)
 };
+
 
 //里程兌換-商品管理相關API
 export const ApiProducts = {
   //用id查單筆
   searchById: (id) => instance.get(`/products/${id}`),
   // 根據商品名稱查詢商品
-  searchProByName: (name) =>
-    instance.get(`/products/name`, {
-      params: { name },
-    }),
+  searchProByName: (name) => instance.get(`/products/name`, {
+    params: { name },
+  }),
   // 查詢低庫存商品
   searchlowstock: (threshold) =>
     instance.get(`/products/lowstock`, {
@@ -248,27 +273,27 @@ export const ApiProducts = {
 
   // 上傳圖片並新增商品
   uploadProductImage: (id, formData) => {
-    const url = id ? `/products/${id}/uploadImage` : '/products/0/uploadImage'; // 根據是否有 id 決定上傳的 URL
+    const url = id ? `/products/${id}/uploadImage` : "/products/0/uploadImage"; // 根據是否有 id 決定上傳的 URL
     return instance.post(url, formData, {
-      headers: { 'Content-Type': 'multipart/form-data' }
+      headers: { "Content-Type": "multipart/form-data" },
     });
-  }
-}
+  },
+};
 // 訂單相關API
 export const ApiRedeem = {
-
-
   // 查詢全部訂單 (GET /redeem/all)
-  getAllRedeem: () => instance.get('/redeem/'),
+  getAllRedeem: () => instance.get("/redeem/"),
 
   // 根據 Id 查單筆訂單 (GET /redeem/{redeemId})
   getRedeemById: (redeemId) => instance.get(`/redeem/${redeemId}`),
 
   // 新增一筆訂單 (POST /redeem)
-  addRedeem: (createRedeemRequest) => instance.post('/redeem', createRedeemRequest),
+  addRedeem: (createRedeemRequest) =>
+    instance.post("/redeem", createRedeemRequest),
 
   // 更新訂單 (PUT /redeem/{redeemId})
-  updateRedeem: (redeemId, redeemData) => instance.put(`/redeem/${redeemId}`, redeemData),
+  updateRedeem: (redeemId, redeemData) =>
+    instance.put(`/redeem/${redeemId}`, redeemData),
 
   // 更新訂單狀態 (PUT /redeem/{redeemId}/status)
   updateRedeemStatus: (redeemId, newStatus) =>
@@ -283,7 +308,7 @@ export const ApiRedeem = {
 
   // 根據Redeem狀態查詢訂單 (GET /redeem/redeemStatus?redeemStatus={狀態值})
   findByRedeemStatus: (redeemStatus) =>
-    instance.get('/redeem/redeemStatus', {
+    instance.get("/redeem/redeemStatus", {
       params: {
         redeemStatus: redeemStatus,
       },
@@ -291,7 +316,7 @@ export const ApiRedeem = {
 
   // 根據訂單成立時間查詢訂單列表 (GET /redeem/redeemDate?redeemDate={日期值})
   findByTime: (redeemDate) =>
-    instance.get('/redeem/redeemDate', {
+    instance.get("/redeem/redeemDate", {
       params: {
         redeemDate: redeemDate,
       },
@@ -305,13 +330,9 @@ export const ApiRedeem = {
       },
     }),
 
-  // 取消訂單 (PUT /redeem/{redeemId}/cancelRedeem)
-  cancelRedeem: (redeemId) => instance.put(`/redeem/${redeemId}/cancelRedeem`),
+  // 取消訂單 (PUT /redeem/cancelRedeem/{redeemId})
+  cancelRedeem: (redeemId) => instance.put(`/redeem/cancelRedeem/${redeemId}`, {}),
 };
-
-
-
-
 
 export const ApiEmail = {
   //要求更新密碼
@@ -341,4 +362,3 @@ export const ApiEmail = {
       },
     }),
 };
-

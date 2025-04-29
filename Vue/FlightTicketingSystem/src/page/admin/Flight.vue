@@ -50,7 +50,7 @@
       :items="items"
       :items-per-page="itemsPerPage"
       hide-default-footer
-      class="elevation-1"
+       class="elevation-1 my-bordered-table"
     >
       <template v-slot:item.actions="{ item }">
         <div class="d-flex ga-2 justify-end">
@@ -172,6 +172,7 @@ import { ApiFlight, ApiAirport } from "@/utils/API";
 import VueDatePicker from "@vuepic/vue-datepicker";
 import "@vuepic/vue-datepicker/dist/main.css";
 import { filterItems } from "vuetify/lib/composables/filter";
+import { showLoadingSwal, closeLoadingSwal,showSuccessSwal } from '@/utils/swalLoading'
 onMounted(() => {
   getDistinctAirportName();
   getfullairports();
@@ -246,6 +247,8 @@ ApiFlight.searchFlights(
     .then((res) => {
       
       items.value = res.data.content; // 更新表格數據
+      console.log(items.value);
+      
       totalItems.value = res.data.totalElements; // 總數據條數
       totalPages.value = res.data.totalPages; // 總頁數
     })
@@ -300,6 +303,7 @@ function save() {
       ApiFlight.createFlight(record.value)
       .then(() => {
         dialog.value = false; // 關閉對話框
+        showSuccessSwal("新增成功！");
         search();
       })
       .catch((err) => {
@@ -316,6 +320,7 @@ const headers = ref([
   { title: "起飛時間", value: "departureTime", sortable: true },
   { title: "抵達時間", value: "arrivalTime", sortable: true },
   { title: "機型", value: "modelName", sortable: true },
+  { title: "預計里程(KM)", value: "estimatedDistance", sortable: true },
   { title: "頭等艙票價", value: "firstClassPrice", sortable: true },
   { title: "商務艙票價", value: "businessPrice", sortable: true },
   { title: "經濟艙票價", value: "economyPrice", sortable: true },
@@ -365,7 +370,7 @@ function deleteItem() {
 
   ApiFlight.deleteFlight(record.value.id)
     .then(() => {
-      alert("刪除成功！");
+      showSuccessSwal("刪除成功！");
       deleteDialog.value = false; // 關閉刪除對話框
       search(); // 刷新數據
     })
@@ -400,4 +405,8 @@ function formatDate(date) {
 }
 </script>
 
-<style scoped></style>
+<style scoped>
+
+
+
+</style>

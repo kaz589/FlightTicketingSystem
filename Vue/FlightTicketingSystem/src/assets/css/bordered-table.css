@@ -1,0 +1,14 @@
+.my-bordered-table {
+    border: 2px solid black;
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  .my-bordered-table table {
+    border-collapse: collapse; /* 讓格線合併更漂亮 */
+    width: 100%;
+  }
+  
+  .my-bordered-table .v-data-table__th,
+.my-bordered-table .v-data-table__td {
+  border: 1px solid black !important;
+}

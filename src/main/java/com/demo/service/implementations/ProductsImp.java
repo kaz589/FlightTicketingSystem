@@ -35,9 +35,9 @@ public class ProductsImp implements IProductsService {
 	}
 
 	@Override
-	public List<Products> findProductsByName(String name) {
-		return productsRepo.findByNameContaining(name);
-	}
+	 public List<Products> findProductsByName(String name) {
+        return productsRepo.findByNameContaining(name);
+    }
 
 	@Override
 	public List<Products> findLowStockProducts(Integer threshold) {

@@ -1,4 +1,5 @@
 <template>
+  <div>
   <h1 class="text-4xl font-extrabold text-center mb-4">易趣輕鬆飛</h1>
   <div class="flex justify-center gap-6 text-2lg font-semibold mb-4">
     <button
@@ -36,6 +37,7 @@
       <p>這裡可以放推薦景點、旅遊攻略等內容。</p>
     </div>
   </div>
+</div>
 </template>
 <script setup>
 import { ref } from "vue";
