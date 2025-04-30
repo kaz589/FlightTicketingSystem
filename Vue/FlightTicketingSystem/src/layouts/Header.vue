@@ -10,7 +10,7 @@
             @click="router.push('/')"
           />
         </div>
-        <nav class="hidden md:flex space-x-8 text-3xl font-semibold ml-12">
+        <nav class="hidden md:flex space-x-8 text-3xl font-semibold ml-60">
           <a
             href="#"
             class="relative group text-gray-700 hover:text-black transition-colors duration-200"
@@ -48,10 +48,18 @@
           /></span>
           <span class="text-[35px]">TWD</span>
 
-          <v-btn @click="router.push('/checkout')" class="text-none" variant="flat" stacked>
-            <v-badge  color="error" :content="productTypesCount"
-            :model-value="productTypesCount>0">
-              <v-icon size="36" >mdi mdi-cart-variant</v-icon>
+          <v-btn
+            @click="router.push('/checkout')"
+            class="text-none"
+            variant="flat"
+            stacked
+          >
+            <v-badge
+              color="error"
+              :content="productTypesCount"
+              :model-value="productTypesCount > 0"
+            >
+              <v-icon size="36">mdi mdi-cart-variant</v-icon>
             </v-badge>
           </v-btn>
           <span class="text-[35px]">{{ roleLabel }}</span>
@@ -127,12 +135,11 @@ import { logout } from "@/utils/logout"; // 導入登出函數
 import Footer from "./Footer.vue";
 import { usecartStore } from "@/stores/usecartStore";
 
-
 const router = useRouter(); // 使用 vue-router
 const authStore = useAuthStore();
 
 const cartStore = usecartStore();
-const {productTypesCount } = storeToRefs(cartStore)
+const { productTypesCount } = storeToRefs(cartStore);
 const userPicture = ref("");
 //找到大頭貼
 if (authStore.user && authStore.user.picture) {
