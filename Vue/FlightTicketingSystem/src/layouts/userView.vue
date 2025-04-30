@@ -14,7 +14,7 @@
       <!--Image-->
       <HomePageImage></HomePageImage>
       <!-- Footer -->
-      <Footer></Footer>
+      <!-- <Footer></Footer> -->
     </main>
   </div>
 </template>
