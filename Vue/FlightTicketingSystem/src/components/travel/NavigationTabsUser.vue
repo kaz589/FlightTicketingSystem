@@ -1,9 +1,9 @@
 <template>
-  <div class="flex justify-center gap-6 text-base font-semibold mb-8">
+  <!-- <div class="flex justify-center gap-6 text-base font-semibold mb-8">
     <button
       v-for="tab in tabs"
       :key="tab.name"
-      @click="selectedTab = tab.name"
+      @click="switchTab(tab)"
       class="relative group px-4 py-2 transition-colors duration-300"
       :class="
         selectedTab === tab.name ? 'text-black font-bold' : 'text-gray-500'
@@ -19,9 +19,10 @@
       >
       </span>
     </button>
-  </div>
+  </div> -->
 
   <!-- Search Bar -->
+  <!-- Flights -->
   <div
     v-show="selectedTab === '航班'"
     class="flex flex-wrap justify-center items-center gap-4 mb-10"
@@ -44,6 +45,7 @@
       <span class="mr-2 mdi mdi-airplane-landing text-gray-500"></span>
       <strong>To:</strong>
       <input
+        v-model="travel.flightDestination"
         type="text"
         placeholder="Destination"
         class="bg-transparent outline-none ml-2 w-full placeholder:text-gray-400"
@@ -77,7 +79,7 @@
     </button>
   </div>
 
-  <!-- 禮品用：禮品欄位 -->
+  <!-- Rewards -->
   <div
     v-show="selectedTab === '禮品'"
     class="flex justify-center items-center gap-4 mb-10"
@@ -99,20 +101,26 @@
     </button>
   </div>
 
-  <!-- 發現更多目的地用：目的地欄位 -->
-  <div v-show="selectedTab === '發現更多目的地'">
-    <SearchBarUser v-model="searchQuery" />
+  <!-- Explore -->
+  <div v-if="selectedTab === '發現更多目的地'">
+    <SearchBarUser />
   </div>
 </template>
 
 <script setup>
-import { ref, onMounted } from "vue";
+import { ref, computed, onMounted } from "vue";
 import flatpickr from "flatpickr";
-import SearchBarUser from "@/components/SearchBarUser.vue";
+import SearchBarUser from "./SearchBarUser.vue";
+import { useTravelStore } from "@/stores/travelStore";
 
-const selectedTab = defineModel("selectedTab");
-const searchQuery = ref("");
 const dateInput = ref(null);
+const travel = useTravelStore();
+const selectedTab = "發現更多目的地";
+
+const switchTab = (tab) => {
+  selectedTab.value = tab.name;
+  travel.resetImage();
+};
 
 const tabs = [
   { name: "航班", icon: "mdi-airplane" },
@@ -127,7 +135,7 @@ onMounted(() => {
     dateFormat: "M d",
     defaultDate: [new Date(), new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)],
     onChange: (dates, str) => {
-      emit("update:value", str); // 通知父组件
+      emit("update:value", str);
     },
   });
 });

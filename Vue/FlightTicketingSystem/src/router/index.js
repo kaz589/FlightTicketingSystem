@@ -9,7 +9,6 @@ const router = createRouter({
     {
       path: "/",
 
-
       component: () => import("@/layouts/Header.vue"),
 
       children: [
@@ -63,6 +62,10 @@ const router = createRouter({
           path: "checkredeem",
           component: () => import("@/page/member/checkredeem.vue"),
         },
+        {
+          path: "travel",
+          component: () => import("@/layouts/userView.vue"),
+        },
       ],
     },
     {
@@ -114,7 +117,7 @@ const router = createRouter({
         },
         {
           path: "travel",
-          component: () => import("@/components/TravelPage.vue"),
+          component: () => import("@/page/admin/TravelAdmin.vue"),
           meta: { requiresAuth: true }, // 需要登錄的頁面
         },
         {
@@ -134,7 +137,6 @@ const router = createRouter({
       component: () => import("@/page/admin/TESTTT.vue"),
       meta: { requiresAuth: true }, // 需要登錄的頁面
     },
-
 
     {
       //會員登入
@@ -163,7 +165,7 @@ const router = createRouter({
       name: "reset-password",
       component: () => import("@/page/member/ResetPassword.vue"), // 你的 ResetPassword.vue 組件
       props: (route) => ({ token: route.query.token }), // 透過 query 參數將 token 傳給 ResetPassword 組件
-    }
+    },
 
     // {
     //   path: '/about',
@@ -189,7 +191,6 @@ router.beforeEach((to, from, next) => {
   // 只在 seatSelection 或 SeatPayment 頁面保留選位
   const keepSeatPaths = ["/seatSelection", "/SeatPayment"];
   const isSeatPage = keepSeatPaths.includes(to.path);
-
 
   // 進入 SeatPayment 前必須有選座位
   if (to.path === "/SeatPayment") {
@@ -227,12 +228,8 @@ router.beforeEach((to, from, next) => {
   if (to.meta.requiresAuth && !authStore.isAuthenticated) {
     console.log("用戶未登錄，跳轉到登錄頁面");
     return next({ path: "/loginUser" }); // 重定向到登錄頁面
-
-
   }
   // 檢查角色權限
-
-
 
   const requiredRoles = to.meta.roles;
   const userRoles = authStore.roles;
