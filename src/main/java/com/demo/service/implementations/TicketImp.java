@@ -5,6 +5,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.aspectj.weaver.NewMemberClassTypeMunger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +22,7 @@ import com.demo.model.Member;
 import com.demo.model.Seat;
 import com.demo.model.Ticket;
 import com.demo.model.DTO.FlightDTO;
+import com.demo.model.DTO.SeatDTO;
 import com.demo.model.DTO.TicketDTO;
 import com.demo.repository.FlightRepository;
 import com.demo.repository.SeatRepository;
@@ -77,7 +79,15 @@ public class TicketImp implements TicketService {
 	@Override
 	public void deleteTicket(int id) {
 
+		
+		seatService.findSeatsByTicketId(id);
+		
+		List<Integer> seatIds = seatService.findSeatsByTicketId(id).stream()
+			    .map(SeatDTO::getSeatId)
+			    .collect(Collectors.toList());
+		seatService.releaseSeatsByIds(seatIds);
 		ticketRepository.deleteById(id);
+		
 	}
 
 	

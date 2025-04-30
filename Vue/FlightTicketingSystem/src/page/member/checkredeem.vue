@@ -85,9 +85,11 @@ const cancelRedeem = (redeemId) => {
       fetchRedeems(memberId) // 重新抓一次
     })
     .catch((error) => {
-      console.error('取消訂單失敗', error);
-      alert('取消失敗，請稍後再試');
-    });
+  console.error('取消訂單失敗', error);
+
+  const message = error.response?.data?.message || '取消失敗，請稍後再試';
+  alert(`${message}`);
+});
 };
 
   

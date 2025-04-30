@@ -1,7 +1,7 @@
 // src/utils/swalLoading.js
 import Swal from 'sweetalert2'
 
-const MIN_LOADING_TIME = 1200; // 寫死最短顯示時間（毫秒）
+const MIN_LOADING_TIME = 500; // 寫死最短顯示時間（毫秒）
 
 let loadingSwalOpenTime = null;
 

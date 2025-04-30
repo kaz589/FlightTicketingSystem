@@ -228,7 +228,7 @@ try {
 	 */
 	public	Redeem cancelRedeem(Integer redeemId) {
 		Redeem cancelRedeem  = redeemRepo.findById(redeemId)
-				.orElseThrow(() -> new RuntimeException("找不到 ID 為 " + redeemId + " 的訂單"));
+				.orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,"找不到 ID 為 " + redeemId + " 的訂單"));
 				if (SHIPPED.equals(cancelRedeem.getRedeemStatus())) {
 					 throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "訂單已出貨，無法取消");
 				}
