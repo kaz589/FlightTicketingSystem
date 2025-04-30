@@ -5,6 +5,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.Range;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -176,6 +178,66 @@ System.out.println(seats);
         }
         return seatLetters;
     }
+    
+    public List<Integer> findFlightsWithIncompleteSeats() {
+        List<Flight> allFlights = flightRepository.findAll();
+        List<Integer> incompleteFlightIds = new ArrayList<>();
+        for (Flight flight : allFlights) {
+            if (!isFlightSeatsComplete(flight.getId())) {
+                incompleteFlightIds.add(flight.getId());
+            }
+        }
+        return incompleteFlightIds;
+    }
+    
+    public boolean isFlightSeatsComplete(Integer flightId) {
+        // 1. 查詢 Flight
+        Flight flight = flightRepository.findById(flightId)
+            .orElseThrow(() -> new RuntimeException("Flight not found"));
+
+        // 2. 查詢 AirplaneModel
+        AirplaneModel model = flight.getAirplaneModel();
+        int totalSeats = model.getSeatCount();
+    
+
+        // 3. 查詢該 Flight 已有的 Seat
+        int seatCount = seatRepository.countByFlightId(flightId);
+
+        // 4. 判斷
+        return seatCount == totalSeats;
+    }
+
+	@Override
+	public List<Integer> fixIncompleteSeatsForAllFlights() {
+		List<Integer> incompleteFlightIds = findFlightsWithIncompleteSeats();
+
+	    for (Integer flightId : incompleteFlightIds) {
+	        Flight flight = flightRepository.findById(flightId)
+	                .orElseThrow(() -> new RuntimeException("Flight not found: " + flightId));
+	        AirplaneModel model = flight.getAirplaneModel();
+
+	        // 產生所有應有座位
+	        List<Seat> allSeats = generateSeatsForFlight(model, flightId);
+
+	        // 查詢現有 seatNumber
+	     // 查詢現有 seatNumber
+	        List<Seat> existingSeats = seatRepository.findSeatsByFlightId(flightId);
+	        Set<String> existingSeatNumbers = existingSeats.stream()
+	            .map(Seat::getSeatNumber)
+	            .collect(Collectors.toSet());
+
+	        // 過濾出缺少的座位
+	        List<Seat> missingSeats = allSeats.stream()
+	                .filter(seat -> !existingSeatNumbers.contains(seat.getSeatNumber()))
+	                .toList();
+
+	        // 批次補齊缺席
+	        if (!missingSeats.isEmpty()) {
+	            seatRepository.saveAll(missingSeats);
+	        }
+	    }
+	    return incompleteFlightIds;
+	}
 	
 
 }
