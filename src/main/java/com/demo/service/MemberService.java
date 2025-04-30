@@ -14,6 +14,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import com.demo.controller.PasswordHashing;
 import com.demo.model.Member;
 import com.demo.model.PasswordResetToken;
+import com.demo.model.DTO.MembershipCountDTO;
+import com.demo.model.DTO.ProviderCountDTO;
 import com.demo.repository.MemberRepository;
 import com.demo.repository.PasswordResetTokenRepository;
 
@@ -329,9 +331,19 @@ public class MemberService {
 		
 		
 		
+		//計算會員各等級數量
+		public List<MembershipCountDTO> countMemberShip(){
+			
+			List<MembershipCountDTO> countByMembershipLevel = memberRepository.countByMembershipLevel();
+			
+			return countByMembershipLevel;
+		}
 		
-		
-		
+		//計算各會員登入方式
+		public List<ProviderCountDTO> countProvider(){
+			List<ProviderCountDTO> countByProvider = memberRepository.countByProvider();
+			return countByProvider;
+		}
 		
 		
 		

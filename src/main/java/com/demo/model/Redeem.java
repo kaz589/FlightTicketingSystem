@@ -1,6 +1,7 @@
 package com.demo.model;
 
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 
@@ -44,19 +45,11 @@ public class Redeem {
 	@NotBlank(message = "訂單狀態不能為空")
 	private String redeemStatus;
 	
-	@Column(name="create_at")
-	@CreationTimestamp
-	@Temporal(TemporalType.TIMESTAMP)
-//	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss") // 用於 JSON 請求的日期格式
-//    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") // 用於表單數據的日期格式
-	private	Date createAt;
+	@Column(name="create_at", insertable = false, updatable = false)
+	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss") // 用於 JSON 請求的日期格式
+	private	LocalDateTime createAt;
 	
-	  // 格式化時間戳記
-    @Transient
-    public String getFormattedCreatedAt() {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        return sdf.format(createAt);
-    }
+	 
 	
 	@Column(name = "is_deleted")
 	private boolean deleted;
