@@ -1,5 +1,5 @@
 <template>
-  <!-- <div class="flex justify-center gap-6 text-base font-semibold mb-8">
+  <div class="flex justify-center gap-6 text-base font-semibold mb-8">
     <button
       v-for="tab in tabs"
       :key="tab.name"
@@ -19,7 +19,7 @@
       >
       </span>
     </button>
-  </div> -->
+  </div>
 
   <!-- Search Bar -->
   <!-- Flights -->
@@ -115,7 +115,10 @@ import { useTravelStore } from "@/stores/travelStore";
 
 const dateInput = ref(null);
 const travel = useTravelStore();
-const selectedTab = "發現更多目的地";
+const selectedTab = computed({
+  get: () => travel.selectedTab,
+  set: (val) => (travel.selectedTab = val),
+});
 
 const switchTab = (tab) => {
   selectedTab.value = tab.name;
