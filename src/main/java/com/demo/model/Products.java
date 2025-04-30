@@ -51,6 +51,9 @@ public class Products {
 	@Column(name = "product_image")
 	private String image;
 
+	@Column(name = "available")
+	private boolean available;
+	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "category_id", referencedColumnName = "category_id")
 	private Category category;

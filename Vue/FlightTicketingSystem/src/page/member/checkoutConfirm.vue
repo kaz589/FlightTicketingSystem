@@ -1,6 +1,8 @@
 <template>
-  <h3>結帳成功！請確認訂單明細</h3>
-  <v-container class="pa-4">
+  <h3>結帳成功，確認訂單信件已寄出！</h3>
+<br>
+  <v-container class="pa-4">  
+ 
     <v-row v-if="!redeemDetail">
       <v-col class="text-center">
         <v-progress-circular
@@ -23,8 +25,11 @@
             <v-list-item v-for="item in redeemDetail.redeemItems" :key="item.redeemItemId">
               <v-list-item-content>
                 <v-list-item-title>商品名稱：{{ item.product.name }}</v-list-item-title>
+               
                 <v-list-item-subtitle>數量：{{ item.quantity }}</v-list-item-subtitle>
+                
                 <v-list-item-subtitle>單品所需里程：{{ item.product.needmiles }}</v-list-item-subtitle>
+            
                 <v-list-item-subtitle>小計里程：{{ item.usedMiles }}</v-list-item-subtitle>
               </v-list-item-content>
             </v-list-item>
@@ -39,6 +44,8 @@
           </div>
         </v-card>
       </v-col>
+      <v-btn @click="checkRedeem">管理訂單</v-btn>
+      <noticeblock></noticeblock>
 <!-- 
       <v-col cols="12" >
         <v-card class="pa-6" elevation="6" rounded="xl">
@@ -89,12 +96,15 @@
 import { ApiMember } from '@/utils/API';
 import { ref, computed, onMounted,reactive } from 'vue';
 import { useRoute,useRouter } from "vue-router"; // 引入 vue-router
-import { ApiRedeem } from '@/utils/API';
+  import { ApiRedeem } from '@/utils/API';
+import noticeblock from '@/components/product/noticeblock.vue';
 // 1. 從 URL 拿到 redeemId
 const route = useRoute();
-const router = useRoute();
+
 const redeemId = ref(route.query.redeemId);
   const memberId = 2;
+
+  const router = useRouter(); 
 // 驗證表單是否通過
   const valid = ref(false);
 
@@ -134,19 +144,19 @@ const redeemDetail = ref(null);
 
 
 
-  const formData = ref({
-    address: '',
-    email: '',
-    phone: '',
-  });
+  // const formData = ref({
+  //   address: '',
+  //   email: '',
+  //   phone: '',
+  // });
   
-  const rules = {
-    required: (v) => !!v || '此欄位必填',
-    email: (v) =>
-      /.+@.+\..+/.test(v) || '請輸入正確的電子郵件格式',
-    phone: (v) =>
-      /^09\d{8}$/.test(v) || '請輸入正確的手機號碼格式',
-  };
+  // const rules = {
+  //   required: (v) => !!v || '此欄位必填',
+  //   email: (v) =>
+  //     /.+@.+\..+/.test(v) || '請輸入正確的電子郵件格式',
+  //   phone: (v) =>
+  //     /^09\d{8}$/.test(v) || '請輸入正確的手機號碼格式',
+  // };
 
   function submitOrder() {
     if (memberId) {
@@ -162,8 +172,34 @@ const redeemDetail = ref(null);
       router.push("/test2");
     }
   }
+  function checkRedeem() {
+  router.push("/checkredeem");
+ }
   </script>
   
   <style scoped>
-  </style>
-  
+.v-card-title {
+  font-size: 22px;
+  font-weight: bold;
+}
+
+.v-list-item-title {
+  font-size: 18px;
+  font-weight: 500;
+}
+
+.v-list-item-subtitle {
+  font-size: 16px;
+  color: #000000;
+  margin-top: 16px;
+}
+
+.text-right {
+  font-size: 18px;
+  margin-top: 16px;
+}
+
+.v-alert {
+  font-size: 16px;
+}
+</style>
