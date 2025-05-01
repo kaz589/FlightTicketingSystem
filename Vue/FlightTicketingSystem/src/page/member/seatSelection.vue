@@ -1,15 +1,16 @@
 <template>
+  <div>
   <div class="flight-header">
     <div class="airport-row">
       <div class="airport-col">
         <div v-if="flight" class="city-name">
-          {{ flight?.originAirport?.city }}
+          {{ flight?.originAirport?.airportName }}
         </div>
       </div>
       <div class="plane-icon">→</div>
       <div class="airport-col">
         <div v-if="flight" class="city-name">
-          {{ flight?.destinationAirport?.city }}
+          {{ flight?.destinationAirport?.airportName }}
         </div>
       </div>
     </div>
@@ -121,6 +122,7 @@
       >
     </v-col>
   </v-row>
+</div>
 </template>
 
 <script setup>

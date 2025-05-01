@@ -1,14 +1,18 @@
 package com.demo.service.implementations;
 
 import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.aspectj.weaver.NewMemberClassTypeMunger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -18,6 +22,7 @@ import com.demo.model.Member;
 import com.demo.model.Seat;
 import com.demo.model.Ticket;
 import com.demo.model.DTO.FlightDTO;
+import com.demo.model.DTO.SeatDTO;
 import com.demo.model.DTO.TicketDTO;
 import com.demo.repository.FlightRepository;
 import com.demo.repository.SeatRepository;
@@ -74,21 +79,20 @@ public class TicketImp implements TicketService {
 	@Override
 	public void deleteTicket(int id) {
 
+		
+		seatService.findSeatsByTicketId(id);
+		
+		List<Integer> seatIds = seatService.findSeatsByTicketId(id).stream()
+			    .map(SeatDTO::getSeatId)
+			    .collect(Collectors.toList());
+		seatService.releaseSeatsByIds(seatIds);
 		ticketRepository.deleteById(id);
+		
 	}
 
-	@Override
-	public Page<Ticket> searchTickets(Member member, LocalDateTime bookingStartTime, LocalDateTime bookingEndTime,
-			int flightId, Pageable pageable) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+	
 
-	@Override
-	public List<Seat> findSeatsByTicketId(int ticketId) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+	
 
 	@Override
 	@Transactional
@@ -129,6 +133,27 @@ public class TicketImp implements TicketService {
 				.toList();
 
 		return newTicketDTO;
+	}
+
+	@Override
+	public Page<TicketDTO> searchTickets(String originAirport, String destinationAirport, Date startTime, Date endTime,
+			Boolean paymentStatus, String keyword, int page, int size, String sortBy, String sortOrder) {
+		
+		
+		// 處理排序邏輯
+        Sort sort = sortOrder.equalsIgnoreCase("desc") ? Sort.by(sortBy).descending() : Sort.by(sortBy).ascending();
+		    
+		PageRequest  pageable = PageRequest.of(page-1, size,sort);
+		
+		Page<Ticket> ticketPage =ticketRepository.searchTicket(originAirport, destinationAirport, startTime, paymentStatus, endTime, keyword, pageable);
+		Page<TicketDTO> dtoPage = ticketPage.map(TicketDTO::new);
+		return dtoPage;
+	}
+
+	@Override
+	public List<Seat> findSeatsByTicketId(int ticketId) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

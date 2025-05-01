@@ -34,6 +34,8 @@ public class TicketDTO {
 	private int totalDistance;
 	private boolean isPaid;
 	private String orderNo;
+	private String originAirport;
+	private String destinationAirport;
 	private int flightid;
 	private String departure;
 	private String destination;
@@ -77,6 +79,8 @@ public class TicketDTO {
 	    	    : "";
 	    	this.departureDate = firstFlight != null ? firstFlight.getDepartureTime() : null;
 	    	this.arrivalDate   = firstFlight != null ? firstFlight.getArrivalTime()   : null;
+	    	this.originAirport = firstFlight != null ? firstFlight.getOriginAirport().getAirportName()   : null;
+	    	this.destinationAirport = firstFlight != null ? firstFlight.getDestinationAirport().getAirportName()   : null;
 	        
 	    } else {
 	        this.totalAmount = 0;

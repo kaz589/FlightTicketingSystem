@@ -1,6 +1,6 @@
 <template>
+  <div>
   <v-row>
-    
     <v-col cols="12" md="3">
       <v-card class="mx-auto pa-2 no-shadow">
         <v-list>
@@ -14,7 +14,9 @@
             :value="item"
             color="primary"
             rounded="xl"
+            :to="item.to"
             @click="pageControl = i + 1"
+            router
           >
             <template v-slot:prepend>
               <v-icon :icon="item.icon"></v-icon>
@@ -69,7 +71,8 @@
             <section>
               <div>
                 <div class="title">會員等級</div>
-                <span class="contentIn">{{ searchUser.membershipLevel }}</span>
+                <span class="contentIn">{{searchUser.membershipLevel}}</span>
+
               </div>
             </section>
           </div>
@@ -157,18 +160,7 @@
     <!-- 可以在這邊製作區塊2的網頁內容 -->
     <v-col cols="12" md="6" v-if="pageControl === 2">
       <v-card class="mx-auto pa-2 no-shadow">
-
-        
-        
-        
-
-            
-
-              <TicketOrderList/>
-          
-
-          
-      
+        <TicketOrderList />
       </v-card>
     </v-col>
     <!-- 區塊2結束 -->
@@ -310,6 +302,7 @@
       </template>
     </v-confirm-edit>
   </v-dialog>
+</div>
 </template>
 
 <script setup>
@@ -357,6 +350,11 @@ watch(searchUser, (newVal) => {
 });
 
 onMounted(() => {
+  const params = new URLSearchParams(window.location.search);
+  const tab = parseInt(params.get('tab'));
+  if (tab >= 1 && tab <= items.length) {
+    pageControl.value = tab;
+  }
   //預設資料為空
   model.value = "";
   enter();
@@ -370,6 +368,7 @@ function enter() {
   ApiMember.getMember(a.value)
     .then((res) => {
       if (res.status === 200) {
+        
         searchUser.value = res.data;
         console.log(searchUser.value); // 確認是否正確返回資料
       } else {

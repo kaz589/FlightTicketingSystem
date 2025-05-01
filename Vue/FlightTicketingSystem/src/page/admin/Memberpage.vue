@@ -2,7 +2,7 @@
   <div>
     <h1>會員管理</h1>
   </div>
-  <v-container>
+  <!-- <v-container>
     <v-number-input
       v-model="target"
       :reverse="false"
@@ -43,7 +43,13 @@
         </v-btn>
       </v-col>
     </v-row>
-  </v-container>
+  </v-container> -->
+
+  <div class="chart-container">
+    <PieChart :chartData="myChartData" />
+    <PieChart :chartData="myChartDataLogin" />
+  </div>
+
   <br />
   <br />
   <hr />
@@ -87,6 +93,23 @@
         </v-chip>
       </div>
     </template>
+    <!-- 新增 Admin 權限勾選欄 -->
+    <template v-slot:item.addAdmin="{ item }">
+      <v-checkbox
+        v-model="item.isAdminChecked"
+        :label="'ADMIN'"
+        density="compact"
+        hide-details
+        @change="toggleAdminRole(item)"
+      ></v-checkbox>
+    </template>
+    <!-- 新增 provider 欄位 -->
+    <template v-slot:item.provider="{ item }">
+      <div>
+        {{ item.provider || "一般登入" }}
+      </div>
+    </template>
+
     <template v-slot:item.actions="{ item }">
       <div class="d-flex ga-2 justify-end">
         <!-- 調用edit函數 -->
@@ -293,14 +316,17 @@
 </template>
 
 <script setup>
-import { ref, onMounted, shallowRef, watch } from "vue";
+import { ref, onMounted, shallowRef, watch, reactive } from "vue";
 import { ApiMember } from "@/utils/API";
 import Swal from "sweetalert2";
 import "sweetalert2/dist/sweetalert2.min.css";
+import PieChart from "@/components/PieChart.vue";
 
 //初始運行函數(使之一開始就運行)
 onMounted(() => {
   search();
+  countMembershipLevel();
+  countProvider();
 });
 
 // 設定空ref接查詢結果
@@ -383,17 +409,20 @@ const headers = [
   { title: "累積里程", value: "totalMiles" },
   { title: "剩餘里程", value: "remainingMiles" },
   { title: "信箱驗證", value: "emailVerified" },
-  { title: "電話驗證", value: "phoneVerified" },
+  { title: "登入來源", value: "provider" },
   { title: "會員等級", value: "membershipLevel" },
   { title: "角色", value: "authority" },
+  { title: "Admin 權限", value: "addAdmin" },
   { title: "操作", value: "actions" },
 ];
 
 //查詢全部函式
 function search() {
   ApiMember.getAllMember().then((res) => {
-    targetAll.value = res.data;
-    // console.log(targetAll.value);
+    targetAll.value = res.data.map((item) => ({
+      ...item,
+      isAdminChecked: parseRoles(item.authority).includes("ADMIN"), // 預設勾選
+    }));
   });
 }
 
@@ -582,6 +611,160 @@ function searchByFullName() {
     }
   });
 }
+
+//會員等級圓餅圖
+const normal = ref(0);
+const silver = ref(0);
+const gold = ref(0);
+const diamond = ref(0);
+
+const myChartData = reactive({
+  labels: ["普通會員", "銀卡會員", "金卡會員", "鑽石會員"],
+  datasets: [
+    {
+      label: "人數",
+      data: [normal.value, silver.value, gold.value, diamond.value], // 這裡放你的動態數據
+      backgroundColor: ["#B0BEC5", "#C0C0C0", "#FFD700", "#00BFFF"],
+      hoverOffset: 10,
+    },
+  ],
+});
+
+function countMembershipLevel() {
+  //呼叫API
+  const membershipCounts = {};
+
+  ApiMember.countMembershipLevel().then((res) => {
+    console.log(res.data);
+    res.data.forEach((item) => {
+      const level = item.membershipLevel ?? "未指定";
+      membershipCounts[level] = item.count;
+    });
+    console.log(membershipCounts);
+    // console.log(membershipCounts["未指定"]);  // 7
+    // console.log(membershipCounts["普通會員"]); // 1
+
+    normal.value = membershipCounts["普通會員"];
+    silver.value = membershipCounts["銀卡會員"];
+    gold.value = membershipCounts["金卡會員"];
+    diamond.value = membershipCounts["鑽石會員"];
+
+    console.log(normal.value);
+    console.log(diamond.value);
+    // 把整理好的資料塞進 myChartData
+    myChartData.datasets[0].data = [
+      membershipCounts["普通會員"] || 0,
+      membershipCounts["銀卡會員"] || 0,
+      membershipCounts["金卡會員"] || 0,
+      membershipCounts["鑽石會員"] || 0,
+    ];
+    console.log(myChartData.datasets[0].data);
+  });
+}
+
+//登入方式圓餅圖
+
+const normalLogin = ref(1);
+const googleLogin = ref(1);
+const facebookLogin = ref(1);
+
+const myChartDataLogin = reactive({
+  labels: ["一般登入", "GOOGLE登入", "FACEBOOK登入"],
+  datasets: [
+    {
+      label: "人數",
+      data: [normalLogin.value, googleLogin.value, facebookLogin.value], // 這裡放你的動態數據
+      backgroundColor: ["#B0BEC5", "#dd4b39", "#3b5998"],
+      hoverOffset: 10,
+    },
+  ],
+});
+
+function countProvider() {
+  const providerCounts = {};
+
+  ApiMember.countProvider().then((res) => {
+    console.log(res.data);
+    res.data.forEach((item) => {
+      const level = item.provider ?? "未指定";
+      providerCounts[level] = item.count;
+    });
+    console.log(providerCounts);
+
+    normalLogin.value = providerCounts["未指定"];
+    googleLogin.value = providerCounts["GOOGLE"];
+    facebookLogin.value = providerCounts["FACEBOOK"];
+
+    console.log(normalLogin.value);
+    console.log(facebookLogin.value);
+
+    // 把整理好的資料塞進 myChartData
+    myChartDataLogin.datasets[0].data = [
+      providerCounts["未指定"] || 0,
+      providerCounts["GOOGLE"] || 0,
+      providerCounts["FACEBOOK"] || 0,
+    ];
+  });
+}
+
+//會員加減ADMIN
+
+// toggle ADMIN
+const toggleAdminRole = async (item) => {
+  let roles = parseRoles(item.authority);
+  console.log("一開始的角色", roles);
+  console.log("一開始的會員", item.memberId);
+
+  if (item.isAdminChecked) {
+    // 如果勾選，且沒有ADMIN，就加上
+    if (!roles.includes("ADMIN")) {
+      roles.push("ADMIN");
+    }
+  } else {
+    // 如果取消勾選，把ADMIN拿掉
+    const index = roles.indexOf("ADMIN");
+    if (index !== -1) {
+      roles.splice(index, 1);
+    }
+  }
+
+  try {
+    // 這裡組回字串
+    const newAuthority = roles.join(",");
+    // console.log(newAuthority);
+
+    //組成JSON格式
+    const resultRole = {
+      id: item.memberId,
+      authority: newAuthority, // 👉 轉成 "ADMIN_FLIGHT,ADMIN_TICKET" 格式
+    };
+    // console.log(resultRole);
+
+    //這邊要調api更新角色
+    // await memberStore.updateMemberRoles(item.memberId, roles);
+    ApiMember.updateMemberAuthority(resultRole).then(() => {
+      console.log("更新成功");
+    });
+
+    item.authority = newAuthority; // 更新顯示用的
+  } catch (error) {
+    console.error("更新角色失敗", error);
+    // 失敗時還原勾選
+    item.isAdminChecked = parseRoles(item.authority).includes("ADMIN");
+  }
+};
 </script>
 
-<style scoped></style>
+<style scoped>
+.chart-container {
+  display: flex;
+  justify-content: center; /* 讓它們置中，也可以用 space-between 看情況 */
+  align-items: center; /* 垂直置中 */
+  gap: 20px; /* 兩張圖中間的距離 */
+}
+
+.chart-container canvas {
+  width: 300px !important; /* 自己調整大小 */
+  height: 300px !important;
+}
+</style>
