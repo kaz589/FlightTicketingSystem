@@ -27,7 +27,7 @@
           v-for="product in Allproducts"
           :key="product.id"
           cols="12"
-          md="3"
+          md="4"
         >
         <productcard :product="product">
 
