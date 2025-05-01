@@ -271,7 +271,7 @@ function saveDefault(){
   const DEFAULT_user = ref({
   username: "Patrick",
   password: "Patrick",
-  email: "p0139013zkuku6386@gmail.com",
+  email: "Dymanicwork@hotmail.com",
   phoneNumber: "0912345678",
   registrationDate: new Date().toISOString().slice(0, 10), // 自動填入今天日期
   authority: "USER",
