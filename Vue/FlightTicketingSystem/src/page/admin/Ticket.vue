@@ -138,6 +138,7 @@ import { showLoadingSwal, closeLoadingSwal,showSuccessSwal } from '@/utils/swalL
 
 onMounted(() => {
   getDistinctAirportName();
+  search();
 });
 // 表格標題資訊
 const headers = ref([

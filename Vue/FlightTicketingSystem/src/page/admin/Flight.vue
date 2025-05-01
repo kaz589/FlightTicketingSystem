@@ -144,19 +144,6 @@
                   :enable-time="true"
                 ></VueDatePicker>
               </v-col>
-
-              <!-- 經濟艙票價 -->
-              <v-col cols="12" md="4">
-                <v-number-input
-                  v-model="record.economyPrice"
-                  :reverse="false"
-                  controlVariant="default"
-                  label="經濟艙票價"
-                  :hideInput="false"
-                  inset
-                ></v-number-input>
-              </v-col>
-
               <!-- 頭等艙票價 -->
               <v-col cols="12" md="4">
                 <v-number-input
@@ -180,6 +167,17 @@
                   inset
                 ></v-number-input>
               </v-col>
+              <!-- 經濟艙票價 -->
+              <v-col cols="12" md="4">
+                <v-number-input
+                  v-model="record.economyPrice"
+                  :reverse="false"
+                  controlVariant="default"
+                  label="經濟艙票價"
+                  :hideInput="false"
+                  inset
+                ></v-number-input>
+              </v-col>
 
               <!-- 機型 -->
               <v-col cols="12" md="6">
@@ -189,10 +187,9 @@
                   :items="allModels"
                   v-model="record.modelName"
                 ></v-select>
-                
               </v-col>
               <v-col cols="12" md="6">
-              <v-text-field
+                <v-text-field
                   v-model="record.estimatedDistance"
                   label=" 航行距離(KM)"
                   required
@@ -243,10 +240,11 @@ onMounted(() => {
   getDistinctAirportName();
   getfullairports();
   resetRecord(); // 重置表單
+  search();
 });
 
 const allairports = ref([]); //所有不重複機場數據
-const allModels = ref(["A320", "B737-800F","A319-F"]); //所有不重複機型數據
+const allModels = ref(["A320", "B737-800F", "A319-F"]); //所有不重複機型數據
 const allfullairports = ref([]);
 
 const getDistinctAirportName = () => {
@@ -462,7 +460,7 @@ function autofill() {
     firstClassPrice: 12000,
     businessPrice: 8000,
     economyPrice: 3500,
-    estimatedDistance: 350
+    estimatedDistance: 350,
   };
 }
 </script>
