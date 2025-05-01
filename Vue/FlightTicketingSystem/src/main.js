@@ -34,3 +34,13 @@ import "mdb-ui-kit/css/mdb.min.css";
 import "mdb-ui-kit/js/mdb.min.js";
 
 app.mount("#app");
+
+
+//chart.js
+
+
+// chart.js
+import { Chart as ChartJS, Title, Tooltip, Legend, ArcElement, CategoryScale, LinearScale, Filler, PieController } from 'chart.js';
+
+// 註冊 Chart.js 所需的控制器
+ChartJS.register(Title, Tooltip, Legend, ArcElement, CategoryScale, LinearScale, Filler, PieController);
