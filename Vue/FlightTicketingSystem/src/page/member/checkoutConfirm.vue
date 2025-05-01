@@ -46,47 +46,7 @@
       </v-col>
       <v-btn @click="checkRedeem">管理訂單</v-btn>
       <noticeblock></noticeblock>
-<!-- 
-      <v-col cols="12" >
-        <v-card class="pa-6" elevation="6" rounded="xl">
-          <v-card-title class="text-h5 mb-4">收件資訊</v-card-title>
-          <v-form ref="form" v-model="valid" lazy-validation>
-            <v-text-field
-              v-model="formData.receiver"
-              label="收件人"
-              placeholder="請輸入收件人姓名"
-              :rules="[rules.required]"
-              prepend-inner-icon="mdi-account"
-            ></v-text-field>
 
-            <v-text-field
-              v-model="formData.address"
-              label="收件地址"
-              placeholder="請輸入完整收件地址"
-              :rules="[rules.required]"
-              prepend-inner-icon="mdi-home"
-            ></v-text-field>
-
-            <v-text-field
-              v-model="formData.phone"
-              label="手機號碼"
-              placeholder="09xxxxxxxx"
-              :rules="[rules.required, rules.phone]"
-              prepend-inner-icon="mdi-cellphone"
-            ></v-text-field>
-
-            <v-btn
-              class="mt-6"
-              color="primary"
-              block
-              @click="submitOrder"
-              :disabled="!memberId"
-            >
-              確認送出
-            </v-btn>
-          </v-form>
-        </v-card>
-      </v-col> -->
     </v-row>
   </v-container>
 </template>
@@ -144,19 +104,6 @@ const redeemDetail = ref(null);
 
 
 
-  // const formData = ref({
-  //   address: '',
-  //   email: '',
-  //   phone: '',
-  // });
-  
-  // const rules = {
-  //   required: (v) => !!v || '此欄位必填',
-  //   email: (v) =>
-  //     /.+@.+\..+/.test(v) || '請輸入正確的電子郵件格式',
-  //   phone: (v) =>
-  //     /^09\d{8}$/.test(v) || '請輸入正確的手機號碼格式',
-  // };
 
   function submitOrder() {
     if (memberId) {

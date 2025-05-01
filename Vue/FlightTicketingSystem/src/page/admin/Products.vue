@@ -5,7 +5,6 @@
     </div>
     <br /><br />
     <!-- 新增商品 -->
-     
     <v-btn class="mr-2" @click="insertDialog = true">新增商品</v-btn>
     <!-- 搜尋商品 -->
     <v-btn color="secondary" @click="searchByName">
@@ -104,6 +103,7 @@
         </v-col>
         <v-col cols="12" md="6">
         <v-btn color="primary" @click="uploadImage">上傳圖片</v-btn> 
+        <v-btn color="primary" @click="insertByClick">一鍵輸入</v-btn> 
       </v-col>
       </v-row>
       
@@ -354,8 +354,19 @@ async function update() {
   }
 }
 
+// 一鍵輸入：生成威士忌示範資料
+function insertByClick() {
+  insertData.value = {
+    name: '經典12年單一麥芽威士忌',
+    desc: '蘇格蘭產區經典威士忌，陳年十二年，風味濃郁，帶有煙燻與果香。',
+    needmiles: 9000,
+    quantity: 50,
+    category: { categoryId: 1 }, 
+    image: '/ProductsImage/whisky.jpg', 
+    available: true
+  };
 
-
+}
 
 
 </script>

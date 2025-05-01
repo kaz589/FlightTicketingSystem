@@ -303,7 +303,9 @@ export const ApiRedeem = {
   cancelRedeem: (redeemId) => instance.put(`/redeem/cancelRedeem/${redeemId}`, {}),
 };
 
-
+export const ApiRedeemItem = {
+  getItemsByRedeemId: (redeemId) => instance.get(`/redeemItem/${redeemId}`)
+}
 
 
 
