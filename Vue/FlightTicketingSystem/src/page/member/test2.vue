@@ -54,7 +54,7 @@ const searchFilters = ref({ name: '' });
 
 function search(){ 
   ApiProducts.getAllProduct().then((res) => {
-    Allproducts.value = res.data;
+    Allproducts.value = res.data.filter(p => p.available === true);
     console.log(res.data);
     
   })
@@ -62,8 +62,11 @@ function search(){
 function searchByName() {
   console.log(searchFilters.value.name);
   
-  ApiProducts.searchProByName(searchFilters.value.name).then(res => Allproducts.value = res.data);
+  ApiProducts.searchProByName(searchFilters.value.name).then(res => {
+    Allproducts.value = res.data.filter(p => p.available === true);
+  });
 }
+
 
 </script>
 
