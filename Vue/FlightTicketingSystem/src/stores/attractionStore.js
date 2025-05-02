@@ -7,8 +7,7 @@ export const useAttractionStore = defineStore("attraction", {
     loading: false,
     pagination: {
       page: 1,
-      size: 9,
-      totalPages: 1,
+      size: 12,
     },
   }),
 

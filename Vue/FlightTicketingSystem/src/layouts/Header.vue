@@ -10,7 +10,10 @@
             @click="router.push('/')"
           />
         </div>
-        <nav class="hidden md:flex space-x-8 text-3xl font-semibold ml-60">
+        <nav
+          class="hidden md:flex space-x-8 text-3xl font-semibold"
+          style="margin-left: 6em"
+        >
           <a
             href="#"
             class="relative group text-gray-700 hover:text-black transition-colors duration-200"

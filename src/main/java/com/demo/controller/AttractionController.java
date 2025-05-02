@@ -31,7 +31,7 @@ public class AttractionController {
     @GetMapping
     public Page<AttractionResponse> getAllAttractions(
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "9") int size) {
+            @RequestParam(defaultValue = "12") int size) {
         return attractionService.getAttractionsPaged(page, size);
     }
 

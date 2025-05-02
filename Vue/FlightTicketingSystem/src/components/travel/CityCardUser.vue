@@ -100,6 +100,7 @@
                     <!-- 大圖 + 縮圖預覽 -->
                     <div class="mb-4">
                       <swiper
+                        v-if="thumbsReady[index]"
                         :modules="[Thumbs]"
                         :thumbs="{ swiper: thumbs[index] }"
                         :slides-per-view="1"
@@ -133,7 +134,14 @@
                         slides-per-view="4"
                         free-mode
                         watch-slides-progress
-                        @swiper="(swiper) => (thumbs[index] = swiper)"
+                        @swiper="
+                          (swiper) => {
+                            thumbs[index] = swiper;
+                            nextTick(() => {
+                              thumbsReady.value[index] = true;
+                            });
+                          }
+                        "
                         class="rounded-sm"
                       >
                         <swiper-slide
@@ -183,7 +191,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from "vue";
+import { ref, onMounted, nextTick } from "vue";
 import { useTravelStore } from "@/stores/travelStore";
 import { useFavouriteStore } from "@/stores/favourtieStore";
 import { Swiper, SwiperSlide } from "swiper/vue";
@@ -197,6 +205,8 @@ import "swiper/css/navigation";
 defineProps({
   city: Object,
 });
+
+const thumbsReady = ref([]);
 
 const travel = useTravelStore();
 const favourite = useFavouriteStore();

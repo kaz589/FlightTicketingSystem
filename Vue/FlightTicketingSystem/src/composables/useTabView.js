@@ -6,12 +6,12 @@ import AttractionCardGrid from "@/components/travel/AttractionCardGridAdmin.vue"
 
 export function useTabView({
   viewMode,
-  currentTab,
   cityStore,
   attractionStore,
   searchResults,
   handlers,
   headers,
+  sortKey,
 }) {
   const getViewComponent = (tab) => {
     const isCard = viewMode.value === "Card";
@@ -39,6 +39,7 @@ export function useTabView({
         headers: headers.city,
         handleEdit: handlers.edit,
         handleDelete: handlers.delete,
+        sortKey: sortKey.value,
       };
     }
     if (["attractions"].includes(tab)) {
@@ -57,6 +58,7 @@ export function useTabView({
         headers: headers.attraction,
         handleEdit: handlers.edit,
         handleDelete: handlers.delete,
+        sortKey: sortKey.value,
       };
     }
     return {};

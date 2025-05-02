@@ -2,16 +2,18 @@
   <v-row justify="start" align="start" class="pa-6" style="row-gap: 2rem">
     <template v-if="cities && cities.length > 0">
       <v-col
-        v-for="city in cities"
+        v-for="city in sortedCities"
         :key="city.id"
         cols="12"
         sm="6"
         md="4"
-        lg="3">
+        lg="3"
+      >
         <CityCard
           :city="city"
           :handleEdit="handleEdit"
-          :handleDelete="handleDelete" />
+          :handleDelete="handleDelete"
+        />
       </v-col>
     </template>
     <template v-else>
@@ -25,11 +27,25 @@
 
 <script setup>
 import CityCard from "./CityCardAdmin.vue";
+import { computed } from "vue";
 
 const props = defineProps({
   cities: Array,
+  sortKey: String,
   headers: { type: Array, default: () => [] },
   handleEdit: Function,
   handleDelete: Function,
+});
+
+const sortedCities = computed(() => {
+  if (!props.sortKey) return props.cities;
+  const [key, order] = props.sortKey.includes("-desc")
+    ? [props.sortKey.replace("-desc", ""), "desc"]
+    : [props.sortKey, "asc"];
+  return [...props.cities].sort((a, b) =>
+    order === "asc"
+      ? (a[key] || "").localeCompare(b[key] || "", "zh-Hant-u-co-pinyin")
+      : (b[key] || "").localeCompare(a[key] || "", "zh-Hant-u-co-pinyin")
+  );
 });
 </script>
