@@ -7,50 +7,29 @@
       <v-row dense>
         <!-- 第一行：起始/抵達機場 -->
         <v-col cols="12" md="6">
-          <v-autocomplete
-            clearable
-            label="起始機場"
-            :items="allairports"
-            v-model="searchFilters.originAirport"
-          ></v-autocomplete>
+          <v-autocomplete clearable label="起始機場" :items="allairports"
+            v-model="searchFilters.originAirport"></v-autocomplete>
         </v-col>
         <v-col cols="12" md="6">
-          <v-autocomplete
-            clearable
-            label="抵達機場"
-            :items="allairports"
-            v-model="searchFilters.destinationAirport"
-          ></v-autocomplete>
+          <v-autocomplete clearable label="抵達機場" :items="allairports"
+            v-model="searchFilters.destinationAirport"></v-autocomplete>
         </v-col>
 
         <!-- 第二行：起飛/降落日期 -->
         <v-col cols="12" md="6">
           <label for="arrivalTime" class="mb-1 d-block">起飛日期:</label>
-          <VueDatePicker
-            id="arrivalTime"
-            v-model="searchFilters.arrivalTime"
-            :format="'yyyy/MM/dd--HH:mm'"
-            :enable-time="true"
-          ></VueDatePicker>
+          <VueDatePicker id="arrivalTime" v-model="searchFilters.arrivalTime" :format="'yyyy/MM/dd--HH:mm'"
+            :enable-time="true"></VueDatePicker>
         </v-col>
         <v-col cols="12" md="6">
           <label for="departureTime" class="mb-1 d-block">降落日期:</label>
-          <VueDatePicker
-            id="departureTime"
-            v-model="searchFilters.departureTime"
-            :format="'yyyy/MM/dd--HH:mm'"
-            :enable-time="true"
-          ></VueDatePicker>
+          <VueDatePicker id="departureTime" v-model="searchFilters.departureTime" :format="'yyyy/MM/dd--HH:mm'"
+            :enable-time="true"></VueDatePicker>
         </v-col>
 
         <!-- 第三行：機型 + 按鈕 -->
         <v-col cols="12" md="4">
-          <v-select
-            clearable
-            label="機型"
-            :items="allModels"
-            v-model="searchFilters.modelName"
-          ></v-select>
+          <v-select clearable label="機型" :items="allModels" v-model="searchFilters.modelName"></v-select>
         </v-col>
 
         <v-col cols="12" md="8" class="d-flex align-center">
@@ -65,28 +44,13 @@
     <br />
     <br />
     <p>總數: {{ totalItems }}</p>
-    <v-data-table
-      :headers="headers"
-      :items="items"
-      :items-per-page="itemsPerPage"
-      hide-default-footer
-      class="elevation-1 my-bordered-table"
-    >
+    <v-data-table :headers="headers" :items="items" :items-per-page="itemsPerPage" hide-default-footer
+      class="elevation-1 my-bordered-table">
       <template v-slot:item.actions="{ item }">
         <div class="d-flex ga-2 justify-end">
-          <v-icon
-            color="medium-emphasis"
-            icon="mdi-pencil"
-            size="small"
-            @click="edit(item.id)"
-          ></v-icon>
+          <v-icon color="medium-emphasis" icon="mdi-pencil" size="small" @click="edit(item.id)"></v-icon>
 
-          <v-icon
-            color="medium-emphasis"
-            icon="mdi-delete"
-            size="small"
-            @click="remove(item.id)"
-          ></v-icon>
+          <v-icon color="medium-emphasis" icon="mdi-delete" size="small" @click="remove(item.id)"></v-icon>
         </div>
       </template>
     </v-data-table>
@@ -105,95 +69,52 @@
             <v-row>
               <!-- 起始機場 -->
               <v-col cols="12" md="6">
-                <v-autocomplete
-                  clearable
-                  label="起始機場"
-                  :items="allairports"
-                  v-model="record.originAirport"
-                ></v-autocomplete>
+                <v-autocomplete clearable label="起始機場" :items="allairports"
+                  v-model="record.originAirport"></v-autocomplete>
               </v-col>
 
               <!-- 抵達機場 -->
               <v-col cols="12" md="6">
-                <v-autocomplete
-                  clearable
-                  label="抵達機場"
-                  :items="allairports"
-                  v-model="record.destinationAirport"
-                ></v-autocomplete>
+                <v-autocomplete clearable label="抵達機場" :items="allairports"
+                  v-model="record.destinationAirport"></v-autocomplete>
               </v-col>
 
               <!-- 起飛日期 -->
               <v-col cols="12" md="6">
                 <label for="departureTime">起飛日期:</label>
-                <VueDatePicker
-                  id="departureTime"
-                  v-model="record.departureTime"
-                  :format="'yyyy/MM/dd--HH:mm'"
-                  :enable-time="true"
-                ></VueDatePicker>
+                <VueDatePicker id="departureTime" v-model="record.departureTime" :format="'yyyy/MM/dd--HH:mm'"
+                  :enable-time="true"></VueDatePicker>
               </v-col>
 
               <!-- 降落日期 -->
               <v-col cols="12" md="6">
                 <label for="arrivalTime">降落日期:</label>
-                <VueDatePicker
-                  id="arrivalTime"
-                  v-model="record.arrivalTime"
-                  :format="'yyyy/MM/dd--HH:mm'"
-                  :enable-time="true"
-                ></VueDatePicker>
+                <VueDatePicker id="arrivalTime" v-model="record.arrivalTime" :format="'yyyy/MM/dd--HH:mm'"
+                  :enable-time="true"></VueDatePicker>
               </v-col>
               <!-- 頭等艙票價 -->
               <v-col cols="12" md="4">
-                <v-number-input
-                  v-model="record.firstClassPrice"
-                  :reverse="false"
-                  controlVariant="default"
-                  label="頭等艙票價"
-                  :hideInput="false"
-                  inset
-                ></v-number-input>
+                <v-number-input v-model="record.firstClassPrice" :reverse="false" controlVariant="default" label="頭等艙票價"
+                  :hideInput="false" inset></v-number-input>
               </v-col>
 
               <!-- 商務艙票價 -->
               <v-col cols="12" md="4">
-                <v-number-input
-                  v-model="record.businessPrice"
-                  :reverse="false"
-                  controlVariant="default"
-                  label="商務艙票價"
-                  :hideInput="false"
-                  inset
-                ></v-number-input>
+                <v-number-input v-model="record.businessPrice" :reverse="false" controlVariant="default" label="商務艙票價"
+                  :hideInput="false" inset></v-number-input>
               </v-col>
               <!-- 經濟艙票價 -->
               <v-col cols="12" md="4">
-                <v-number-input
-                  v-model="record.economyPrice"
-                  :reverse="false"
-                  controlVariant="default"
-                  label="經濟艙票價"
-                  :hideInput="false"
-                  inset
-                ></v-number-input>
+                <v-number-input v-model="record.economyPrice" :reverse="false" controlVariant="default" label="經濟艙票價"
+                  :hideInput="false" inset></v-number-input>
               </v-col>
 
               <!-- 機型 -->
               <v-col cols="12" md="6">
-                <v-select
-                  clearable
-                  label="機型"
-                  :items="allModels"
-                  v-model="record.modelName"
-                ></v-select>
+                <v-select clearable label="機型" :items="allModels" v-model="record.modelName"></v-select>
               </v-col>
               <v-col cols="12" md="6">
-                <v-text-field
-                  v-model="record.estimatedDistance"
-                  label=" 航行距離(KM)"
-                  required
-                ></v-text-field>
+                <v-text-field v-model="record.estimatedDistance" label=" 航行距離(KM)" required></v-text-field>
               </v-col>
             </v-row>
           </v-form>
@@ -452,8 +373,8 @@ function formatDate(date) {
 }
 function autofill() {
   record.value = {
-    originAirport: allairports.value[0] || "台北松山",
-    destinationAirport: allairports.value[1] || "高雄小港",
+    originAirport: "松山機場",
+    destinationAirport: "羽田機場",
     departureTime: new Date(),
     arrivalTime: new Date(Date.now() + 2 * 60 * 60 * 1000), // 兩小時後
     modelName: allModels.value[0] || "A320",

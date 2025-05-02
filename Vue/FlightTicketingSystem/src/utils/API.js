@@ -340,15 +340,14 @@ export const ApiRedeem = {
   cancelRedeem: (redeemId) => instance.put(`/redeem/cancelRedeem/${redeemId}`, {}),
 };
 
-<<<<<<< HEAD
+
 export const ApiRedeemItem = {
   getItemsByRedeemId: (redeemId) => instance.get(`/redeemItem/${redeemId}`)
 }
 
 
 
-=======
->>>>>>> c6f5be2fc0b07bc808429126d8715a01adb406c7
+
 export const ApiEmail = {
   //要求更新密碼
   requestReset: (email) =>
