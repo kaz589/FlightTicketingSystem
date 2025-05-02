@@ -2,7 +2,6 @@
   <div
     class="rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-transform hover:scale-[1.03] w-[300px] bg-white relative"
   >
-    <!-- 圖片 -->
     <v-img
       :src="`http://localhost:8080${city.image}`"
       :alt="city.name"
@@ -10,7 +9,6 @@
       cover
       class="rounded-t-xl"
     />
-    <!-- 愛心 -->
     <button
       @click="toggle(city)"
       class="absolute top-2 right-2 w-8 h-8 flex items-center justify-center text-white bg-black/60 hover:bg-black/80 rounded-full transition-transform hover:scale-110"
@@ -26,25 +24,20 @@
       ></i>
     </button>
 
-    <!-- 名稱/國家 -->
     <div class="p-4 text-center">
       <h2 class="text-lg font-semibold text-gray-800 tracking-tight">
         {{ city.name }}
       </h2>
       <p class="text-xs text-gray-500 mt-1">{{ city.country }}</p>
 
-      <!-- 按鈕列 -->
       <div class="mt-4 flex justify-center gap-3 flex-wrap">
-        <!-- 查看景點 -->
         <button
-          @click="travel.openAttractions(city)"
+          @click="handleOpenAttractions(city)"
           class="flex items-center gap-1 px-3 py-1.5 text-sm border border-blue-600 text-blue-600 rounded-md hover:bg-blue-50 transition"
         >
           <i class="mdi mdi-eye text-base"></i>
           查看景點
         </button>
-
-        <!-- 設為目的地 -->
         <button
           @click="travel.setDestination(city.name)"
           class="flex items-center gap-1 px-3 py-1.5 text-sm bg-green-500 text-white rounded-md hover:bg-green-600 transition"
@@ -64,18 +57,7 @@
         </v-card-title>
 
         <v-card-text>
-          <!-- Swiper 景點主輪播 -->
           <div class="relative">
-            <div
-              class="absolute -left-10 top-1/2 -translate-y-1/2 z-50 swiper-custom-prev cursor-pointer"
-            >
-              <v-icon size="32">mdi-chevron-left</v-icon>
-            </div>
-            <div
-              class="absolute -right-10 top-1/2 -translate-y-1/2 z-9999 swiper-custom-next cursor-pointer"
-            >
-              <v-icon size="32">mdi-chevron-right</v-icon>
-            </div>
             <swiper
               :slides-per-view="1"
               :space-between="16"
@@ -97,14 +79,22 @@
                   class="d-flex flex-column justify-between h-full px-6 py-4"
                 >
                   <div>
-                    <!-- 大圖 + 縮圖預覽 -->
                     <div class="mb-4">
                       <swiper
-                        v-if="thumbsReady[index]"
                         :modules="[Thumbs]"
-                        :thumbs="{ swiper: thumbs[index] }"
                         :slides-per-view="1"
+                        :slide-to-clicked-slide="true"
                         class="rounded mb-2"
+                        @swiper="
+                          (swiper) => {
+                            swiperRefs[index] = swiper;
+                            const thumb = thumbs[index];
+                            if (thumb && swiper.thumbs) {
+                              swiper.thumbs.swiper = thumb;
+                              swiper.thumbs.update();
+                            }
+                          }
+                        "
                       >
                         <swiper-slide
                           v-for="(photo, j) in attraction.photos"
@@ -123,25 +113,17 @@
                                 載入中...
                               </div>
                             </template>
-                            <template #default> </template>
                           </v-img>
                         </swiper-slide>
                       </swiper>
 
-                      <!-- 小縮圖 swiper -->
                       <swiper
                         :modules="[Thumbs, FreeMode]"
                         slides-per-view="4"
                         free-mode
                         watch-slides-progress
-                        @swiper="
-                          (swiper) => {
-                            thumbs[index] = swiper;
-                            nextTick(() => {
-                              thumbsReady.value[index] = true;
-                            });
-                          }
-                        "
+                        :slide-to-clicked-slide="true"
+                        @swiper="(swiper) => (thumbs[index] = swiper)"
                         class="rounded-sm"
                       >
                         <swiper-slide
@@ -177,6 +159,16 @@
                 </v-card>
               </swiper-slide>
             </swiper>
+            <div
+              class="absolute -left-10 top-1/2 -translate-y-1/2 z-50 swiper-custom-prev cursor-pointer"
+            >
+              <v-icon size="32">mdi-chevron-left</v-icon>
+            </div>
+            <div
+              class="absolute -right-10 top-1/2 -translate-y-1/2 z-9999 swiper-custom-next cursor-pointer"
+            >
+              <v-icon size="32">mdi-chevron-right</v-icon>
+            </div>
           </div>
         </v-card-text>
 
@@ -206,16 +198,23 @@ defineProps({
   city: Object,
 });
 
-const thumbsReady = ref([]);
-
 const travel = useTravelStore();
 const favourite = useFavouriteStore();
 const thumbs = ref([]);
+const swiperRefs = ref([]);
 
 const toggle = (city) => favourite.toggle(city);
 const isFavourite = (id) => favourite.isFavourite(id);
 
-onMounted(async () => {
+const handleOpenAttractions = async (city) => {
+  await travel.openAttractions(city);
+  await nextTick();
+  const len = travel.currentCity.attractions?.length || 0;
+  thumbs.value = Array(len).fill(null);
+  swiperRefs.value = Array(len).fill(null);
+};
+
+onMounted(() => {
   favourite.loadFavourites();
 });
 </script>

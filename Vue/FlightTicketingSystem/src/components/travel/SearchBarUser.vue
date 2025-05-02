@@ -276,7 +276,7 @@ const getRecommendation = async () => {
       },
       {
         headers: {
-          Authorization: `Bearer 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`,
+          Authorization: `Bearer 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`,
           "HTTP-Referer": "http://localhost:5173",
         },
       }

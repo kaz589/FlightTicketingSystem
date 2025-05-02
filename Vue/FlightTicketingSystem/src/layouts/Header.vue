@@ -15,7 +15,7 @@
           style="margin-left: 6em"
         >
           <a
-            href="#"
+            href="http://localhost:5173/travel"
             class="relative group text-gray-700 hover:text-black transition-colors duration-200"
           >
             探索
@@ -24,7 +24,7 @@
             ></span>
           </a>
           <a
-            href="#"
+            href="http://localhost:5173/travel"
             class="relative group text-gray-700 hover:text-black transition-colors duration-200"
           >
             會員
@@ -33,7 +33,7 @@
             ></span>
           </a>
           <a
-            href="#"
+            href="http://localhost:5173/travel"
             class="relative group text-gray-700 hover:text-black transition-colors duration-200"
           >
             里程

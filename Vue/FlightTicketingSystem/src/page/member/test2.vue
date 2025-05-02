@@ -1,5 +1,5 @@
 <template>
-    
+    <div>
 <!-- 商品類別菜單 -->
  <!-- 商品里程菜單 -->
 
@@ -35,6 +35,7 @@
         </v-col>
       </v-row>
     </v-container>
+  </div>
   </template>
   
 <script setup>

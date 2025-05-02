@@ -381,7 +381,7 @@ function autofill() {
     firstClassPrice: 12000,
     businessPrice: 8000,
     economyPrice: 3500,
-    estimatedDistance: 350,
+    estimatedDistance: 10000,
   };
 }
 </script>
