@@ -42,7 +42,9 @@
         :value="tab"
       >
         <div
-          v-if="['allCities', 'allAttractions'].includes(tab)"
+          v-if="
+            ['allCities', 'allAttractions'].includes(tab) && viewMode === 'Card'
+          "
           class="mb-4 ml-16"
         >
           <div class="mb-4 font-weight-bold">
@@ -50,8 +52,10 @@
             <v-select
               v-model="sortKey"
               :items="[
-                { title: '名稱 A-Z', value: 'name' },
-                { title: '名稱 Z-A', value: 'name-desc' },
+                { title: '名稱（A-Z）', value: 'name' },
+                { title: '名稱（Z-A）', value: 'name-desc' },
+                { title: '國家（A-Z）', value: 'country' },
+                { title: '國家（Z-A）', value: 'country-desc' },
               ]"
               variant="outlined"
               density="compact"
@@ -261,7 +265,7 @@ const handleSearch = async (done) => {
     const query = searchQuery.value?.trim();
 
     if (!query) {
-      results.value = []; // ← 搜索关键字为空也清空结果
+      results.value = [];
       done();
       return;
     }
@@ -292,12 +296,11 @@ const handleSearch = async (done) => {
         results.value = response.data;
       }
     } else {
-      // 🧹 如果后端返回空数组，主动清空 results
       results.value = [];
     }
   } catch (error) {
     console.error("Error fetching data:", error);
-    results.value = []; // 🧹 错误时也清空，不要残留旧数据
+    results.value = [];
   } finally {
     done();
   }

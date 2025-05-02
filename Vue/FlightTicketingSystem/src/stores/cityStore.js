@@ -7,7 +7,7 @@ export const useCityStore = defineStore("city", {
     loading: false,
   }),
   actions: {
-    async fetchCities(page = 0, size = 9) {
+    async fetchCities(page = 0, size = 12) {
       this.loading = true;
       try {
         const res = await axios.get("http://localhost:8080/cities", {
