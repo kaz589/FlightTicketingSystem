@@ -35,8 +35,6 @@ public class Category {
 	@Column(name = "category_name")
 	private String categoryName;
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "category")
-	@JsonManagedReference
-	private List<Products> products = new LinkedList<Products>();
+
 
 }

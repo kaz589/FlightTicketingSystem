@@ -31,6 +31,7 @@ public class FlightDTO {
 	private Integer economyPrice;
 	private Integer businessPrice;
 	private Integer firstClassPrice;
+	private Integer estimatedDistance;
 	private String modelName;
 	
 	//EntitytoDTO

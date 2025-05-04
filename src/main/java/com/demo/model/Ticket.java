@@ -31,8 +31,8 @@ public class Ticket {
 	    @ManyToOne
 	    @JoinColumn(name = "member_id", referencedColumnName = "member_id") // 關聯到顧客表
 	    private Member member;
-
-	   
+       private String orderNo;
+	   private boolean isPaid;
 	    private LocalDateTime bookingTime;
 	   
 	    // 一對多關係：一張票對應多個座位
