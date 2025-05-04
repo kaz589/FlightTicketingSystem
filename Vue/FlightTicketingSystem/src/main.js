@@ -21,6 +21,9 @@ import * as components from "vuetify/components";
 import * as directives from "vuetify/directives";
 import "@mdi/font/css/materialdesignicons.css";
 
+import VueObserveVisibility from "vue-observe-visibility";
+app.use(VueObserveVisibility);
+
 const vuetify = createVuetify({
   components,
   directives,
@@ -35,12 +38,29 @@ import "mdb-ui-kit/js/mdb.min.js";
 
 app.mount("#app");
 
-
 //chart.js
 
-
 // chart.js
-import { Chart as ChartJS, Title, Tooltip, Legend, ArcElement, CategoryScale, LinearScale, Filler, PieController } from 'chart.js';
+import {
+  Chart as ChartJS,
+  Title,
+  Tooltip,
+  Legend,
+  ArcElement,
+  CategoryScale,
+  LinearScale,
+  Filler,
+  PieController,
+} from "chart.js";
 
 // 註冊 Chart.js 所需的控制器
-ChartJS.register(Title, Tooltip, Legend, ArcElement, CategoryScale, LinearScale, Filler, PieController);
+ChartJS.register(
+  Title,
+  Tooltip,
+  Legend,
+  ArcElement,
+  CategoryScale,
+  LinearScale,
+  Filler,
+  PieController
+);

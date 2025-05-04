@@ -7,39 +7,31 @@
             src="@/assets/Easytrip_text.png"
             alt="Easytrip Logo"
             class="w-40 h-auto object-contain transition-transform duration-300 hover:scale-105"
-            @click="router.push('/')"
-          />
+            @click="router.push('/')" />
         </div>
         <nav
           class="hidden md:flex space-x-8 text-3xl font-semibold"
-          style="margin-left: 6em"
-        >
+          style="margin-left: 6em">
           <a
             href="#"
-            class="relative group text-gray-700 hover:text-black transition-colors duration-200"
-          >
+            class="relative group text-gray-700 hover:text-black transition-colors duration-200">
             探索
             <span
-              class="absolute bottom-0 left-0 w-0 h-0.5 bg-black transition-all duration-300 group-hover:w-full"
-            ></span>
+              class="absolute bottom-0 left-0 w-0 h-0.5 bg-black transition-all duration-300 group-hover:w-full"></span>
           </a>
           <a
             href="#"
-            class="relative group text-gray-700 hover:text-black transition-colors duration-200"
-          >
+            class="relative group text-gray-700 hover:text-black transition-colors duration-200">
             會員
             <span
-              class="absolute bottom-0 left-0 w-0 h-0.5 bg-black transition-all duration-300 group-hover:w-full"
-            ></span>
+              class="absolute bottom-0 left-0 w-0 h-0.5 bg-black transition-all duration-300 group-hover:w-full"></span>
           </a>
           <a
             href="#"
-            class="relative group text-gray-700 hover:text-black transition-colors duration-200"
-          >
+            class="relative group text-gray-700 hover:text-black transition-colors duration-200">
             里程
             <span
-              class="absolute bottom-0 left-0 w-0 h-0.5 bg-black transition-all duration-300 group-hover:w-full"
-            ></span>
+              class="absolute bottom-0 left-0 w-0 h-0.5 bg-black transition-all duration-300 group-hover:w-full"></span>
           </a>
         </nav>
 
@@ -55,13 +47,11 @@
             @click="router.push('/checkout')"
             class="text-none"
             variant="flat"
-            stacked
-          >
+            stacked>
             <v-badge
               color="error"
               :content="productTypesCount"
-              :model-value="productTypesCount > 0"
-            >
+              :model-value="productTypesCount > 0">
               <v-icon size="36">mdi mdi-cart-variant</v-icon>
             </v-badge>
           </v-btn>
@@ -69,8 +59,7 @@
           <button
             class="login-btn"
             @click="router.push('/loginUser')"
-            v-if="showLoginBtn"
-          >
+            v-if="showLoginBtn">
             <span>登入</span>
           </button>
 
@@ -80,8 +69,7 @@
             icon
             slim
             variant="flat"
-            v-if="showUserBtn > 0"
-          >
+            v-if="showUserBtn > 0">
             <v-avatar color="surface-light" size="32">
               <img :src="getPictureUrl(userPicture)" alt="圖片未顯示" />
             </v-avatar>
@@ -93,21 +81,18 @@
                   link
                   title="後台首頁"
                   @click="router.push('/admin')"
-                  v-if="showUserBtn >= 2"
-                />
+                  v-if="showUserBtn >= 2" />
                 <v-list-item
                   append-icon="mdi mdi-account"
                   link
                   title="個人頁面"
-                  @click="userPage"
-                />
+                  @click="userPage" />
 
                 <v-list-item
                   append-icon="mdi-logout"
                   link
                   title="登出"
-                  @click="logoutChange()"
-                />
+                  @click="logoutChange()" />
               </v-list>
             </v-menu>
           </v-btn>
