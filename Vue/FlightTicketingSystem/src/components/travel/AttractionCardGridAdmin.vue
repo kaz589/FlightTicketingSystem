@@ -7,12 +7,14 @@
         cols="12"
         sm="6"
         md="4"
-        lg="3">
+        lg="3"
+      >
         <AttractionCard
           :attraction="attraction"
           :cities="cities"
           :handleEdit="handleEdit"
-          :handleDelete="handleDelete" />
+          :handleDelete="handleDelete"
+        />
       </v-col>
     </template>
 
@@ -31,7 +33,8 @@
       background: #eee;
       text-align: center;
       line-height: 80px;
-    " />
+    "
+  />
 </template>
 
 <script setup>
@@ -65,18 +68,21 @@ const sortedAttractions = computed(() => {
     ? [props.sortKey.replace("-desc", ""), "desc"]
     : [props.sortKey, "asc"];
 
- const getValue = (a) => {
-  switch (key) {
-    case "name":
-      return getPinyin(a.name || "");
-    case "city":
-      return getPinyin(getCityName(a.cityId)); // ✅ 现在是城市名拼音
-    case "rating":
-      return typeof a.rating === "number" ? a.rating : -1;
-    default:
-      return "";
-  }
-};
+  const getValue = (a) => {
+    let value;
+    switch (key) {
+      case "name":
+        value = getPinyin(a.name || "");
+        return value;
+      case "city":
+        value = getPinyin(a.city || "");
+        return value;
+      case "rating":
+        return typeof a.rating === "number" ? a.rating : -1;
+      default:
+        return "";
+    }
+  };
 
   return copy.sort((a, b) => {
     const aVal = getValue(a);
