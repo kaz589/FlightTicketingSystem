@@ -68,6 +68,7 @@ import { ApiRedeem,ApiRedeemItem,ApiMember } from '@/utils/API';
 import { useRouter } from "vue-router"; // 引入 vue-router
 import { useAuthStore } from "@/stores/auth";
 import dayjs from 'dayjs';
+import Swal from 'sweetalert2';
 
 const authStore = useAuthStore();
 const memberId = authStore.user.memberId;
@@ -129,24 +130,45 @@ checkRedeemDetailDialog.value = true; // 開彈窗
 }
 // 取消訂單
 const cancelRedeem = (redeemId) => {
-console.log('redeemId:', redeemId);
-
-if (!confirm('確定要取消這筆訂單嗎？')) {
-  return; // 如果按「取消」，直接跳出，不要送出 API
-}
-
-ApiRedeem.cancelRedeem(redeemId)
-  .then(() => {
-    alert('訂單已取消');
-    fetchRedeems(memberId) // 重新抓一次
-  })
-  fetchRemainingMiles(memberId)
-  .catch((error) => {
-console.error('取消訂單失敗', error);
-
-const message = error.response?.data?.message || '取消失敗，請稍後再試';
-alert(`${message}`);
+  Swal.fire({
+  title: '確定要取消這筆訂單嗎？',
+  icon: 'warning',
+  showCancelButton: true,
+  confirmButtonText: '確定',
+  cancelButtonText: '取消'
+}).then((result) => {
+  if (result.isConfirmed) {
+    ApiRedeem.cancelRedeem(redeemId)
+      .then(() => {
+        Swal.fire('成功', '訂單已取消', 'success');
+        fetchRedeems(memberId);
+        fetchRemainingMiles(memberId);
+      })
+      .catch((error) => {
+        const message = error.response?.data?.message || '取消失敗，請稍後再試';
+        Swal.fire('錯誤', message, 'error');
+      });
+  }
 });
+
+// console.log('redeemId:', redeemId);
+
+// if (!confirm('確定要取消這筆訂單嗎？')) {
+//   return; // 如果按「取消」，直接跳出，不要送出 API
+// }
+
+// ApiRedeem.cancelRedeem(redeemId)
+//   .then(() => {
+//     alert('訂單已取消');
+//     fetchRedeems(memberId) // 重新抓一次
+//   })
+//   fetchRemainingMiles(memberId)
+//   .catch((error) => {
+// console.error('取消訂單失敗', error);
+
+// const message = error.response?.data?.message || '取消失敗，請稍後再試';
+// alert(`${message}`);
+// });
 };
 async function fetchRemainingMiles(memberId) {
   const res = await ApiMember.getMember(memberId);

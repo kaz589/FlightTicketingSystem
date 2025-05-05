@@ -1,4 +1,5 @@
 <template>
+  <div>
   <h3>結帳成功，確認訂單信件已寄出！</h3>
 <br>
   <v-container class="pa-4">  
@@ -49,6 +50,7 @@
 
     </v-row>
   </v-container>
+</div>
 </template>
   
   <script setup>
