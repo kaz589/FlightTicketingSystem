@@ -35,8 +35,17 @@
             @change="previewImage" />
         </v-form>
       </v-card-text>
+      <v-card-actions>
+        <v-btn
+          variant="outlined"
+          class="ml-2"
+          color="grey"
+          @click="fillFakeData">
+          一鍵代入
+        </v-btn>
 
-      <v-card-actions class="justify-end">
+        <v-spacer></v-spacer>
+
         <v-btn
           :disabled="!valid || loading"
           variant="outlined"
@@ -145,5 +154,15 @@ const submit = async () => {
   } finally {
     loading.value = false;
   }
+};
+
+const fillFakeData = () => {
+  form.name = "巴黎";
+  form.country = "法國";
+  form.latitude = 48.8566;
+  form.longitude = 2.3522;
+  form.imageFile = null;
+  previewUrl.value = "";
+  formRef.value?.resetValidation();
 };
 </script>

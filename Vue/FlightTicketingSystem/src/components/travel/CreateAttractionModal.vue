@@ -66,7 +66,17 @@
             @change="previewImages" />
         </v-form>
       </v-card-text>
-      <v-card-actions class="justify-end">
+      <v-card-actions>
+        <v-btn
+          variant="outlined"
+          size="ml-2"
+          color="grey"
+          @click="fillFakeAttraction">
+          一鍵代入
+        </v-btn>
+
+        <v-spacer></v-spacer>
+
         <v-btn
           :disabled="!valid || loading"
           color="primary"
@@ -220,5 +230,20 @@ async function submit() {
   } finally {
     loading.value = false;
   }
+}
+
+function fillFakeAttraction() {
+  form.name = "埃菲爾鐵塔";
+  form.cityName = "巴黎"; // 确保你有「巴黎」在城市列表中
+  form.address = "Champ de Mars, 5 Avenue Anatole France, 75007 Paris, France";
+  form.description =
+    "埃菲爾鐵塔是法國巴黎的地標之一，高度達到 330 公尺，是全球最著名的鐵製建築。建於 1889 年萬國博覽會。";
+  form.rating = 4.8;
+  form.category = ["地標", "觀光景點"];
+  form.latitude = 48.8584;
+  form.longitude = 2.2945;
+  form.imageFiles = [];
+  photos.value = [];
+  formRef.value?.resetValidation();
 }
 </script>

@@ -2,8 +2,7 @@
   <v-container
     fluid
     class="pa-6"
-    style="background-color: #f9f9f9; min-height: 100vh"
-  >
+    style="background-color: #f9f9f9; min-height: 100vh">
     <NavigationTabs v-model:selectedTab="currentTab" />
     <v-slide-y-transition>
       <template v-if="searchBarTabs.includes(currentTab)">
@@ -39,28 +38,20 @@
       <v-window-item
         v-for="tab in ['cities', 'allCities', 'attractions', 'allAttractions']"
         :key="tab"
-        :value="tab"
-      >
+        :value="tab">
         <div
           v-if="
             ['allCities', 'allAttractions'].includes(tab) && viewMode === 'Card'
           "
-          class="mb-4 ml-16"
-        >
+          class="mb-4 ml-16">
           <div class="mb-4 font-weight-bold">
             排序方式:
             <v-select
               v-model="sortKey"
-              :items="[
-                { title: '名稱（A-Z）', value: 'name' },
-                { title: '名稱（Z-A）', value: 'name-desc' },
-                { title: '國家（A-Z）', value: 'country' },
-                { title: '國家（Z-A）', value: 'country-desc' },
-              ]"
+              :items="currentSortOptions"
               variant="outlined"
               density="compact"
-              style="max-width: 200px"
-            />
+              style="max-width: 200px" />
           </div>
         </div>
 
@@ -73,8 +64,7 @@
       v-model="snackbar"
       color="success"
       timeout="3000"
-      location="bottom center"
-    >
+      location="bottom center">
       {{ snackbarMessage }}
     </v-snackbar>
   </v-container>
@@ -83,30 +73,26 @@
 
   <CreateAttractionModal
     v-model="modals.createAttraction"
-    v-bind="modalProps"
-  />
+    v-bind="modalProps" />
 
   <EditCityModal
     v-model="modals.editCity"
     :city="selectedCity"
-    @updated="handleCityUpdated"
-  />
+    @updated="handleCityUpdated" />
 
   <EditAttractionModal
     v-model="modals.editAttraction"
     :cities="cities"
     :attraction="selectedAttraction"
     v-show="!!selectedAttraction"
-    @updated="handleAttractionUpdated"
-  />
+    @updated="handleAttractionUpdated" />
 
   <DeleteConfirmDialog
     v-model="deleteDialogVisible"
     :title="`刪除「${selectedItem?.name}」？`"
     message="刪除後無法復原，確定嗎？"
     @confirm="confirmDelete"
-    @cancel="deleteDialogVisible = false"
-  />
+    @cancel="deleteDialogVisible = false" />
 </template>
 
 <script setup>
@@ -130,6 +116,24 @@ const searchBarTabs = ["cities", "attractions"];
 const currentTab = ref("cities");
 const searchQuery = ref("");
 const sortKey = ref("name");
+
+const currentSortOptions = computed(() => {
+  return ["allAttractions", "attractions"].includes(currentTab.value)
+    ? [
+        { title: "名稱（A-Z）", value: "name" },
+        { title: "名稱（Z-A）", value: "name-desc" },
+        { title: "城市（A-Z）", value: "city" },
+        { title: "城市（Z-A）", value: "city-desc" },
+        { title: "評分（高→低）", value: "rating-desc" },
+        { title: "評分（低→高）", value: "rating" },
+      ]
+    : [
+        { title: "名稱（A-Z）", value: "name" },
+        { title: "名稱（Z-A）", value: "name-desc" },
+        { title: "國家（A-Z）", value: "country" },
+        { title: "國家（Z-A）", value: "country-desc" },
+      ];
+});
 
 onMounted(() => {
   cityStore.fetchCities();
