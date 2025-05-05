@@ -25,4 +25,7 @@ onMounted(() => {
 .fade-enter-from, .fade-leave-to {
   opacity: 0;
 }
+.swal2-container {
+  z-index: 20000 !important;
+}
 </style>

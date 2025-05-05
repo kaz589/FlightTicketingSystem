@@ -13,7 +13,7 @@
           <v-list-item
             :key="index"
             v-if="item.visible"
-            @click="$router.push(item.path)"
+            :to="item.path"
           >
             <v-icon :icon="item.prependIcon"></v-icon>
             <span v-if="isHovered">{{ item.title }}</span>
@@ -161,56 +161,56 @@ const items = computed(() => [
   {
     title: "登入畫面",
     prependIcon: "mdi-view-dashboard-outline",
-    link: true,
+    // link: true,
     path: "/login",
     visible: false,
   },
   {
     title: "會員管理",
     prependIcon: "mdi mdi-account-group",
-    link: true,
+    // link: true,
     path: "/admin/members",
     visible: hasAuthority("會員"),
   },
   {
     title: "機場管理",
     prependIcon: "mdi-airport",
-    link: true,
+    // link: true,
     path: "/admin/airport",
     visible: hasAuthority("航線"),
   },
   {
     title: "航線管理",
     prependIcon: "mdi mdi-airplane-takeoff",
-    link: true,
+    // link: true,
     path: "/admin/flight",
     visible: hasAuthority("航線"),
   },
   {
     title: "票務訂單管理",
     prependIcon: "mdi mdi-ticket",
-    link: false,
+    // link: false,
     path: "/admin/Ticket",
     visible: hasAuthority("航線"),
   },
   {
     title: "座位管理",
     prependIcon: "mdi mdi-seat",
-    link: false,
+    // link: false,
     path: "/admin/Seats",
     visible: hasAuthority("航線"),
   },
   {
     title: "旅行管理",
     prependIcon: "mdi mdi-island",
-    link: false,
+    // link: false,
     path: "/admin/travel",
     visible: hasAuthority("旅遊"),
   },
   {
     title: "商品管理",
     prependIcon: "mdi mdi-gift-outline",
-    link: true,
+    // link: true,
     path: "/admin/products",
     visible: hasAuthority("產品"),
   },
@@ -218,14 +218,14 @@ const items = computed(() => [
 
     title: "里程兌換訂單管理",
     prependIcon: "mdi mdi-clipboard-list",
-    link: true,
+    // link: true,
     path: "/admin/redeemmanage",
     visible: hasAuthority("產品"),
   },
   {
     title: "權限管理",
     prependIcon: "mdi mdi-shield-lock-outline",
-    link: true,
+    // link: true,
     path: "/admin/authority",
     visible: RoleCount.value == 3,
 

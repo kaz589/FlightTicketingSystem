@@ -129,7 +129,7 @@
               </v-col>
             </v-row>
             <v-row justify="end">
-              <v-btn @click="checkRedeem">里程兌換訂單</v-btn>
+             
             </v-row>
 
             <v-divider class="my-4"></v-divider>
@@ -302,6 +302,7 @@
       </template>
     </v-confirm-edit>
   </v-dialog>
+ 
 </div>
 </template>
 
@@ -553,10 +554,7 @@ function onFileChange(event) {
     });
 }
 
-//查看里程訂單
-function checkRedeem() {
-  router.push("/checkredeem");
- }
+
 //#endregion
 </script>
 

@@ -91,5 +91,10 @@ public class FlightController {
         return flight.map(ResponseEntity::ok)
                      .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).build());
     }
+    @PostMapping("/fix-incomplete-seats")
+    public ResponseEntity<List<Integer>> fixIncompleteSeats() {
+        List<Integer> fixedFlights = flightService.fixIncompleteSeatsForAllFlights();
+        return ResponseEntity.ok(fixedFlights);
+    }
 	
 }

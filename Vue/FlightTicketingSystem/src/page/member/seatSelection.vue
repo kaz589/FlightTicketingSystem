@@ -118,7 +118,7 @@
         size="large"
         class="text-xl py-4 px-8"
       >
-        結帳</v-btn
+        進入結帳</v-btn
       >
     </v-col>
   </v-row>

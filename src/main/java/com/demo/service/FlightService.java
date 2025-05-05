@@ -22,5 +22,7 @@ public interface FlightService {
     void deleteFlight(int id); // 刪除航班
     Page<FlightDTO> searchFlights(String originAirport, String destinationAirport, Date startTime,
     Date endTime, String airplaneModelName, Pageable pageable) ;
+    
+    List<Integer> fixIncompleteSeatsForAllFlights();
 	
 }

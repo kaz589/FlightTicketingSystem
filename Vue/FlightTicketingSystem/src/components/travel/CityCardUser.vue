@@ -83,6 +83,7 @@
                       <swiper
                         :modules="[]"
                         :slides-per-view="1"
+                        :slide-to-clicked-slide="true"
                         class="rounded mb-2"
                         @swiper="(swiper) => (swiperRefs[index] = swiper)"
                       >

@@ -182,5 +182,7 @@ public class ProductsController {
 
 	        return ResponseEntity.ok(Map.of("url", imageUrl));
 	    }
+		
+	
 
 }
