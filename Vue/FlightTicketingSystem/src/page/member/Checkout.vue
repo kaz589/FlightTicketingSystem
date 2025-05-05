@@ -1,44 +1,41 @@
 <template>
-<v-container>
-  <v-row dense>
-    <v-col
-      v-for="selectproduct in selectcarts"
-      :key="selectproduct.id"
-      cols="12"
-    >
-      <selectProductCard :product="selectproduct" />
-    </v-col>
-  </v-row>
-  <div style="text-align: center; margin-top: 20px;">
-  <h3 style="margin-bottom: 20px;">總金額：{{ totalRedeemMiles }} 里程</h3>
-  <v-btn color="secondary" class="mx-2" @click="continueExchange">繼續兌換</v-btn>
-  <v-btn color="primary" class="mx-2" @click="checkout">結帳</v-btn>
-</div>
+  <div>
+    <v-container>
+      <v-row dense>
+        <v-col v-for="selectproduct in selectcarts" :key="selectproduct.id" cols="12">
+          <selectProductCard :product="selectproduct" />
+        </v-col>
+      </v-row>
+      <div style="text-align: center; margin-top: 20px;">
+        <h3 style="margin-bottom: 20px;">總金額：{{ totalRedeemMiles }} 里程</h3>
+        <v-btn color="secondary" class="mx-2" @click="continueExchange">繼續兌換</v-btn>
+        <v-btn color="primary" class="mx-2" @click="checkout">結帳</v-btn>
+      </div>
 
-</v-container>
+    </v-container>
+  </div>
+</template>
 
-  </template>
-  
-  <script setup>
-  import { ref,onMounted, computed } from "vue"
-  import { storeToRefs } from "pinia";
-  import { usecartStore } from "@/stores/usecartStore";
-  import selectProductCard from "@/components/product/selectProductCard.vue";
-  import { useRouter } from "vue-router"; // 引入 vue-router
+<script setup>
+import { ref, onMounted, computed } from "vue"
+import { storeToRefs } from "pinia";
+import { usecartStore } from "@/stores/usecartStore";
+import selectProductCard from "@/components/product/selectProductCard.vue";
+import { useRouter } from "vue-router"; // 引入 vue-router
 import { ApiRedeem } from "@/utils/API";
-  import { useAuthStore } from "@/stores/auth";
-  const authStore = useAuthStore();
+import { useAuthStore } from "@/stores/auth";
+const authStore = useAuthStore();
 const cartStore = usecartStore();
-  const { productTypesCount,selectcarts } = storeToRefs(cartStore)
+const { productTypesCount, selectcarts } = storeToRefs(cartStore)
 
- 
-  onMounted(() => {
 
-console.log(selectcarts.value);
+onMounted(() => {
+
+  console.log(selectcarts.value);
 }
 )
 
-const router = useRouter(); 
+const router = useRouter();
 //計算總金額
 const totalRedeemMiles = computed(() => {
   return selectcarts.value.reduce((sum, product) => {
@@ -47,14 +44,14 @@ const totalRedeemMiles = computed(() => {
 });
 
 //導回商品列表的邏輯，例如 router.push
-  function continueExchange() {
-    router.push("/test2");
-    console.log('繼續兌換');
-  }
-  
-  // 結帳的邏輯
+function continueExchange() {
+  router.push("/test2");
+  console.log('繼續兌換');
+}
 
-  async function checkout() {
+// 結帳的邏輯
+
+async function checkout() {
   try {
     console.log("準備送出商品資料...");
 
@@ -73,18 +70,18 @@ const totalRedeemMiles = computed(() => {
     const redeemId = res.data.redeemId; //拿到訂單ID
     usecartStore().clearcartStore();
     if (redeemId) {
-    
-  router.push({
-    path: "/checkoutconfirm",
-    query: { redeemId: redeemId } // 帶著redeemId跳轉
-  });
-} else {
-  throw new Error("後端沒回傳redeemId");
-}
+
+      router.push({
+        path: "/checkoutconfirm",
+        query: { redeemId: redeemId } // 帶著redeemId跳轉
+      });
+    } else {
+      throw new Error("後端沒回傳redeemId");
+    }
   } catch (error) {
     console.error("結帳失敗：", error);
     // 判斷是不是自訂錯誤訊息
-  // 嘗試取得後端回傳的錯誤訊息
+    // 嘗試取得後端回傳的錯誤訊息
     if (error.response && error.response.data) {
       const errorMessage = error.response.data.message || JSON.stringify(error.response.data);
       alert(`結帳失敗：${errorMessage}`);
@@ -95,9 +92,8 @@ const totalRedeemMiles = computed(() => {
 }
 
 
-  
 
-  
 
-  </script>
-  
+
+
+</script>

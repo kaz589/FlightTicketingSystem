@@ -45,7 +45,8 @@
           actionIcons[selectedCategory][selectedAction] || 'mdi-cog'
         "
         dense
-        outlined />
+        outlined
+      />
     </div>
     <div class="dropdown-wrapper">
       <v-select
@@ -56,7 +57,8 @@
         label="選擇類別"
         prepend-inner-icon="mdi-menu"
         dense
-        outlined />
+        outlined
+      />
     </div>
   </div>
 </template>

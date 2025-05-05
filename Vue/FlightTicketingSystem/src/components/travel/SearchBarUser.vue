@@ -11,21 +11,52 @@
           activeMode === mode.value
             ? 'bg-blue-100 text-blue-800 border-blue-300'
             : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50 hover:text-blue-800 hover:border-blue-300 hover:scale-[1.02] active:bg-gray-200',
-        ]">
+        ]"
+      >
         {{ mode.label }}
       </button>
     </div>
   </div>
 
   <div v-if="activeMode === 'All'" class="mx-auto" style="padding-left: 7em">
-    <CityCardGrid :cities="allCities" />
+    <v-select
+      v-model="sortKey"
+      :items="sortOptions"
+      label="排序方式"
+      variant="outlined"
+      density="compact"
+      class="mb-2 ml-4"
+      style="max-width: 200px"
+      prepend-inner-icon="mdi-sort"
+    />
+
+    <div
+      v-if="sortKey === 'distance'"
+      class="d-flex align-center text-gray-700 text-sm mb-4 ml-2"
+    >
+      <v-icon class="mr-1" color="deep-orange">mdi-map-marker</v-icon>
+      <div v-if="userLocation">
+        目前位置：緯度 {{ userLocation.lat.toFixed(5) }}, 經度
+        {{ userLocation.lng.toFixed(5) }}
+      </div>
+      <div v-else-if="locationError" class="text-red-500">
+        <v-icon class="mr-1" color="error">mdi-alert-circle</v-icon>
+        {{ locationError }}
+      </div>
+      <div v-else>
+        <v-icon class="mr-1" color="grey">mdi-timer-sand</v-icon>
+        正在取得目前位置...
+      </div>
+    </div>
+    <CityCardGrid :cities="sortedCities" />
   </div>
 
   <div v-if="activeMode === 'Favourite'">
     <div
       v-if="favouriteCities.length > 0"
       class="mx-auto"
-      style="padding-left: 7em">
+      style="padding-left: 7em"
+    >
       <CityCardGrid :cities="favouriteCities" />
     </div>
     <div v-else class="text-center text-gray-500 mt-10">
@@ -40,12 +71,14 @@
       v-model="userPrompt"
       rows="4"
       placeholder="請輸入您的需求"
-      class="w-full p-3 border border-gray-300 rounded mb-4 resize-none"></textarea>
+      class="w-full p-3 border border-gray-300 rounded mb-4 resize-none"
+    ></textarea>
 
     <button
       @click="getRecommendation"
       :disabled="loading || !userPrompt"
-      class="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded disabled:opacity-50 transition">
+      class="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded disabled:opacity-50 transition"
+    >
       {{ loading ? "正在思考中..." : "智能推薦" }}
     </button>
 
@@ -54,7 +87,8 @@
       <div
         v-for="(item, index) in recommendation"
         :key="index"
-        class="p-4 border border-gray-200 rounded shadow-sm">
+        class="p-4 border border-gray-200 rounded shadow-sm"
+      >
         <p class="font-bold">{{ item.name }}</p>
         <p class="text-sm text-gray-600">{{ item.attractions }}</p>
         <div class="flex justify-end mt-4">
@@ -62,7 +96,8 @@
             size="small"
             color="blue"
             variant="outlined"
-            @click="bookCity(item.name)">
+            @click="bookCity(item.name)"
+          >
             <i class="mdi mdi-airplane mr-2"></i> 設為目的地
           </v-btn>
         </div>
@@ -75,7 +110,7 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted, onUnmounted } from "vue";
+import { ref, watch, computed, onMounted, onUnmounted } from "vue";
 import { useCityStore } from "@/stores/cityStore";
 import { useTravelStore } from "@/stores/travelStore";
 import { useFavouriteStore } from "@/stores/favourtieStore";
@@ -99,6 +134,97 @@ const favouriteStore = useFavouriteStore();
 
 const allCities = ref([]);
 const activeMode = ref("");
+
+const sortKey = ref("name");
+const sortOptions = [
+  { title: "名稱（A-Z）", value: "name" },
+  { title: "名稱（Z-A）", value: "name-desc" },
+  { title: "國家（A-Z）", value: "country" },
+  { title: "國家（Z-A）", value: "country-desc" },
+  { title: "距離最近", value: "distance" },
+];
+
+import pinyin from "pinyin";
+
+const getPinyin = (text) => {
+  return pinyin(text, { style: pinyin.STYLE_NORMAL }).flat().join("");
+};
+
+const userLocation = ref(null);
+const locationError = ref("");
+
+const getUserLocation = () => {
+  return new Promise((resolve, reject) => {
+    navigator.geolocation.getCurrentPosition(
+      (pos) => {
+        userLocation.value = {
+          lat: pos.coords.latitude,
+          lng: pos.coords.longitude,
+        };
+        resolve();
+      },
+      (err) => {
+        locationError.value = err.message || "無法取得位置";
+        reject(err);
+      }
+    );
+  });
+};
+
+const haversine = (lat1, lon1, lat2, lon2) => {
+  const R = 6371;
+  const dLat = ((lat2 - lat1) * Math.PI) / 180;
+  const dLon = ((lon2 - lon1) * Math.PI) / 180;
+  const a =
+    Math.sin(dLat / 2) ** 2 +
+    Math.cos((lat1 * Math.PI) / 180) *
+      Math.cos((lat2 * Math.PI) / 180) *
+      Math.sin(dLon / 2) ** 2;
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  return R * c;
+};
+
+const sortedCities = computed(() => {
+  const citiesCopy = [...allCities.value];
+
+  if (sortKey.value === "distance") {
+    if (!userLocation.value) return citiesCopy;
+
+    const withDistance = citiesCopy.map((city) => {
+      const dist = haversine(
+        userLocation.value.lat,
+        userLocation.value.lng,
+        city.latitude,
+        city.longitude
+      );
+      console.log(`${city.name} 距離你：${dist.toFixed(2)} 公里`);
+      return { ...city, _distance: dist };
+    });
+
+    return withDistance.sort((a, b) => a._distance - b._distance);
+  }
+
+  const [key, order] = sortKey.value.includes("-desc")
+    ? [sortKey.value.replace("-desc", ""), "desc"]
+    : [sortKey.value, "asc"];
+
+  return citiesCopy.sort((a, b) => {
+    const aVal = (a[key] || "").toString();
+    const bVal = (b[key] || "").toString();
+    return order === "asc"
+      ? aVal.localeCompare(bVal, "zh-Hant-u-co-pinyin")
+      : bVal.localeCompare(aVal, "zh-Hant-u-co-pinyin");
+  });
+});
+watch(sortKey, async (key) => {
+  if (key === "distance" && !userLocation.value) {
+    try {
+      await getUserLocation();
+    } catch (err) {
+      alert("無法獲取位置：" + err.message);
+    }
+  }
+});
 
 const favouriteCities = computed(() => {
   const cityMap = new Map(cityStore.cities.map((city) => [city.id, city]));
@@ -148,7 +274,7 @@ const getRecommendation = async () => {
       },
       {
         headers: {
-          Authorization: `Bearer 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`,
+          Authorization: `Bearer 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`,
           "HTTP-Referer": "http://localhost:5173",
         },
       }

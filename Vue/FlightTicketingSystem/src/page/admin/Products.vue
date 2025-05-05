@@ -5,9 +5,12 @@
     </div>
     <br /><br />
     <!-- 新增商品 -->
-    <v-btn @click="insertDialog = true">新增商品</v-btn>
+    <v-btn class="mr-2" @click="insertDialog = true">新增商品</v-btn>
     <!-- 搜尋商品 -->
-    <v-btn prepend-icon="mdi-magnify" @click="searchByName"> 搜尋 </v-btn>
+    <v-btn color="secondary" @click="searchByName">
+  <v-icon left>mdi-magnify</v-icon>
+  搜尋
+</v-btn>
 
     <br /><br />
     <!-- 關鍵字搜尋欄 -->
@@ -18,18 +21,36 @@
     
 
     <!-- 商品表格 -->
-    <v-data-table :headers="headers" :items="Allproducts" item-key="id">
+    <v-data-table :headers="headers" :items="Allproducts" item-key="id" class="text-left">
+      <template v-slot:item.desc="{ item }">
+  {{ item.desc.length > 7 ? item.desc.slice(0, 7) + '...' : item.desc }}
+</template>
+
+      <!-- 顯示圖片 -->
+      <template v-slot:item.image="{ item }">
+    <div class="d-flex align-center justify-center py-2">
+    <v-img
+      :src="'http://localhost:8080' + item.image"
+      height="80"
+      width="80"
+      class="rounded"
+      cover
+    ></v-img>
+     </div>
+  </template>
       <template v-slot:item.actions="{ item }">
-        <div class="d-flex gap-2 justify-end">
+        <div class="d-flex align-center justify-center py-2">
           <v-icon icon="mdi-pencil" @click="edit(item.id)"></v-icon>
           <v-icon icon="mdi-delete" @click="remove(item.id)"></v-icon>
         </div>
       </template>
+      <template v-slot:item.available="{ item }">
+    <span>{{ item.available ? '上架' : '下架' }}</span>
+  </template>
     </v-data-table>
 
     
 
-    <br /><br />
 
 <!-- 新增商品對話框 -->
  <v-dialog v-model="insertDialog" max-width="600">
@@ -51,6 +72,14 @@
       label="商品類別"
       required
     ></v-select>
+        <!-- 商品上下架 -->
+        <v-select
+            v-model="updateData.available"
+            :items="productAvailable"
+            item-title="status"
+            item-value="id"
+            label="上下架"
+          />
             <v-row>
         <v-col cols="12" md="6">
           <v-text-field v-model="insertData.name" label="商品名稱" required />
@@ -74,6 +103,7 @@
         </v-col>
         <v-col cols="12" md="6">
         <v-btn color="primary" @click="uploadImage">上傳圖片</v-btn> 
+        <v-btn color="primary" @click="insertByClick">一鍵輸入</v-btn> 
       </v-col>
       </v-row>
       
@@ -113,6 +143,14 @@
       label="商品類別"
       required
     ></v-select>
+     <!-- 商品上下架 -->
+     <v-select
+            v-model="updateData.available"
+            :items="productAvailable"
+            item-title="status"
+            item-value="id"
+            label="上下架"
+          />
             <v-row>
         <v-col cols="12" md="6">
           <v-text-field v-model="updateData.name" label="商品名稱" required />
@@ -180,6 +218,7 @@ const headers = ref([
   { title: '所需', value: 'needmiles' },
   { title: '庫存', value: 'quantity' },
   { title: '圖片', value: 'image' },
+  { title: '上架狀態', value: 'available' },
   { title: '操作', key: 'actions' }
 ]);
 const categoryOptions = [
@@ -189,9 +228,12 @@ const categoryOptions = [
   { id: 4, name: '電子產品' },
   { id: 5, name: '其他' },
 ]
-
+const productAvailable = [
+  { id:true , status: '上架' },
+  { id: false, status: '下架' }
+];
 // 預設表單
-const DEFAULT_FORM = { name: '', desc: '', needmiles: 0, quantity: 0, category: { categoryId: 1 }, image: '' };
+const DEFAULT_FORM = { name: '', desc: '', needmiles: 0, quantity: 0, category: { categoryId: 1 }, image: '' ,available: true};
 const DEFAULT_UPDATE = { ...DEFAULT_FORM };
 
 // 新增
@@ -280,9 +322,24 @@ async function insert() {
 
 // 刪除
 function remove(id) {
-  ApiProducts.deleteProduct(id).then(() => {
-    Swal.fire('刪除成功', '', 'success');
-    search();
+  Swal.fire({
+    title: '確定要刪除此項目嗎？',
+    text: '此操作無法復原！',
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonText: '是，我確定刪除',
+    cancelButtonText: '先不要'
+  }).then((result) => {
+    if (result.isConfirmed) {
+      ApiProducts.deleteProduct(id)
+        .then(() => {
+          Swal.fire('刪除成功！', '', 'success');
+          search();
+        })
+        .catch((err) => {
+          Swal.fire('刪除失敗', err.message || '', 'error');
+        });
+    }
   });
 }
 // 編輯
@@ -296,9 +353,7 @@ function edit(id) {
     console.log();
     
   })
-  // const item = Allproducts.value.find(p => p.id === id);
-  // updateId.value = id;
-  // updateData.value = { ...item };
+
 }
 
 // 修改商品
@@ -313,6 +368,22 @@ async function update() {
     Swal.fire('修改失敗', '', 'error');
   }
 }
+
+// 一鍵輸入：生成威士忌示範資料
+function insertByClick() {
+  insertData.value = {
+    name: '經典12年單一麥芽威士忌',
+    desc: '蘇格蘭產區經典威士忌，陳年十二年，風味濃郁，帶有煙燻與果香。',
+    needmiles: 9000,
+    quantity: 50,
+    category: { categoryId: 1 }, 
+    image: '/ProductsImage/whisky.jpg', 
+    available: true
+  };
+
+}
+
+
 </script>
 
 <style scoped>

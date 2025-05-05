@@ -5,7 +5,8 @@
         size="small"
         color="primary"
         variant="outlined"
-        @click="$emit('edit', item)">
+        @click="handleEdit(item)"
+      >
         修改
       </v-btn>
       <v-btn
@@ -13,7 +14,8 @@
         color="error"
         variant="outlined"
         class="ml-2"
-        @click="$emit('delete', item)">
+        @click="handleDelete(item)"
+      >
         刪除
       </v-btn>
     </template>
@@ -27,6 +29,7 @@ const props = defineProps({
     type: Array,
     default: () => [],
   },
+  handleEdit: Function,
+  handleDelete: Function,
 });
-const emit = defineEmits(["edit", "delete"]);
 </script>

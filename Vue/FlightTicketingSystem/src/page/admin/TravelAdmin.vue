@@ -2,14 +2,15 @@
   <v-container
     fluid
     class="pa-6"
-    style="background-color: #f9f9f9; min-height: 100vh">
+    style="background-color: #f9f9f9; min-height: 100vh"
+  >
     <NavigationTabs v-model:selectedTab="currentTab" />
     <v-slide-y-transition>
       <template v-if="searchBarTabs.includes(currentTab)">
         <SearchBar v-model="searchQuery" @search="handleSearch" />
       </template>
     </v-slide-y-transition>
-    <div class="d-flex justify-space-between align-center mb-4">
+    <div class="d-flex justify-space-between align-center mb-4 ml-16">
       <v-btn-toggle v-model="viewMode" borderless>
         <v-tooltip text="卡片模式">
           <template #activator="{ props }">
@@ -28,7 +29,7 @@
       </v-btn-toggle>
     </div>
 
-    <div class="mb-4 font-weight-bold">
+    <div class="mb-4 font-weight-bold ml-16">
       <v-icon>mdi-table-eye</v-icon> 當前檢視：{{
         viewMode === "Card" ? "卡片模式" : "表格模式"
       }}
@@ -38,7 +39,31 @@
       <v-window-item
         v-for="tab in ['cities', 'allCities', 'attractions', 'allAttractions']"
         :key="tab"
-        :value="tab">
+        :value="tab"
+      >
+        <div
+          v-if="
+            ['allCities', 'allAttractions'].includes(tab) && viewMode === 'Card'
+          "
+          class="mb-4 ml-16"
+        >
+          <div class="mb-4 font-weight-bold">
+            排序方式:
+            <v-select
+              v-model="sortKey"
+              :items="[
+                { title: '名稱（A-Z）', value: 'name' },
+                { title: '名稱（Z-A）', value: 'name-desc' },
+                { title: '國家（A-Z）', value: 'country' },
+                { title: '國家（Z-A）', value: 'country-desc' },
+              ]"
+              variant="outlined"
+              density="compact"
+              style="max-width: 200px"
+            />
+          </div>
+        </div>
+
         <component :is="getViewComponent(tab)" v-bind="getViewProps(tab)" />
       </v-window-item>
     </v-window>
@@ -48,7 +73,8 @@
       v-model="snackbar"
       color="success"
       timeout="3000"
-      location="bottom center">
+      location="bottom center"
+    >
       {{ snackbarMessage }}
     </v-snackbar>
   </v-container>
@@ -57,30 +83,34 @@
 
   <CreateAttractionModal
     v-model="modals.createAttraction"
-    v-bind="modalProps" />
+    v-bind="modalProps"
+  />
 
   <EditCityModal
     v-model="modals.editCity"
     :city="selectedCity"
-    @updated="handleCityUpdated" />
+    @updated="handleCityUpdated"
+  />
 
   <EditAttractionModal
     v-model="modals.editAttraction"
     :cities="cities"
     :attraction="selectedAttraction"
     v-show="!!selectedAttraction"
-    @updated="handleAttractionUpdated" />
+    @updated="handleAttractionUpdated"
+  />
 
   <DeleteConfirmDialog
     v-model="deleteDialogVisible"
     :title="`刪除「${selectedItem?.name}」？`"
     message="刪除後無法復原，確定嗎？"
     @confirm="confirmDelete"
-    @cancel="deleteDialogVisible = false" />
+    @cancel="deleteDialogVisible = false"
+  />
 </template>
 
 <script setup>
-import { ref, watch, reactive, computed, onMounted } from "vue";
+import { ref, watch, reactive, computed, onMounted, nextTick } from "vue";
 import axios from "axios";
 import NavigationTabs from "@/components/travel/NavigationTabs.vue";
 import SearchBar from "@/components/travel/SearchBarAdmin.vue";
@@ -99,6 +129,7 @@ const cities = computed(() => cityStore.cities);
 const searchBarTabs = ["cities", "attractions"];
 const currentTab = ref("cities");
 const searchQuery = ref("");
+const sortKey = ref("name");
 
 onMounted(() => {
   cityStore.fetchCities();
@@ -113,8 +144,12 @@ watch(currentTab, async (tab) => {
   } else if (tab === "allAttractions") {
     await attractionStore.fetchAttractions();
   } else if (tab === "addCities") {
+    modals.createCity = false;
+    await nextTick();
     modals.createCity = true;
   } else if (tab === "addAttractions") {
+    modals.createAttraction = false;
+    await nextTick();
     modals.createAttraction = true;
   }
 });
@@ -220,6 +255,7 @@ const { getViewComponent, getViewProps } = useTabView({
     city: cityHeaders,
     attraction: attractionHeaders,
   },
+  sortKey,
 });
 
 const apiPaths = {
@@ -233,7 +269,7 @@ const handleSearch = async (done) => {
     const query = searchQuery.value?.trim();
 
     if (!query) {
-      results.value = []; // ← 搜索关键字为空也清空结果
+      results.value = [];
       done();
       return;
     }
@@ -264,12 +300,11 @@ const handleSearch = async (done) => {
         results.value = response.data;
       }
     } else {
-      // 🧹 如果后端返回空数组，主动清空 results
       results.value = [];
     }
   } catch (error) {
     console.error("Error fetching data:", error);
-    results.value = []; // 🧹 错误时也清空，不要残留旧数据
+    results.value = [];
   } finally {
     done();
   }
