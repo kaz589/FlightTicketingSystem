@@ -74,14 +74,21 @@
       class="w-full p-3 border border-gray-300 rounded mb-4 resize-none"
     ></textarea>
 
-    <button
-      @click="getRecommendation"
-      :disabled="loading || !userPrompt"
-      class="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded disabled:opacity-50 transition"
-    >
-      {{ loading ? "正在思考中..." : "智能推薦" }}
-    </button>
-
+    <div class="flex gap-3 mb-4">
+      <button
+        @click="insertRandomPrompt"
+        class="bg-blue-100 hover:bg-blue-200 text-blue-800 px-4 py-2 rounded text-sm border border-blue-300 transition"
+      >
+        一鍵輸入
+      </button>
+      <button
+        @click="getRecommendation"
+        :disabled="loading || !userPrompt"
+        class="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded disabled:opacity-50 transition"
+      >
+        {{ loading ? "正在思考中..." : "智能推薦" }}
+      </button>
+    </div>
     <div v-if="recommendation" class="mt-6 space-y-4">
       <h3 class="text-lg font-semibold">AI 推薦：</h3>
       <div
@@ -127,6 +134,19 @@ const modes = [
   { value: "All", label: "所有城市" },
   { value: "Calendar", label: "行程計劃" },
 ];
+
+const fakePrompts = [
+  "我想找海邊城市，適合衝浪和放鬆",
+  "想要親子旅遊，有大型主題樂園或海洋公園的地方",
+  "喜歡歷史文化，博物館和古蹟要多",
+  "我想避暑，最好是山區或高海拔的地方",
+  "希望有市集、小吃，適合吃貨行程",
+];
+
+const insertRandomPrompt = () => {
+  const randomIndex = Math.floor(Math.random() * fakePrompts.length);
+  userPrompt.value = fakePrompts[randomIndex];
+};
 
 const cityStore = useCityStore();
 const travel = useTravelStore();
