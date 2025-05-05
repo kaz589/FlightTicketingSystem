@@ -322,9 +322,24 @@ async function insert() {
 
 // 刪除
 function remove(id) {
-  ApiProducts.deleteProduct(id).then(() => {
-    Swal.fire('刪除成功', '', 'success');
-    search();
+  Swal.fire({
+    title: '確定要刪除此項目嗎？',
+    text: '此操作無法復原！',
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonText: '是，我確定刪除',
+    cancelButtonText: '先不要'
+  }).then((result) => {
+    if (result.isConfirmed) {
+      ApiProducts.deleteProduct(id)
+        .then(() => {
+          Swal.fire('刪除成功！', '', 'success');
+          search();
+        })
+        .catch((err) => {
+          Swal.fire('刪除失敗', err.message || '', 'error');
+        });
+    }
   });
 }
 // 編輯

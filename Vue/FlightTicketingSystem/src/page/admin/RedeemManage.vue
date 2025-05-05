@@ -34,20 +34,49 @@
              @update:modelValue="val=>updateStatus(item,val)"
          ></v-select>
           <v-btn color="red" @click="remove(item.redeemId)">刪除訂單</v-btn>
-          <v-btn color="light-blue" @click="searchRedeemItems(item.redeemId)">
+          <v-btn color="light-blue" @click="openRedeemDetailDialog(item.redeemId)">
           查看明細
         </v-btn>
-       
-       
-        
         </div>
       </template>
     </v-data-table>
-    <v-data-table :headers="RedeemItemheaders" :items="redeemItems" item-key="redeemItemId"  hide-default-footer>
-     
-    </v-data-table>
+  
 
     <br /><br />
+
+ <!-- 里程兌換訂單明細查看 -->
+ <v-dialog v-model="checkRedeemDetailDialog" max-width="800">
+  <v-card>
+    <v-card-title>兌換明細</v-card-title>
+
+    <v-card-text>
+      <v-data-table
+        :headers="RedeemItemheaders"
+        :items="redeemItems"
+        item-key="redeemItemId"
+        hide-default-footer
+        dense
+        class="mt-2"
+      >
+        <template v-slot:item.product="{ item }">
+          {{ item.product.name }}
+        </template>
+        <template v-slot:item.quantity="{ item }">
+          {{ item.quantity }}
+        </template>
+        <template v-slot:item.usedMiles="{ item }">
+          {{ item.usedMiles }}
+        </template>
+      </v-data-table>
+    </v-card-text>
+
+    <v-card-actions>
+      <v-spacer></v-spacer>
+      <v-btn text @click="checkRedeemDetailDialog = false">關閉</v-btn>
+    </v-card-actions>
+  </v-card>
+</v-dialog>
+
 
   </v-container>
 </template>
@@ -67,6 +96,7 @@ const redeemId = ref();
 const redeemItemId = ref();
 //對話框
 const dialog = ref(false);
+const checkRedeemDetailDialog = ref(false);
 // 訂單表格欄位
 const headers = ref([
   { title: '訂單編號', value: 'redeemId' },
@@ -167,12 +197,6 @@ function getRedeemById(redeemId) {
       Allredeem.value = res.data
   });
 }
-// 開啟新增對話框
-function openAddDialog() {
-  updateId.value = null;
-  insertRedeem.value = { ...DEFAULT_REDEEM_FORM };
-  dialog.value = true;
-}
 
 
 
@@ -185,7 +209,7 @@ function closeDialog() {
   updateId.value = null;
 }
 
-// 新增或修改訂單
+// 新增或修改訂單(現在沒有用到)
 async function saveRedeem() {
   console.log(insertRedeem.value);
   try {
@@ -262,6 +286,11 @@ const updateStatus = (item,newStatus) => {
     });
 }
 
+
+async function openRedeemDetailDialog(id) {
+  await searchRedeemItems(id); // 抓明細
+  checkRedeemDetailDialog.value = true; // 開彈窗
+}
 </script>
 
 <style scoped>
