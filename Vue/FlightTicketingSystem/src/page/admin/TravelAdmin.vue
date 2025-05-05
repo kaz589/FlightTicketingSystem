@@ -110,7 +110,7 @@
 </template>
 
 <script setup>
-import { ref, watch, reactive, computed, onMounted } from "vue";
+import { ref, watch, reactive, computed, onMounted, nextTick } from "vue";
 import axios from "axios";
 import NavigationTabs from "@/components/travel/NavigationTabs.vue";
 import SearchBar from "@/components/travel/SearchBarAdmin.vue";
@@ -129,7 +129,7 @@ const cities = computed(() => cityStore.cities);
 const searchBarTabs = ["cities", "attractions"];
 const currentTab = ref("cities");
 const searchQuery = ref("");
-const sortKey = ref("");
+const sortKey = ref("name");
 
 onMounted(() => {
   cityStore.fetchCities();
@@ -144,8 +144,12 @@ watch(currentTab, async (tab) => {
   } else if (tab === "allAttractions") {
     await attractionStore.fetchAttractions();
   } else if (tab === "addCities") {
+    modals.createCity = false;
+    await nextTick();
     modals.createCity = true;
   } else if (tab === "addAttractions") {
+    modals.createAttraction = false;
+    await nextTick();
     modals.createAttraction = true;
   }
 });

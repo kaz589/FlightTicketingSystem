@@ -81,20 +81,11 @@
                   <div>
                     <div class="mb-4">
                       <swiper
-                        :modules="[Thumbs]"
+                        :modules="[]"
                         :slides-per-view="1"
                         :slide-to-clicked-slide="true"
                         class="rounded mb-2"
-                        @swiper="
-                          (swiper) => {
-                            swiperRefs[index] = swiper;
-                            const thumb = thumbs[index];
-                            if (thumb && swiper.thumbs) {
-                              swiper.thumbs.swiper = thumb;
-                              swiper.thumbs.update();
-                            }
-                          }
-                        "
+                        @swiper="(swiper) => (swiperRefs[index] = swiper)"
                       >
                         <swiper-slide
                           v-for="(photo, j) in attraction.photos"
@@ -118,22 +109,21 @@
                       </swiper>
 
                       <swiper
-                        :modules="[Thumbs, FreeMode]"
+                        :modules="[FreeMode]"
                         slides-per-view="4"
                         free-mode
                         watch-slides-progress
-                        :slide-to-clicked-slide="true"
-                        @swiper="(swiper) => (thumbs[index] = swiper)"
                         class="rounded-sm"
                       >
                         <swiper-slide
                           v-for="(photo, j) in attraction.photos"
                           :key="photo.id + '-thumb'"
+                          @click="swiperRefs[index]?.slideToLoop(j)"
                         >
                           <v-img
                             :src="`http://localhost:8080${photo.url}`"
                             height="60"
-                            class="rounded-sm border border-gray-300"
+                            class="rounded-sm border border-gray-300 cursor-pointer"
                             cover
                           />
                         </swiper-slide>
@@ -187,20 +177,16 @@ import { ref, onMounted, nextTick } from "vue";
 import { useTravelStore } from "@/stores/travelStore";
 import { useFavouriteStore } from "@/stores/favourtieStore";
 import { Swiper, SwiperSlide } from "swiper/vue";
-import { Pagination, Thumbs, FreeMode, Navigation } from "swiper/modules";
+import { Pagination, FreeMode, Navigation } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/pagination";
-import "swiper/css/thumbs";
 import "swiper/css/free-mode";
 import "swiper/css/navigation";
 
-defineProps({
-  city: Object,
-});
+defineProps({ city: Object });
 
 const travel = useTravelStore();
 const favourite = useFavouriteStore();
-const thumbs = ref([]);
 const swiperRefs = ref([]);
 
 const toggle = (city) => favourite.toggle(city);
@@ -210,7 +196,6 @@ const handleOpenAttractions = async (city) => {
   await travel.openAttractions(city);
   await nextTick();
   const len = travel.currentCity.attractions?.length || 0;
-  thumbs.value = Array(len).fill(null);
   swiperRefs.value = Array(len).fill(null);
 };
 

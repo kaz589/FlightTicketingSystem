@@ -81,7 +81,7 @@ public class AttractionServiceImpl implements AttractionService {
 
     @Override
     public List<AttractionResponse> getAttractionByName(String name) {
-        List<Attraction> attraction = attractionRepository.findByNameContaining(name);
+        List<Attraction> attraction = attractionRepository.findByNameContainingIgnoreCaseOrCity_NameContainingIgnoreCase(name, name);
         if (attraction.isEmpty()) {
             throw new RuntimeException("No attractions found");
         }

@@ -36,7 +36,7 @@
     >
       <v-icon class="mr-1" color="deep-orange">mdi-map-marker</v-icon>
       <div v-if="userLocation">
-        目前位置：{{ userLocation.lat.toFixed(5) }},
+        目前位置：緯度 {{ userLocation.lat.toFixed(5) }}, 經度
         {{ userLocation.lng.toFixed(5) }}
       </div>
       <div v-else-if="locationError" class="text-red-500">
@@ -135,7 +135,7 @@ const favouriteStore = useFavouriteStore();
 const allCities = ref([]);
 const activeMode = ref("");
 
-const sortKey = ref("name"); // 預設按名稱排序
+const sortKey = ref("name");
 const sortOptions = [
   { title: "名稱（A-Z）", value: "name" },
   { title: "名稱（Z-A）", value: "name-desc" },
@@ -147,12 +147,10 @@ const sortOptions = [
 import pinyin from "pinyin";
 
 const getPinyin = (text) => {
-  return pinyin(text, { style: pinyin.STYLE_NORMAL }) // 普通拼音
-    .flat()
-    .join("");
+  return pinyin(text, { style: pinyin.STYLE_NORMAL }).flat().join("");
 };
 
-const userLocation = ref(null); // ← 這次叫它 userLocation，好統一命名
+const userLocation = ref(null);
 const locationError = ref("");
 
 const getUserLocation = () => {
