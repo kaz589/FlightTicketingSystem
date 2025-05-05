@@ -1,5 +1,5 @@
 <template>
-    
+    <div>
 <!-- 商品類別菜單 -->
  <!-- 商品里程菜單 -->
 
@@ -27,7 +27,7 @@
           v-for="product in Allproducts"
           :key="product.id"
           cols="12"
-          md="3"
+          md="4"
         >
         <productcard :product="product">
 
@@ -35,6 +35,7 @@
         </v-col>
       </v-row>
     </v-container>
+  </div>
   </template>
   
 <script setup>
@@ -54,7 +55,7 @@ const searchFilters = ref({ name: '' });
 
 function search(){ 
   ApiProducts.getAllProduct().then((res) => {
-    Allproducts.value = res.data;
+    Allproducts.value = res.data.filter(p => p.available === true);
     console.log(res.data);
     
   })
@@ -62,8 +63,11 @@ function search(){
 function searchByName() {
   console.log(searchFilters.value.name);
   
-  ApiProducts.searchProByName(searchFilters.value.name).then(res => Allproducts.value = res.data);
+  ApiProducts.searchProByName(searchFilters.value.name).then(res => {
+    Allproducts.value = res.data.filter(p => p.available === true);
+  });
 }
+
 
 </script>
 

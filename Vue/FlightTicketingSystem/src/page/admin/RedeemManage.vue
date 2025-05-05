@@ -4,23 +4,25 @@
       <h1>訂單管理</h1>
     </div>
     <br /><br />
+    <div  class="align-center d-flex gap-2 justify-end">
  <!-- 關鍵字搜尋欄 -->
  <v-text-field v-model="memberId" label="輸入會員ID" />
- 
+ </div>
+ <div  class="align-center d-flex gap-2 ">
   <!-- 根據會員id搜尋訂單 -->
-  <v-btn prepend-icon="mdi-magnify" @click="searchByMemberId(memberId)"> 會員訂單搜尋 </v-btn>
+  <v-btn color="primary" prepend-icon="mdi-magnify" @click="searchByMemberId(memberId)"> 會員訂單搜尋 </v-btn>
 
   <!-- 搜尋全部訂單 -->
-  <v-btn prepend-icon="mdi-magnify" @click="search"> 搜尋全部訂單 </v-btn>
-
+  <v-btn  color="secondary" prepend-icon="mdi-magnify" @click="search"> 搜尋全部訂單 </v-btn>
+</div>
 
 
     <br /><br />
 
     <v-data-table :headers="headers" :items="Allredeem" item-key="redeemId">
       <template v-slot:item.actions="{ item }">
-        <div class="d-flex gap-2 justify-end">
-          <v-select
+        <div class="align-center d-flex gap-2 justify-end" >
+          <v-select 
            v-model="item.redeemStatus"
             :items="redeemStatusOptions"
              item-title="status"
@@ -32,41 +34,89 @@
              @update:modelValue="val=>updateStatus(item,val)"
          ></v-select>
           <v-btn color="red" @click="remove(item.redeemId)">刪除訂單</v-btn>
-       
-       
-        
+          <v-btn color="light-blue" @click="openRedeemDetailDialog(item.redeemId)">
+          查看明細
+        </v-btn>
         </div>
       </template>
     </v-data-table>
+  
 
     <br /><br />
+
+ <!-- 里程兌換訂單明細查看 -->
+ <v-dialog v-model="checkRedeemDetailDialog" max-width="800">
+  <v-card>
+    <v-card-title>兌換明細</v-card-title>
+
+    <v-card-text>
+      <v-data-table
+        :headers="RedeemItemheaders"
+        :items="redeemItems"
+        item-key="redeemItemId"
+        hide-default-footer
+        dense
+        class="mt-2"
+      >
+        <template v-slot:item.product="{ item }">
+          {{ item.product.name }}
+        </template>
+        <template v-slot:item.quantity="{ item }">
+          {{ item.quantity }}
+        </template>
+        <template v-slot:item.usedMiles="{ item }">
+          {{ item.usedMiles }}
+        </template>
+      </v-data-table>
+    </v-card-text>
+
+    <v-card-actions>
+      <v-spacer></v-spacer>
+      <v-btn text @click="checkRedeemDetailDialog = false">關閉</v-btn>
+    </v-card-actions>
+  </v-card>
+</v-dialog>
+
 
   </v-container>
 </template>
 
 <script setup>
 import { ref, onMounted } from 'vue';
-import { ApiRedeem } from '@/utils/API';
+import { ApiRedeem,ApiRedeemItem } from '@/utils/API';
 import Swal from 'sweetalert2';
 import 'sweetalert2/dist/sweetalert2.min.css';
 
 // 訂單列表
 const Allredeem = ref([]);
+const redeemItems = ref([]);
 //搜尋memeberId列表
 const memberId = ref([]);
 const redeemId = ref();
+const redeemItemId = ref();
 //對話框
 const dialog = ref(false);
-// 表格欄位
+const checkRedeemDetailDialog = ref(false);
+// 訂單表格欄位
 const headers = ref([
   { title: '訂單編號', value: 'redeemId' },
   { title: '會員 ID', value: 'member.memberId' },
-
   { title: '訂單日期', value: 'createAt' },
   { title: '總花費', value: 'redeemTotalMiles' },
   // 根據你的 Redeem 實體添加其他欄位標題
   { title: '操作', key: 'actions' },
 ]);
+// 訂單項目表格欄位
+const RedeemItemheaders = ref([
+  { title: '訂單項目編號', value: 'redeemItemId' },
+ 
+  //這裡顯示商品名稱
+  { title: '商品名稱', value: 'product.name' },
+  { title: '兌換數量', value: 'quantity' },
+  { title: '所需里程', value: 'usedMiles' },
+]);
+
+
 
 //訂單狀態
 const redeemStatusOptions = ref([
@@ -74,6 +124,7 @@ const redeemStatusOptions = ref([
   { id: 2, status: '處理中' },
   { id: 3, status: '待出貨' },
   { id: 4, status: '已出貨' },
+  { id: 5, status: '已取消' },
 ])
 // 預設表單
 const DEFAULT_REDEEM_FORM = {
@@ -110,6 +161,19 @@ async function search() {
   }
 }
 
+// 根據訂單ID查詢訂單明細
+async function searchRedeemItems(id) {
+  if (!id) {
+    console.error('沒有帶入 redeemId');
+    return;
+  }
+  try {
+    const res = await ApiRedeemItem.getItemsByRedeemId(id);
+    redeemItems.value = res.data;
+  } catch (e) {
+    console.error('抓取訂單明細失敗', e);
+  }
+}
 
 
 // 根據會員 ID 查詢訂單
@@ -133,20 +197,9 @@ function getRedeemById(redeemId) {
       Allredeem.value = res.data
   });
 }
-// 開啟新增對話框
-function openAddDialog() {
-  updateId.value = null;
-  insertRedeem.value = { ...DEFAULT_REDEEM_FORM };
-  dialog.value = true;
-}
 
-// 開啟修改對話框
-function edit(id) {
-  const item = Allredeem.value.find(p => p.id === id);
-  updateId.value = id;
-  updateRedeem.value = { ...item };
-  dialog.value = true;
-}
+
+
 
 // 關閉對話框
 function closeDialog() {
@@ -156,7 +209,7 @@ function closeDialog() {
   updateId.value = null;
 }
 
-// 新增或修改訂單
+// 新增或修改訂單(現在沒有用到)
 async function saveRedeem() {
   console.log(insertRedeem.value);
   try {
@@ -233,6 +286,11 @@ const updateStatus = (item,newStatus) => {
     });
 }
 
+
+async function openRedeemDetailDialog(id) {
+  await searchRedeemItems(id); // 抓明細
+  checkRedeemDetailDialog.value = true; // 開彈窗
+}
 </script>
 
 <style scoped>

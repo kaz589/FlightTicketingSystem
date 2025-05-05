@@ -47,6 +47,10 @@
 <script setup>
 import { ref, watch, onMounted, shallowRef } from "vue";
 import { ApiSeats, ApiAirport } from "@/utils/API";
+
+onMounted(() => {
+  search();
+})
 // === 搜尋條件的資料 ===
 const searchFlightId = ref("");
 const searchStatus = ref("all");

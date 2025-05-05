@@ -74,7 +74,7 @@ public class MailService {
 	        Context context = new Context();
 	        context.setVariables(variables);
 
-	        String subject = "訂單付款完成通知";
+	        String subject = "里程兌換完成通知";
 	        String content = templateEngine.process("email/redeemMail.html", context);
 
 	        MimeMessage message = mailSender.createMimeMessage();

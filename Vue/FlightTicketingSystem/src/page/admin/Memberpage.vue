@@ -1,5 +1,6 @@
 <template>
   <div>
+  <div>
     <h1>會員管理</h1>
   </div>
   <!-- <v-container>
@@ -313,6 +314,7 @@
       </v-card-actions>
     </v-card>
   </v-dialog>
+</div>
 </template>
 
 <script setup>

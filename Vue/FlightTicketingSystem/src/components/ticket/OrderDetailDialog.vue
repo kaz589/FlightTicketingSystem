@@ -48,7 +48,7 @@
             :key="seat.seatNumber"
             style="margin-bottom: 10px"
           >
-            <SeatCard :selectseat="seat" :action-type="actionType" />
+            <SeatCard :selectseat="seat" :action-type="actionType"  @deleted="removeSeat" />
           </div>
         </div>
       </v-card-text>
@@ -87,6 +87,10 @@ function getFlight() {
     flight.value = res.data;
     console.log(flight.value);
   });
+}
+function removeSeat(seatId) {
+  // 移除對應的 seat
+  seats.value = seats.value.filter(seat => seat.seatId !== seatId);
 }
 
 // 監聽 dialog 開啟與 order 變動

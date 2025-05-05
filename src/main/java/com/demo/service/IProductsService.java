@@ -3,6 +3,8 @@ package com.demo.service;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.http.ResponseEntity;
+
 import com.demo.model.Products;
 import com.demo.model.Redeem;
 import com.demo.model.RedeemItem;
@@ -98,6 +100,12 @@ public interface IProductsService {
 
 
 	 Products getProductById(Integer id) ;
+
+
+
+
+
+
 		
 
 	/**
@@ -105,4 +113,7 @@ public interface IProductsService {
 	 * @return
 	 */
 //	Category findProductsByCategoryId(Integer categoryId);
+	
+
+	
 }

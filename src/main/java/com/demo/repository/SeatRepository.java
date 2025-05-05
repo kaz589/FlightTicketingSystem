@@ -34,4 +34,6 @@ public interface SeatRepository extends JpaRepository<Seat, Integer> {
     List<Seat> findExpiredAndUnbookedAndTicketIsNull(@Param("now") LocalDateTime now);
     List<Seat> findByFlightIdAndBooked(Integer flightId, boolean booked);
     List<Seat> findByBooked(boolean booked);
+    @Query("SELECT COUNT(s) FROM Seat s WHERE s.flight.id = :flightId")
+    int countByFlightId(@Param("flightId") Integer flightId);
 }
