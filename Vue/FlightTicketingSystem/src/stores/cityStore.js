@@ -7,13 +7,13 @@ export const useCityStore = defineStore("city", {
     loading: false,
   }),
   actions: {
-    async fetchCities(page = 0, size = 12) {
+    async fetchCities() {
+      if (this.loading) return;
       this.loading = true;
       try {
         const res = await axios.get("http://localhost:8080/cities", {
-          params: { page, size },
+          params: { page: 0, size: 9999 },
         });
-
         const cities = res.data.content;
 
         const enrichedCities = await Promise.all(
@@ -43,6 +43,7 @@ export const useCityStore = defineStore("city", {
         this.loading = false;
       }
     },
+
     async searchByName(name) {
       try {
         const res = await axios.get(

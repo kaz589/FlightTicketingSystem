@@ -2,7 +2,8 @@
   <v-dialog
     v-model="model"
     max-width="420"
-    transition="dialog-bottom-transition">
+    transition="dialog-bottom-transition"
+  >
     <v-card class="rounded-2xl pa-6" color="background">
       <v-card-title class="text-center text-2xl font-bold mb-2">
         <v-icon size="48" color="error" class="mb-2">mdi-alert-circle</v-icon>
@@ -16,14 +17,16 @@
           variant="flat"
           color="error"
           class="rounded-full px-6 ml-4"
-          @click="$emit('confirm')">
+          @click="$emit('confirm')"
+        >
           確定刪除
         </v-btn>
         <v-btn
           variant="outlined"
           color="grey"
           class="rounded-full px-6"
-          @click="$emit('cancel')">
+          @click="$emit('cancel')"
+        >
           取消
         </v-btn>
       </v-card-actions>
@@ -39,5 +42,5 @@ const props = defineProps({
 });
 const emit = defineEmits(["update:modelValue", "confirm", "cancel"]);
 
-const model = defineModel(); // 自動綁定 v-model
+const model = defineModel("modelValue");
 </script>
