@@ -5,10 +5,6 @@ export const useAttractionStore = defineStore("attraction", {
   state: () => ({
     attractions: [],
     loading: false,
-    pagination: {
-      page: 1,
-      size: 12,
-    },
   }),
 
   actions: {
@@ -17,12 +13,11 @@ export const useAttractionStore = defineStore("attraction", {
       try {
         const res = await axios.get("http://localhost:8080/attractions", {
           params: {
-            page: this.pagination.page - 1,
-            size: this.pagination.size,
+            page: 0,
+            size: 9999,
           },
         });
         this.attractions = res.data.content;
-        this.pagination.totalPages = res.data.totalPages;
       } catch (err) {
         console.error("❌ 載入景點失敗", err);
       } finally {

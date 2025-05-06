@@ -8,11 +8,13 @@
           cols="12"
           sm="6"
           md="4"
-          lg="3">
+          lg="3"
+        >
           <CityCard
             :city="city"
             :handleEdit="handleEdit"
-            :handleDelete="handleDelete" />
+            :handleDelete="handleDelete"
+          />
         </v-col>
       </template>
 
@@ -31,7 +33,8 @@
         background: #eee;
         text-align: center;
         line-height: 80px;
-      "></div>
+      "
+    ></div>
   </div>
 </template>
 
@@ -57,11 +60,13 @@ const sortedCities = computed(() => {
   const [key, order] = props.sortKey.includes("-desc")
     ? [props.sortKey.replace("-desc", ""), "desc"]
     : [props.sortKey, "asc"];
-  return [...props.cities].sort((a, b) =>
-    order === "asc"
-      ? (a[key] || "").localeCompare(b[key] || "", "zh-Hant-u-co-pinyin")
-      : (b[key] || "").localeCompare(a[key] || "", "zh-Hant-u-co-pinyin")
-  );
+  return [...props.cities].sort((a, b) => {
+    const aVal = a[key] || "";
+    const bVal = b[key] || "";
+    return order === "asc"
+      ? aVal.localeCompare(bVal, "zh-Hant-u-co-pinyin")
+      : bVal.localeCompare(aVal, "zh-Hant-u-co-pinyin");
+  });
 });
 
 const visibleCities = computed(() =>
@@ -70,11 +75,7 @@ const visibleCities = computed(() =>
 
 const loadMore = () => {
   if (visibleCount.value >= sortedCities.value.length) return;
-  isLoading.value = true;
-  setTimeout(() => {
-    visibleCount.value += itemsPerPage;
-    isLoading.value = false;
-  }, 500);
+  visibleCount.value += itemsPerPage;
 };
 
 const loadTrigger = ref(null);
