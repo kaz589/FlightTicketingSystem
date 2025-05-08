@@ -2,6 +2,7 @@ package com.demo.controller;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -24,6 +25,7 @@ import org.springframework.data.domain.Pageable;
 import com.demo.model.Airports;
 import com.demo.model.Flight;
 import com.demo.model.DTO.FlightDTO;
+import com.demo.model.DTO.TicketDTO;
 import com.demo.repository.AirportsRepository;
 import com.demo.service.AirportsService;
 import com.demo.service.FlightService;
@@ -47,6 +49,7 @@ public class FlightController {
 	@PutMapping("/{id}")
 	public Flight updateFlight(@PathVariable Integer id, @RequestBody FlightDTO flightDetails) {
 		
+		System.out.println(flightDetails);
 		 // 確保 ID 一致，防止數據不匹配
         if (!id.equals(flightDetails.getId())) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "航班 ID 不一致");
@@ -76,9 +79,22 @@ public class FlightController {
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size) {
 
-       
+     
 
         Pageable  pageable = PageRequest.of(page-1, size);
         return flightService.searchFlights(originIata, destinationIata, startTime, endTime, airplaneModelName, pageable);
 	}
+	// 根據ID查詢航班
+    @GetMapping("/{id}")
+    public ResponseEntity<FlightDTO> getFlightById(@PathVariable Integer id) {
+        Optional<FlightDTO> flight = flightService.findFlightById(id);
+        return flight.map(ResponseEntity::ok)
+                     .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).build());
+    }
+    @PostMapping("/fix-incomplete-seats")
+    public ResponseEntity<List<Integer>> fixIncompleteSeats() {
+        List<Integer> fixedFlights = flightService.fixIncompleteSeatsForAllFlights();
+        return ResponseEntity.ok(fixedFlights);
+    }
+	
 }

@@ -10,5 +10,6 @@ public interface AttractionRepository extends JpaRepository<Attraction, Long> {
 
     List<Attraction> findByCityId(Long acityId);
 
-    List<Attraction> findByNameContaining(String name);
+    List<Attraction> findByNameContainingIgnoreCaseOrCity_NameContainingIgnoreCase(String name, String cityName);
+
 }

@@ -18,10 +18,9 @@ public interface ICategoryService {
      */
 	Category  addCategory(Category category);
 	
-    /**
-     * 根據 ID 刪除類別
-     * @param category_id 類別 ID
-     */
-	void deleteCategoryById(Integer categoryId);
+   
+	
+	
+	
 	
 }
